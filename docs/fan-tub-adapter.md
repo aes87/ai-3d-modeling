@@ -15,13 +15,15 @@ The tub lid has a rigid waffle pattern — a grid of raised squares separated by
 
 Instead of cutting a circle, the user cuts out a **2x2 block of waffle squares** (136.8 x 136.8mm) using a jigsaw along the straight channel lines. The adapter is a flat frame that drops into this rectangular hole and locks into the surrounding waffle grid.
 
+The entire part is a single flat plate — 3mm thick throughout. The fan bolts directly to the top surface with no standoffs or air gap.
+
 ### Key Features
 
 **Y-Shaped Corner Branches** — The signature feature. Each of the 4 corners has a forking branch that extends into the two perpendicular waffle channels adjacent to that corner. The waffle squares on either side of each channel constrain the branch laterally. This gives 8 engagement points total, providing excellent anti-rotation and alignment with zero fasteners.
 
 **Flange Lip** — The frame extends 4.5mm beyond the cutout on all sides, sitting on the flat rim around the hole. This prevents the adapter from dropping through.
 
-**Fan Standoffs** — Four 3mm-tall bosses at the 107mm M4 bolt pattern raise the fan above the frame surface, leaving a gap for airflow between the fan and the frame.
+**Direct Fan Mount** — Four M4 through-holes at the 107mm bolt pattern. The fan sits flush on the frame surface with no standoffs — bolts pass through the fan frame and adapter, secured with nuts below.
 
 **Tool-Free Removal** — Two M4 thumbscrews on opposite sides of the flange clamp the adapter to the lid with wing nuts below. The branches handle alignment; the thumbscrews just hold it down. Undo two wing nuts and the whole assembly lifts out.
 
@@ -33,7 +35,7 @@ Instead of cutting a circle, the user cuts out a **2x2 block of waffle squares**
 
 ![Isometric view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-iso.png)
 
-The flat frame with center airflow opening, four fan standoff bosses (with M4 through-holes), Y-branches extending from each corner, and the wire channel notch on the right edge.
+The flat frame with center airflow opening, four M4 through-holes at the fan bolt pattern, Y-branches extending from each corner, and the wire channel notch on the right edge.
 
 ### Front View (XZ Plane)
 
@@ -47,21 +49,22 @@ Looking straight down. Shows the square frame, circular center opening, 8 branch
 |:-:|:-:|
 | ![Right view](images/fan-tub-adapter/fan-tub-adapter-right.png) | ![Top view](images/fan-tub-adapter/fan-tub-adapter-top.png) |
 
-The part is only 10.6mm tall, so the side views show the thin profile: branches below (4.6mm), frame plate (3mm), and standoffs above (3mm).
+The part is only 3mm tall — a uniform flat plate. The side views show the thin profile with branches and frame all in the same plane.
 
 ## Cross-Section
 
 How the parts stack when installed:
 
 ```
-    Fan (sits on standoffs)
-  ──────────────────────         ← standoffs (3mm)
-  ═══════════════════════════    ← main frame + flange (3mm)
-  ──╗                     ╔──   ← Y-branches (4.6mm, sit on lid surface)
-    ║   waffle squares    ║        constrain branch laterally
-    ╚════════╤════════════╝
-  ───────────┘                   ← lid surface (2mm thick)
+    Fan frame (sits flush on adapter)
+  ════════════════════════════════       ← adapter plate (3mm), branches in-plane
+  ──╗                          ╔──      ← waffle squares (4.6mm tall)
+    ║   constrain branches     ║           surround and locate the branches
+    ╚═══════════╤══════════════╝
+  ──────────────┘                       ← lid surface (2mm thick)
 ```
+
+The adapter plate sits on the flat channel-level rim. The waffle squares rise 4.6mm around the 3mm-thick branches, providing 1.6mm of lateral engagement above the branch surface. The fan sits directly on the adapter with no gap.
 
 ## Geometry
 
@@ -69,22 +72,20 @@ How the parts stack when installed:
 |-----------|-------|
 | Cutout hole | 136.8 x 136.8 mm |
 | Frame outer (with flange) | 145.8 x 145.8 mm |
-| Overall bounding box | 186.8 x 186.8 x 10.6 mm |
+| Overall bounding box | 186.8 x 186.8 x 3.0 mm |
 | Center opening | 105 mm diameter |
 | Fan bolt pattern | 107 x 107 mm (M4) |
 | Branch width | 9.0 mm (0.4mm clearance in 9.4mm channels) |
-| Branch height | 4.6 mm (matches waffle square protrusion) |
 | Branch engagement length | 25 mm per arm |
-| Frame thickness | 3.0 mm |
-| Standoff height | 3.0 mm |
+| Frame/branch thickness | 3.0 mm (uniform) |
 | Corner radius | 4.0 mm |
 
 ## Fastener BOM
 
 | Qty | Item | Purpose |
 |-----|------|---------|
-| 4 | M4 x 30mm socket head bolts | Fan to adapter (through fan, standoffs, frame) |
-| 4 | M4 nylon lock nuts | Secure fan bolts from below frame |
+| 4 | M4 x 12mm socket head bolts | Fan to adapter (through fan frame + adapter plate) |
+| 4 | M4 nylon lock nuts | Secure fan bolts from below |
 | 2 | M4 x 16mm thumbscrews | Adapter to lid clamping (opposite sides) |
 | 2 | M4 wing nuts | Below-lid, tool-free removal |
 
@@ -94,21 +95,20 @@ How the parts stack when installed:
 |---------|-------|
 | Material | PLA |
 | Layer height | 0.2 mm |
-| Infill | 30%+ (frame is thin, mostly walls anyway) |
+| Infill | 100% (only 3mm thick — 15 layers, mostly perimeters anyway) |
 | Supports | None needed |
-| Orientation | Frame flat on bed, branches facing up |
-| Estimated print time | ~45 min |
-| Estimated material | ~46 cm³ |
+| Orientation | Flat on bed (only orientation that makes sense) |
+| Estimated material | ~42 cm³ |
 
 ## Validation Results
 
 ```
-bbox.x:    186.8 mm  (expected 186 ±2)   PASS
-bbox.y:    186.8 mm  (expected 186 ±2)   PASS
-bbox.z:    10.6 mm   (expected 10.6 ±1)  PASS
-watertight: true                          PASS
-volume:    45.8 cm³  (expected 15–80)     PASS
-fits bed:  186.8 mm  (max 256)            PASS
+bbox.x:    186.8 mm  (expected 186 ±2)    PASS
+bbox.y:    186.8 mm  (expected 186 ±2)    PASS
+bbox.z:    3.0 mm    (expected 3 ±0.5)    PASS
+watertight: true                           PASS
+volume:    41.6 cm³  (expected 5–50)       PASS
+fits bed:  186.8 mm  (max 256)             PASS
 ```
 
 ## Source Files
