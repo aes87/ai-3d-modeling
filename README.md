@@ -27,11 +27,14 @@ All tolerance constants (press fit, clearance fit, hole compensation, min wall t
 ├── bin/
 │   └── validate.js          # CLI entry point
 ├── designs/
-│   └── fan-tub-adapter/     # Each design in its own directory
-│       ├── spec.json         #   Expected dimensions & tolerances
-│       ├── fan-tub-adapter.scad  #   Parametric OpenSCAD source
-│       ├── output/           #   Generated STL + PNGs (gitignored)
-│       └── reference/        #   Photos, datasheets
+│   ├── fan-tub-adapter/          # v1.0 bolt-on adapter (frozen)
+│   ├── fan-tub-adapter-base/     # v2.0 base plate (caulked to lid)
+│   ├── fan-tub-adapter-clip/     # v2.0 retention clip (snap-fit)
+│   └── vent-adapter/             # Vent duct adapter (placeholder)
+│       ├── spec.json             #   Expected dimensions & tolerances
+│       ├── <name>.scad           #   Parametric OpenSCAD source
+│       ├── output/               #   Generated STL + PNGs (gitignored)
+│       └── reference/            #   Photos, datasheets
 ├── docs/
 │   └── images/              # Render images for documentation
 ├── lib/
@@ -43,7 +46,8 @@ All tolerance constants (press fit, clearance fit, hole compensation, min wall t
 ├── scad-lib/
 │   ├── fdm-pla.scad         # FDM/PLA tolerance constants
 │   ├── bambu-x1c.scad       # Build volume checks + dimension reporting
-│   └── common.scad          # Reusable modules (fdm_hole, bolt_pattern, etc.)
+│   ├── common.scad          # Reusable modules (fdm_hole, bolt_pattern, etc.)
+│   └── fan-tub-adapter-params.scad  # Shared params for v2.0 base + clip
 └── test/
     ├── stl-analyze.test.js
     └── validate.test.js
@@ -91,9 +95,63 @@ The pipeline checks:
 
 ## Designs
 
-| Design | Description | Doc |
-|--------|-------------|-----|
-| [fan-tub-adapter](designs/fan-tub-adapter/) | Adapter frame to mount a 119mm fan into a waffle-pattern tub lid | [Design Doc](docs/fan-tub-adapter.md) |
+### Fan-Tub Adapter
+
+Mounts a 119mm waterproof fan into a 2x2 waffle-cutout in an HDPE tub lid for a mushroom cultivation Martha tent. Y-shaped corner branches lock into the surrounding waffle channels for positive location. Center opening maximises airflow.
+
+#### v1.0 — Bolt-On (Frozen)
+
+Single-piece adapter secured with M4 bolts and thumbscrews.
+
+![v1.0 isometric](docs/images/fan-tub-adapter/fan-tub-adapter-iso.png)
+
+- **Retention**: 4x M4 bolts + hex nut counterbores (anti-rotation) through fan and plate
+- **Lid attachment**: 2x M4 thumbscrews + wing nuts at diagonal corner T-junctions
+- **Locating rim**: 1.5mm tall, drop-in fan alignment
+- **Dimensions**: 196.2 x 196.2 x 6.5mm, 69.4 cm³
+- **Print**: Single piece, bottom face on bed, no supports
+
+| Qty | Fastener | Purpose |
+|-----|----------|---------|
+| 4 | M4 x 12mm socket head bolts | Fan to adapter |
+| 4 | M4 nuts | Hex counterbores on bottom face |
+| 2 | M4 x 16mm thumbscrews | Adapter to lid |
+| 2 | M4 wing nuts | Below-lid clamping |
+
+[Full Design Doc](docs/fan-tub-adapter.md) · [Source](designs/fan-tub-adapter/fan-tub-adapter.scad) · [Spec](designs/fan-tub-adapter/spec.json)
+
+#### v2.0 — Tool-Free Clip System
+
+Two-part design: permanently-caulked base plate + snap-on retention clip. No fasteners at all.
+
+| | Base Plate | Retention Clip |
+|---|---|---|
+| ![Base plate](docs/images/fan-tub-adapter-base/fan-tub-adapter-base-iso.png) | ![Clip](docs/images/fan-tub-adapter-clip/fan-tub-adapter-clip-iso.png) | |
+
+**Base plate** — Same waffle-grid branches as v1, but all bolt/thumbscrew holes removed. Locating rim increased to 4.0mm (from 1.5mm). Four clip ledges (1mm outward protrusions) on the rim exterior provide catch points for the clip. Attached to lid with silicone caulk — permanent, no tools.
+
+**Retention clip** — A frame that sits on the fan top with four cantilever snap-fit arms. Each arm has a hook at the tip that catches under a base plate ledge. Press down to install, squeeze two opposite arms to release. Safety factor 2.06 (29 MPa stress vs 60 MPa PLA yield).
+
+| Part | Dimensions | Volume | Print Orientation |
+|------|-----------|--------|-------------------|
+| Base plate | 196.2 x 196.2 x 9.0mm | 72.7 cm³ | Bottom face on bed |
+| Clip | 129 x 129 x 25.6mm | 7.7 cm³ | Frame on bed, arms up |
+
+**No fasteners. No tools for fan removal.**
+
+[Full Design Doc](docs/fan-tub-adapter-v2.md) · [Base Source](designs/fan-tub-adapter-base/fan-tub-adapter-base.scad) · [Clip Source](designs/fan-tub-adapter-clip/fan-tub-adapter-clip.scad) · [Shared Params](scad-lib/fan-tub-adapter-params.scad)
+
+#### v1.0 vs v2.0
+
+| | v1.0 (Bolt-On) | v2.0 (Clip System) |
+|---|---|---|
+| Parts | 1 | 2 (base + clip) |
+| Fasteners | 8 (bolts, nuts, thumbscrews, wing nuts) | 0 |
+| Lid attachment | Thumbscrews (removable) | Silicone caulk (permanent) |
+| Fan removal | Unbolt 4x M4 | Squeeze clip, lift |
+| Tools needed | Hex key + fingers | Fingers only |
+| Locating rim | 1.5mm | 4.0mm |
+| Total print volume | 69.4 cm³ | 80.4 cm³ |
 
 ## Adding a New Design
 
