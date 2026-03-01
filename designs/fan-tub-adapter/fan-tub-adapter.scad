@@ -77,8 +77,8 @@ bbox_z        = frame_t_inner + loc_rim_h;        // 6.5
 assert(frame_t_outer >= MIN_WALL, str("Outer thickness ", frame_t_outer, " below min wall ", MIN_WALL));
 assert(frame_t_inner - nut_pocket_d >= MIN_FLOOR_CEIL,
     str("Nut pocket floor ", frame_t_inner - nut_pocket_d, "mm below minimum ", MIN_FLOOR_CEIL, "mm"));
-assert(nut_pocket_dia <= MAX_BRIDGE_SPAN,
-    str("Nut pocket diameter ", nut_pocket_dia, "mm exceeds max bridge span ", MAX_BRIDGE_SPAN, "mm"));
+// Taper zone height (hex pocket ceiling to bolt hole)
+taper_h = frame_t_inner - nut_pocket_d;  // 1.6mm
 
 // Report dimensions for pipeline
 report_dimensions(bbox_x, bbox_y, bbox_z, "adapter");
@@ -121,7 +121,7 @@ module fan_locating_rim() {
     }
 }
 
-// Fan bolt holes with circular counterbores
+// Fan bolt holes with hex counterbores and tapered lead-in
 module fan_bolt_holes() {
     half_cc = fan_bolt_cc / 2;
     positions = [
@@ -131,12 +131,27 @@ module fan_bolt_holes() {
         [ half_cc, -half_cc],
     ];
 
+    comp_dia = nut_pocket_dia + FDM_HOLE_COMPENSATION;  // 8.2mm hex AF with compensation
+
     for (pos = positions) {
         translate([pos[0], pos[1], 0]) {
+            // Through bolt hole
             translate([0, 0, -1])
                 fdm_hole(d=fan_bolt_dia, h=frame_t_inner + loc_rim_h + 2);
+
+            // Hex nut pocket ($fn=6 for hex)
             translate([0, 0, -1])
-                cylinder(d=nut_pocket_dia + FDM_HOLE_COMPENSATION, h=nut_pocket_d + 1);
+                cylinder(d=comp_dia, h=nut_pocket_d + 1, $fn=6);
+
+            // Tapered lead-in: hull from hex at pocket ceiling to circle at bolt hole floor
+            hull() {
+                // Hex slice at top of nut pocket
+                translate([0, 0, nut_pocket_d])
+                    cylinder(d=comp_dia, h=0.01, $fn=6);
+                // Circle slice at top of taper (bolt hole diameter)
+                translate([0, 0, frame_t_inner])
+                    cylinder(d=fan_bolt_dia + FDM_HOLE_COMPENSATION, h=0.01);
+            }
         }
     }
 }

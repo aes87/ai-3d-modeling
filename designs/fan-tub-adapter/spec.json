@@ -1,6 +1,6 @@
 {
   "name": "fan-tub-adapter",
-  "description": "Adapter frame for mounting 119mm fan into waffle-pattern tub lid. Branches centered in surrounding channels, circular nut counterbores, fan locating rim.",
+  "description": "Adapter frame for mounting 119mm fan into waffle-pattern tub lid. Branches centered in surrounding channels, hex nut counterbores with tapered lead-in, fan locating rim.",
   "dimensions": {
     "x": 196,
     "y": 196,

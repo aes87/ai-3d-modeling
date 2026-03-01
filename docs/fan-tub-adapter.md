@@ -16,7 +16,7 @@ The tub lid has a rigid waffle pattern — a grid of raised squares (63.7mm) sep
 The user cuts out a **2x2 block of waffle squares** (136.8 x 136.8mm) along the channel lines. The adapter is a stepped frame that fills this hole, with Y-shaped corner branches that extend outward into the surrounding waffle channels for positive location.
 
 The plate has **two thickness zones**:
-- **Inner zone (5mm)** — bounded by the locating rim footprint (124mm square). Provides depth for circular M4 nut counterbores on the bottom face, ensuring flush seating.
+- **Inner zone (5mm)** — bounded by the locating rim footprint (124mm square). Provides depth for hex M4 nut counterbores with tapered lead-in on the bottom face.
 - **Outer zone (4.6mm)** — the flange and branches, thinned to match the waffle square height so they sit flush with the surrounding waffle tops. Saves material and print time.
 
 A raised locating rim on top matches the fan's 119mm footprint for drop-in alignment.
@@ -24,6 +24,21 @@ A raised locating rim on top matches the fan's 119mm footprint for drop-in align
 ### Key Design Decision: Branch Positioning
 
 The branches must be centered in the **surrounding channels**, not at the cutout edge. The cutout edge is where the waffle squares end; the channels are 9.4mm further out. Branch roots are positioned at `cutout/2 + channel_w/2 = 73.1mm` from part center — at the intersection of the two perpendicular channels at each corner.
+
+### Key Design Decision: Hex Counterbores with Tapered Lead-In
+
+Previous revisions used circular counterbores to avoid bridging issues. Hex pockets are better — they hold the M4 nut rotationally, making one-handed assembly easy. But a full hex pocket with a flat ceiling creates an unsupported bridge across the entire 7.8mm span.
+
+The solution: use the 1.6mm of material between the hex pocket ceiling and the bolt hole as a **tapered lead-in**. A `hull()` blends from the hex profile (7.8mm AF) at the pocket ceiling to a circle (bolt hole diameter) at the top surface. Each printed layer in the taper zone is slightly smaller than the one below, providing intrinsic support. The overhang angle at the flats is ~47° from vertical — close to the 45° limit but well within tolerance, and the hex corners are steeper but cover a tiny area. No bridging occurs at all.
+
+```
+z=5.0mm  ──────  bolt hole (4.4mm dia) continues through rim + top
+z=5.0mm  ╱    ╲  taper top: circle, d = bolt_hole_dia (4.4mm)
+         │    │
+z=3.4mm  ╲    ╱  taper bottom: hex, d = 7.8mm AF  ← hull() between these
+z=3.4mm  ┃    ┃
+z=0.0mm  ┗━━━━┛  hex pocket: 7.8mm AF, $fn=6 (nut sits here)
+```
 
 ### Key Features
 
@@ -35,7 +50,7 @@ The branches must be centered in the **surrounding channels**, not at the cutout
 
 **Fan Locating Rim** — A 1.5mm raised square border on the top surface, sized to the fan's 119mm frame with 0.5mm clearance per side. Drop the fan into the rim, holes line up, thread bolts.
 
-**Circular Nut Counterbores** — The 4 fan bolt positions have circular pockets recessed into the bottom face (3.4mm deep, 7.8mm diameter). Circular profile bridges cleanly during printing (7.8mm span, well under the 10mm FDM limit). The nut corners press slightly into PLA for retention. Bottom surface stays flat. The 5mm inner zone provides 1.6mm of floor above each counterbore.
+**Hex Nut Counterbores with Taper** — The 4 fan bolt positions have hex pockets ($fn=6) recessed into the bottom face (3.4mm deep, 7.8mm across flats). The hex profile holds the nut rotationally for easy assembly. Above each pocket, a 1.6mm tapered lead-in transitions from the hex to the circular bolt hole, eliminating bridging entirely. No supports needed.
 
 **Tool-Free Removal** — Two M4 thumbscrews at diagonally opposite corner T-junctions — the thickest point on the part where the frame corner, crotch blend, and both branch roots all overlap. They clamp the adapter to the lid with wing nuts below.
 
@@ -57,7 +72,7 @@ Near-edge view showing the **stepped plate profile**: the thicker inner zone (5m
 
 ![Bottom isometric view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-bottom-iso.png)
 
-Underside showing **circular nut counterbores** at each fan bolt position — flush pockets that bridge cleanly during printing. Bottom surface is completely flat across both thickness zones.
+Underside showing **hex nut counterbores** at each fan bolt position — hex pockets with tapered lead-in to the bolt hole. Bottom surface is completely flat across both thickness zones.
 
 ### Top-Down View
 
@@ -69,7 +84,7 @@ Looking straight down. Branch forks are visibly offset from the frame corners �
 
 ![Bottom-up view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-bottom-up.png)
 
-Looking straight up at the bottom face. Circular counterbore pockets visible at the 4 fan bolt positions.
+Looking straight up at the bottom face. Hex counterbore pockets visible at the 4 fan bolt positions, with the tapered transition to the circular bolt hole.
 
 ## Cross-Section
 
@@ -78,7 +93,7 @@ How the parts stack when installed:
 ```
     Fan frame (drops inside locating rim)
   ┌──────────────────────────────────┐   ← locating rim (1.5mm)
-  ├══════════════════════════════════┤   ← inner plate (5mm), counterbores on bottom
+  ├══════════════════════════════════┤   ← inner plate (5mm), hex counterbores on bottom
   ──╬──────────────────────────────╬──   ← outer plate (4.6mm, flush with waffle tops)
   ──╗                              ╔──   ← waffle squares (4.6mm)
     ║   branches centered in       ║        channels, constrained laterally
@@ -102,7 +117,8 @@ The outer zone (4.6mm) matches the waffle square height exactly, so the flange a
 | Branch root position | 73.1 mm from center | Centered in surrounding channels |
 | Center opening | 105 mm diameter | |
 | Fan bolt pattern | 107 x 107 mm (M4) | |
-| Nut counterbore | 7.8mm dia circular, 3.4mm deep | Bridges at 7.8mm (< 10mm limit) |
+| Hex nut pocket | 7.8mm AF hex ($fn=6), 3.4mm deep | Holds nut rotationally |
+| Tapered lead-in | 1.6mm tall, hex→circle hull | ~47° overhang, no bridging |
 | Locating rim | 120mm inner, 124mm outer, 1.5mm tall, 2mm wall | |
 | Branch width | 9.0 mm | 0.4mm clearance in 9.4mm channels |
 | Branch engagement | 25 mm per arm from root | |
@@ -115,7 +131,7 @@ The outer zone (4.6mm) matches the waffle square height exactly, so the flange a
 | Qty | Item | Purpose |
 |-----|------|---------|
 | 4 | M4 x 12mm socket head bolts | Fan to adapter (through fan frame + plate) |
-| 4 | M4 nuts | Seated in circular counterbores on bottom face |
+| 4 | M4 nuts | Seated in hex counterbores on bottom face (anti-rotation) |
 | 2 | M4 x 16mm thumbscrews | Adapter to lid clamping (at corner T-junctions) |
 | 2 | M4 wing nuts | Below-lid, tool-free removal |
 
@@ -127,8 +143,8 @@ The outer zone (4.6mm) matches the waffle square height exactly, so the flange a
 | Layer height | 0.2 mm |
 | Infill | 100% (thin plate, mostly perimeters) |
 | Supports | None needed |
-| Orientation | Bottom face on bed (counterbores print as recesses, rim on top) |
-| Estimated material | ~69 cm³ |
+| Orientation | Bottom face on bed (hex pockets print as recesses, taper self-supports, rim on top) |
+| Estimated material | ~69.4 cm³ |
 
 ## Validation Results
 
@@ -137,13 +153,14 @@ bbox.x:    196.2 mm  (expected 196 ±2)    PASS
 bbox.y:    196.2 mm  (expected 196 ±2)    PASS
 bbox.z:    6.5 mm    (expected 6.5 ±0.5)  PASS
 watertight: true                           PASS
-volume:    69.3 cm³  (expected 10–100)     PASS
+volume:    69.4 cm³  (expected 10–100)     PASS
 fits bed:  196.2 mm  (max 256)             PASS
 ```
 
 ## Revision History
 
-- **v4** (current): Stepped plate — outer zone (flange + branches) thinned to 4.6mm to sit flush with waffle square tops; inner zone remains 5mm for counterbore depth. Saves ~3 cm³ material.
+- **v5** (current): Hex counterbores with tapered lead-in — hex pockets ($fn=6, 7.8mm AF) hold nuts rotationally, 1.6mm taper zone hull()s from hex to circle eliminating bridging entirely. ~47° overhang at flats, well within PLA limits.
+- **v4**: Stepped plate — outer zone (flange + branches) thinned to 4.6mm to sit flush with waffle square tops; inner zone remains 5mm for counterbore depth. Saves ~3 cm³ material.
 - **v3**: Fix branch positions — offset to channel centers (73.1mm from center, was 68.4mm). Switch hex counterbores to circular for clean bridging. Physical prototype confirmed fan/bolt alignment is correct; branch fitment issue resolved by this fix.
 - **v2**: Flatten to single plane, add counterbores and locating rim, move thumbscrews to T-junctions
 - **v1**: Initial design with separate branch plane and standoffs
