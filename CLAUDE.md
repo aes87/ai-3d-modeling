@@ -32,6 +32,17 @@ AI-native 3D modeling pipeline using OpenSCAD for parametric model generation.
 4. If FAIL: Claude reads structured error report, fixes `.scad`, re-runs (max 6 rounds)
 5. If PASS: Claude reviews PNGs visually → Done
 
+## Every Iteration Must Ship
+
+After every design change — whether a validation fix, a user-requested revision, or a new feature — do ALL of the following before moving on:
+
+1. **Run validation** (`node bin/validate.js`) and confirm PASS
+2. **Re-render** all views including custom angles (top-down, bottom-iso, etc.) relevant to the design
+3. **Copy outputs** — updated PNGs to `docs/images/<name>/`, STL to `designs/<name>/`
+4. **Update the design's markdown doc** (`docs/<name>.md`) to reflect the current state: feature descriptions, render captions, geometry table, BOM, validation results. The doc must always describe what the part IS, not what it was three iterations ago.
+5. **Commit and push to git** with a concise message explaining what changed and why
+6. The markdown landing page is the user's primary way of reviewing the design. If it's stale, the user is reviewing the wrong thing.
+
 ## Commands
 
 ```bash
