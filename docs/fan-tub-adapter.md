@@ -27,31 +27,33 @@ The plate is 5mm thick to accommodate hex nut counterbores on the bottom face, s
 
 **Hex Nut Counterbores** — The 4 fan bolt positions have hex pockets recessed into the bottom face (3.4mm deep for M4 nuts). The bottom surface stays flat — nothing prevents the adapter from sitting flush on the lid.
 
-**Tool-Free Removal** — Two M4 thumbscrews on opposite flanges clamp to the lid with wing nuts below. The branches handle alignment; the thumbscrews just clamp down. Undo two wing nuts and the whole assembly lifts out.
-
-**Wire Channel** — A 20x6mm notch in one edge for the fan cable.
+**Tool-Free Removal** — Two M4 thumbscrews on diagonally opposite branch arms (where there's solid material and lid contact beneath) clamp the adapter to the lid with wing nuts below. The branches handle alignment; the thumbscrews just clamp down. Undo two wing nuts and the whole assembly lifts out.
 
 ## Renders
 
-### Isometric View
+### Top (Isometric)
 
 ![Isometric view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-iso.png)
 
-The 5mm-thick plate with center airflow opening, locating rim (raised square border), M4 through-holes at each corner of the bolt pattern, Y-branches extending from each corner, and the wire channel notch on the right edge.
+The 5mm-thick plate with center airflow opening, locating rim (raised square border), M4 through-holes at each corner of the fan bolt pattern, and Y-branches extending from each corner. Thumbscrew holes are visible on two diagonally opposite branch arms.
 
-### Front View (XZ Plane)
+### Bottom (Isometric)
 
-![Front view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-front.png)
+![Bottom isometric view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-bottom-iso.png)
 
-Looking straight down. Shows the square frame, locating rim inside, circular center opening, 8 branch arms forking from the 4 corners, and thumbscrew holes at top and bottom center of the flange.
+The underside showing the **hex nut counterbores** at each fan bolt position — recessed pockets that keep M4 nuts flush with the bottom surface. The bottom is completely flat with no protrusions to interfere with seating on the lid.
 
-### Side Views
+### Top-Down View
 
-| Right (YZ) | Top (XY) |
-|:-:|:-:|
-| ![Right view](images/fan-tub-adapter/fan-tub-adapter-right.png) | ![Top view](images/fan-tub-adapter/fan-tub-adapter-top.png) |
+![Top-down view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-top-down.png)
 
-The part is 6.5mm tall total — 5mm plate plus 1.5mm locating rim. Side views show the uniform plate with the rim step on top.
+Looking straight down. Shows the square frame, locating rim inside, circular center opening, 8 branch arms forking from the 4 corners, 4 fan bolt holes, and 2 thumbscrew holes on branch arms.
+
+### Bottom-Up View
+
+![Bottom-up view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-bottom-up.png)
+
+Looking straight up. The hex counterbore pockets are visible at the 4 fan bolt positions. The bottom surface is flat — no wire channel, no protrusions.
 
 ## Cross-Section
 
@@ -91,7 +93,7 @@ The plate sits on the channel-level rim. Waffle squares rise 4.6mm around the 5m
 |-----|------|---------|
 | 4 | M4 x 12mm socket head bolts | Fan to adapter (through fan frame + plate) |
 | 4 | M4 nuts | Recessed in hex counterbores on bottom face |
-| 2 | M4 x 16mm thumbscrews | Adapter to lid clamping (opposite sides) |
+| 2 | M4 x 16mm thumbscrews | Adapter to lid clamping (on branch arms) |
 | 2 | M4 wing nuts | Below-lid, tool-free removal |
 
 ## Print Settings
@@ -112,7 +114,7 @@ bbox.x:    186.8 mm  (expected 186 ±2)    PASS
 bbox.y:    186.8 mm  (expected 186 ±2)    PASS
 bbox.z:    6.5 mm    (expected 6.5 ±0.5)  PASS
 watertight: true                           PASS
-volume:    70.1 cm³  (expected 10–80)      PASS
+volume:    70.5 cm³  (expected 10–80)      PASS
 fits bed:  186.8 mm  (max 256)             PASS
 ```
 

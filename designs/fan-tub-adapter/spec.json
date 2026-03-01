@@ -42,8 +42,7 @@
     "branch_width": 9.0,
     "branch_length": 25,
     "corner_radius": 4,
-    "wire_channel_width": 20,
-    "wire_channel_depth": 6,
-    "thumbscrew_bolt_dia": 4
+    "thumbscrew_bolt_dia": 4,
+    "thumbscrew_branch_offset": 12
   }
 }

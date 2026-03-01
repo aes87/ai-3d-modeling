@@ -35,13 +35,9 @@ nut_clearance = 0.4;     // mm — FDM clearance per side on nut pocket
 branch_w      = 9.0;     // mm — branch width (9.4 channel - 0.4 clearance)
 branch_len    = 25;      // mm — engagement length into channel
 
-// Wire channel
-wire_w        = 20;      // mm — wire notch width
-wire_d        = 6;       // mm — wire notch depth
-
-// Thumbscrew holes (2× on opposite sides)
+// Thumbscrew holes — on branch arms where there's solid material and lid contact
 thumb_dia     = 4;       // mm — M4 nominal
-thumb_offset  = cutout/2 + flange_w/2;  // center of flange
+thumb_branch_offset = 12; // mm — distance along branch from frame edge
 
 $fn = 80;
 
@@ -90,14 +86,11 @@ module center_opening() {
 }
 
 // Fan locating rim — raised border on top surface matching fan footprint
-// Fan drops inside this rim for easy alignment before bolting
 module fan_locating_rim() {
     translate([0, 0, frame_t]) {
         linear_extrude(loc_rim_h) {
             difference() {
-                // Outer edge of rim
                 rounded_square(loc_inner + 2 * loc_rim_wall, fan_corner_r + loc_rim_wall);
-                // Inner cutout (fan sits here)
                 rounded_square(loc_inner, fan_corner_r);
             }
         }
@@ -162,16 +155,19 @@ module y_branch(corner_idx) {
         cylinder(d=branch_w + 2, h=frame_t, $fn=32);
 }
 
-// Wire channel notch
-module wire_channel() {
-    translate([frame_outer/2 - wire_d/2, 0, -1])
-        cube([wire_d + 1, wire_w, frame_t + loc_rim_h + 2], center=true);
-}
-
-// Thumbscrew holes through flange
+// Thumbscrew holes — positioned on branch arms for solid material and lid contact.
+// On the X-arms of two diagonally opposite corners (+X+Y and -X-Y).
 module thumbscrew_holes() {
-    for (sy = [1, -1]) {
-        translate([0, sy * thumb_offset, -1])
+    // Corner 0 (+X,+Y): X-arm extends in +X direction from cutout corner
+    tx0 = cutout/2 + thumb_branch_offset;
+    ty0 = cutout/2;
+
+    // Corner 2 (-X,-Y): X-arm extends in -X direction from cutout corner
+    tx2 = -(cutout/2 + thumb_branch_offset);
+    ty2 = -(cutout/2);
+
+    for (pos = [[tx0, ty0], [tx2, ty2]]) {
+        translate([pos[0], pos[1], -1])
             fdm_hole(d=thumb_dia, h=frame_t + 2);
     }
 }
@@ -196,6 +192,5 @@ difference() {
 
     center_opening();
     fan_bolt_holes();
-    wire_channel();
     thumbscrew_holes();
 }
