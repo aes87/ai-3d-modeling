@@ -1,0 +1,33 @@
+{
+  "description": "Vent adapter — connects two different diameter ducts/vents",
+  "notes": "Placeholder dimensions — update with actual measurements",
+  "dimensions": {
+    "x": 120,
+    "y": 120,
+    "z": 80
+  },
+  "defaultTolerance": 1.0,
+  "watertight": true,
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "volume": {
+    "min": 10,
+    "max": 200
+  },
+  "echoedDimensions": {
+    "adapter": {
+      "x": 120,
+      "y": 120,
+      "z": 80
+    }
+  },
+  "params": {
+    "bottom_diameter": 100,
+    "top_diameter": 75,
+    "height": 80,
+    "wall_thickness": 2.0
+  }
+}

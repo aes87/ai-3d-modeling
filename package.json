@@ -1,0 +1,13 @@
+{
+  "name": "3d-printing",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI-native 3D printing pipeline: OpenSCAD → STL → validate loop",
+  "scripts": {
+    "test": "node --test test/",
+    "validate": "node bin/validate.js"
+  },
+  "dependencies": {
+    "node-stl": "^0.7.3"
+  }
+}
