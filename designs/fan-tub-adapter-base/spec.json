@@ -1,0 +1,48 @@
+{
+  "name": "fan-tub-adapter-base",
+  "description": "Base plate for fan-tub adapter v2.0. Caulked to lid, clip ledges on rim for tool-free retention. No fastener holes.",
+  "dimensions": {
+    "x": 196,
+    "y": 196,
+    "z": 9.0
+  },
+  "defaultTolerance": 2.0,
+  "tolerances": {
+    "z": 0.5
+  },
+  "watertight": true,
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "volume": {
+    "min": 10,
+    "max": 120
+  },
+  "echoedDimensions": {
+    "base": {
+      "x": 196,
+      "y": 196,
+      "z": 9.0
+    }
+  },
+  "params": {
+    "square_size": 63.7,
+    "channel_width": 9.4,
+    "cutout_size": 136.8,
+    "frame_thickness_inner": 5.0,
+    "frame_thickness_outer": 4.6,
+    "fan_frame_size": 119,
+    "fan_frame_thickness": 24.7,
+    "center_opening_dia": 105,
+    "locating_rim_height": 4.0,
+    "locating_rim_wall": 2,
+    "clip_ledge_depth": 1.0,
+    "clip_ledge_height": 1.5,
+    "branch_width": 9.0,
+    "branch_length": 25,
+    "branch_root_offset": 73.1,
+    "corner_radius": 4
+  }
+}

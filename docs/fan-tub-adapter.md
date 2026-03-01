@@ -1,4 +1,6 @@
-# Fan-Tub Adapter
+# Fan-Tub Adapter (v1.0 — Frozen)
+
+> **This design is frozen.** v2.0 replaces bolt-on fasteners with a two-part tool-free clip system. See [fan-tub-adapter-v2.md](fan-tub-adapter-v2.md).
 
 A 3D-printed adapter frame that mounts a 119mm waterproof fan into a waffle-pattern HDPE tub lid, replacing the need to jigsaw a hole. Designed for a mushroom cultivation Martha tent, where the fan provides forced-air intake through the tub.
 
