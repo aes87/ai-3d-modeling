@@ -35,9 +35,9 @@ nut_clearance = 0.4;     // mm — FDM clearance per side on nut pocket
 branch_w      = 9.0;     // mm — branch width (9.4 channel - 0.4 clearance)
 branch_len    = 25;      // mm — engagement length into channel
 
-// Thumbscrew holes — on branch arms where there's solid material and lid contact
+// Thumbscrew holes — at the T-junction crotch of diagonally opposite corners
+// This is the thickest part: frame corner + crotch blend + both branch roots overlap
 thumb_dia     = 4;       // mm — M4 nominal
-thumb_branch_offset = 12; // mm — distance along branch from frame edge
 
 $fn = 80;
 
@@ -155,19 +155,14 @@ module y_branch(corner_idx) {
         cylinder(d=branch_w + 2, h=frame_t, $fn=32);
 }
 
-// Thumbscrew holes — positioned on branch arms for solid material and lid contact.
-// On the X-arms of two diagonally opposite corners (+X+Y and -X-Y).
+// Thumbscrew holes — at the T-junction center of two diagonally opposite corners.
+// The crotch blend (11mm dia), frame corner, and both branch roots all overlap here,
+// giving ~3mm wall around the M4 hole in every direction.
 module thumbscrew_holes() {
-    // Corner 0 (+X,+Y): X-arm extends in +X direction from cutout corner
-    tx0 = cutout/2 + thumb_branch_offset;
-    ty0 = cutout/2;
+    half_cut = cutout / 2;  // 68.4 — corner of cutout = center of T-junction
 
-    // Corner 2 (-X,-Y): X-arm extends in -X direction from cutout corner
-    tx2 = -(cutout/2 + thumb_branch_offset);
-    ty2 = -(cutout/2);
-
-    for (pos = [[tx0, ty0], [tx2, ty2]]) {
-        translate([pos[0], pos[1], -1])
+    for (s = [[1, 1], [-1, -1]]) {
+        translate([s[0] * half_cut, s[1] * half_cut, -1])
             fdm_hole(d=thumb_dia, h=frame_t + 2);
     }
 }
