@@ -24,8 +24,10 @@ All tolerance constants (press fit, clearance fit, hole compensation, min wall t
 
 ```
 .
+├── assemblies/              # Multi-part assembly specs
 ├── bin/
-│   └── validate.js          # CLI entry point
+│   ├── validate.js          # Per-design validation CLI
+│   └── check-assembly.js    # Assembly checking CLI
 ├── designs/
 │   ├── fan-tub-adapter/          # v1.0 bolt-on adapter (frozen)
 │   ├── fan-tub-adapter-base/     # v2.0 base plate (caulked to lid)
@@ -38,11 +40,17 @@ All tolerance constants (press fit, clearance fit, hole compensation, min wall t
 ├── docs/
 │   └── images/              # Render images for documentation
 ├── lib/
+│   ├── assembly.js          # Assembly check orchestrator
 │   ├── loop.js              # Single-pass validation runner
 │   ├── openscad.js          # OpenSCAD rendering (STL + PNG)
+│   ├── python-bridge.js     # Node→Python subprocess bridge
 │   ├── render-views.js      # 4-view PNG rendering
 │   ├── stl-analyze.js       # STL analysis via node-stl
 │   └── validate.js          # Spec validation logic
+├── python/
+│   ├── interference.py      # Mesh intersection checker (trimesh)
+│   ├── fit_check.py         # Clearance/interference measurement
+│   └── assembly_render.py   # Multi-part visualization (PyVista)
 ├── scad-lib/
 │   ├── fdm-pla.scad         # FDM/PLA tolerance constants
 │   ├── bambu-x1c.scad       # Build volume checks + dimension reporting
@@ -152,6 +160,68 @@ Two-part design: permanently-caulked base plate + snap-on retention clip. No fas
 | Tools needed | Hex key + fingers | Fingers only |
 | Locating rim | 1.5mm | 4.0mm |
 | Total print volume | 69.4 cm³ | 80.4 cm³ |
+
+## Assembly Validation
+
+Multi-part designs can be checked for assembly fit using the assembly pipeline. This uses Python (trimesh, PyVista) for mesh boolean operations and visualization.
+
+```bash
+# Setup Python environment (one-time, requires network)
+sudo bash setup.sh
+
+# Check an assembly
+node bin/check-assembly.js assemblies/fan-tub-adapter-v2.json
+
+# Skip visualization (faster)
+node bin/check-assembly.js assemblies/fan-tub-adapter-v2.json --skip-viz
+```
+
+### Assembly Spec Format
+
+Assembly specs live in `assemblies/<name>.json`:
+
+```json
+{
+  "name": "my-assembly",
+  "parts": [
+    { "name": "base", "designDir": "designs/my-base", "position": [0, 0, 0] },
+    { "name": "ref-part", "scadRef": "scad-lib/reference/part.scad", "position": [0, 0, 5], "reference": true }
+  ],
+  "checks": {
+    "interference": [
+      { "partA": "base", "partB": "ref-part", "maxVolume": 0.0 }
+    ]
+  },
+  "fitSpecs": [
+    { "name": "clearance-check", "partA": "base", "partB": "ref-part", "type": "clearance", "expected": { "min": 0.3, "max": 0.7 } }
+  ]
+}
+```
+
+### Pipeline Steps
+
+| Step | Tool | What it does |
+|------|------|-------------|
+| **verify-parts** | Node.js | Check all STLs exist, render reference SCAD to STL |
+| **interference** | trimesh (Python) | Boolean intersection volume between mesh pairs |
+| **fit-spec** | trimesh (Python) | Clearance distances and interference measurements |
+| **visualize** | PyVista (Python) | Assembly renders: iso, exploded, cross-section |
+
+### Project Structure (Assembly)
+
+```
+assemblies/
+├── fan-tub-adapter-v2.json    # Assembly spec
+├── fan-tub-adapter-v2/
+│   └── output/                # Generated assembly renders (gitignored)
+└── reference-stls/            # Auto-rendered reference part STLs
+python/
+├── interference.py            # Mesh intersection checker
+├── fit_check.py               # Clearance/interference measurement
+└── assembly_render.py         # Multi-part visualization
+scad-lib/reference/
+└── fan-frame-119.scad         # 119mm fan frame (reference part)
+```
 
 ## Adding a New Design
 

@@ -5,3 +5,5 @@ designs/*/output/*.png
 test/fixtures/*.stl
 !test/fixtures/.gitkeep
 test/fixtures/tmp/
+.venv/
+assemblies/*/output/

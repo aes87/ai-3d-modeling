@@ -5,7 +5,8 @@
   "description": "AI-native 3D printing pipeline: OpenSCAD → STL → validate loop",
   "scripts": {
     "test": "node --test test/",
-    "validate": "node bin/validate.js"
+    "validate": "node bin/validate.js",
+    "check-assembly": "node bin/check-assembly.js"
   },
   "dependencies": {
     "node-stl": "^0.7.3"

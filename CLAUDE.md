@@ -83,6 +83,27 @@ Each design lives in `designs/<name>/`:
 Always include `fdm-pla.scad` and `bambu-x1c.scad` in design files.
 Use `report_dimensions()` to echo computed bbox for validation parsing.
 
+## Assembly Checking
+
+Multi-part assemblies can be checked for interference and fit using the assembly pipeline:
+
+```bash
+# Check an assembly (interference + fit specs + visualization)
+node bin/check-assembly.js assemblies/fan-tub-adapter-v2.json
+
+# Skip visualization (faster, no PyVista)
+node bin/check-assembly.js assemblies/fan-tub-adapter-v2.json --skip-viz
+```
+
+Assembly specs live in `assemblies/<name>.json` and define:
+- **parts** — list of parts with positions (from `designs/` or reference SCAD)
+- **checks.interference** — pairs to check for mesh overlap (with max allowed volume)
+- **fitSpecs** — clearance/interference measurements with expected ranges
+
+The pipeline uses Python (trimesh + PyVista) via a project-local `.venv/`. Run `bash setup.sh` to set up.
+
+Reference parts (external components like the fan frame) live in `scad-lib/reference/` and are rendered to STL automatically.
+
 ## Key Conventions
 
 - OpenSCAD `ECHO:` lines on stderr are parsed for dimension reporting

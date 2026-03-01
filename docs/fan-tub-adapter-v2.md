@@ -198,6 +198,37 @@ No fasteners required.
 | Bolt holes | 4x M4 + hex counterbores | None |
 | Total print volume | 69.4 cm³ | 80.4 cm³ (72.7 + 7.7) |
 
+## Assembly Validation
+
+The base plate, fan, and clip can be checked as an assembly:
+
+```bash
+node bin/check-assembly.js assemblies/fan-tub-adapter-v2.json
+```
+
+### Interference Checks
+
+| Part A | Part B | Max Volume | Description |
+|--------|--------|-----------|-------------|
+| base | clip | 5.0 mm³ | Hook engagement zone — controlled overlap expected |
+| base | fan | 0.0 mm³ | Fan must sit inside rim with clearance |
+| clip | fan | 0.0 mm³ | Clip frame rests on fan top, no overlap |
+
+### Fit Specs
+
+| Check | Type | Expected Range | Description |
+|-------|------|---------------|-------------|
+| clip-hook-ledge-engagement | interference | 0.3–1.5 mm³ | Positive hook engagement with ledges |
+| fan-in-rim-clearance | clearance | 0.3–0.7 mm | Gap between fan frame and locating rim |
+
+### Assembly Positions
+
+| Part | Position (X, Y, Z) | Notes |
+|------|-------------------|-------|
+| Base | 0, 0, 0 | Reference origin |
+| Fan | 0, 0, 5.0 | Sits on inner plate (z=frame_t_inner) |
+| Clip | 0, 0, 6.15 | Local z=0 (hook bottom) → global z=6.15 |
+
 ## Source Files
 
 - [`fan-tub-adapter-base.scad`](../designs/fan-tub-adapter-base/fan-tub-adapter-base.scad) — Base plate OpenSCAD source
@@ -205,3 +236,5 @@ No fasteners required.
 - [`fan-tub-adapter-params.scad`](../scad-lib/fan-tub-adapter-params.scad) — Shared parameters
 - Base plate spec: [`spec.json`](../designs/fan-tub-adapter-base/spec.json)
 - Clip spec: [`spec.json`](../designs/fan-tub-adapter-clip/spec.json)
+- Assembly spec: [`fan-tub-adapter-v2.json`](../assemblies/fan-tub-adapter-v2.json)
+- Fan reference SCAD: [`fan-frame-119.scad`](../scad-lib/reference/fan-frame-119.scad)
