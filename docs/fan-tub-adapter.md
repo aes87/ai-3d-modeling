@@ -4,7 +4,7 @@ A 3D-printed adapter frame that mounts a 119mm waterproof fan into a waffle-patt
 
 ## The Problem
 
-The tub lid has a rigid waffle pattern — a grid of raised squares separated by flat channels. Cutting a clean circular hole for a fan is difficult with hand tools and weakens the lid. We need a way to mount the fan that:
+The tub lid has a rigid waffle pattern — a grid of raised squares (63.7mm) separated by flat channels (9.4mm wide). Cutting a clean circular hole for a fan is difficult with hand tools and weakens the lid. We need a way to mount the fan that:
 
 - Doesn't require precision cutting (just remove a 2x2 block of waffle squares)
 - Locates and locks into the waffle grid positively
@@ -13,21 +13,25 @@ The tub lid has a rigid waffle pattern — a grid of raised squares separated by
 
 ## Design Approach
 
-Instead of cutting a circle, the user cuts out a **2x2 block of waffle squares** (136.8 x 136.8mm) using a jigsaw along the straight channel lines. The adapter is a flat frame that drops into this rectangular hole and locks into the surrounding waffle grid.
+The user cuts out a **2x2 block of waffle squares** (136.8 x 136.8mm) along the channel lines. The adapter is a flat frame that fills this hole, with Y-shaped corner branches that extend outward into the surrounding waffle channels for positive location.
 
-The plate is 5mm thick to accommodate hex nut counterbores on the bottom face, so nothing protrudes below the seating surface. A raised locating rim on top matches the fan's 119mm footprint for drop-in alignment.
+The plate is 5mm thick to accommodate circular nut counterbores on the bottom face (flush seating). A raised locating rim on top matches the fan's 119mm footprint for drop-in alignment.
+
+### Key Design Decision: Branch Positioning
+
+The branches must be centered in the **surrounding channels**, not at the cutout edge. The cutout edge is where the waffle squares end; the channels are 9.4mm further out. Branch roots are positioned at `cutout/2 + channel_w/2 = 73.1mm` from part center — at the intersection of the two perpendicular channels at each corner.
 
 ### Key Features
 
-**Y-Shaped Corner Branches** — Each of the 4 corners forks into two arms that extend into the perpendicular waffle channels. The waffle squares on either side constrain each arm laterally. 8 engagement points total provide anti-rotation and alignment with zero fasteners. Branches are in-plane with the frame — same 5mm thickness, same Z level.
+**Y-Shaped Corner Branches** — Each of the 4 corners forks into two arms centered in the perpendicular waffle channels (branch root at 73.1mm from center, not 68.4mm). The waffle squares on either side constrain each arm laterally. 8 engagement points total provide anti-rotation and alignment. Branches are in-plane with the frame — same 5mm thickness.
 
-**Flange Lip** — The frame extends 4.5mm beyond the cutout on all sides, sitting on the flat rim around the hole. Prevents drop-through.
+**Flange Lip** — The frame extends 4.7mm (half a channel width) beyond the cutout on all sides, so the frame edge aligns with the channel centers. This sits on the flat channel rim and prevents drop-through.
 
-**Fan Locating Rim** — A 1.5mm raised square border on the top surface, sized to the fan's 119mm frame with 0.5mm clearance. Drop the fan into the rim, holes line up, thread bolts. No fiddling.
+**Fan Locating Rim** — A 1.5mm raised square border on the top surface, sized to the fan's 119mm frame with 0.5mm clearance. Drop the fan into the rim, holes line up, thread bolts.
 
-**Hex Nut Counterbores** — The 4 fan bolt positions have hex pockets recessed into the bottom face (3.4mm deep for M4 nuts). The bottom surface stays flat — nothing prevents the adapter from sitting flush on the lid.
+**Circular Nut Counterbores** — The 4 fan bolt positions have circular pockets recessed into the bottom face (3.4mm deep, 7.8mm diameter). Circular profile bridges cleanly during printing (7.8mm span, well under the 10mm FDM limit). The nut corners press slightly into PLA for retention. Bottom surface stays flat.
 
-**Tool-Free Removal** — Two M4 thumbscrews at diagonally opposite corner T-junctions — the thickest point on the part where the frame corner, crotch blend, and both branch roots all overlap (~3mm wall around the hole). They clamp the adapter to the lid with wing nuts below. Undo two wing nuts and the whole assembly lifts out.
+**Tool-Free Removal** — Two M4 thumbscrews at diagonally opposite corner T-junctions — the thickest point on the part where the frame corner, crotch blend, and both branch roots all overlap. They clamp the adapter to the lid with wing nuts below.
 
 ## Renders
 
@@ -35,25 +39,25 @@ The plate is 5mm thick to accommodate hex nut counterbores on the bottom face, s
 
 ![Isometric view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-iso.png)
 
-The 5mm-thick plate with center airflow opening, locating rim (raised square border), M4 through-holes at each corner of the fan bolt pattern, and Y-branches extending from each corner. Thumbscrew holes are visible at two diagonally opposite corner T-junctions.
+The 5mm-thick plate with branches extending outward from the frame corners into the surrounding channel positions. Locating rim visible as a raised square border. Four fan bolt through-holes at the 107mm pattern.
 
 ### Bottom (Isometric)
 
 ![Bottom isometric view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-bottom-iso.png)
 
-The underside showing the **hex nut counterbores** at each fan bolt position — recessed pockets that keep M4 nuts flush with the bottom surface. The bottom is completely flat with no protrusions to interfere with seating on the lid.
+Underside showing **circular nut counterbores** at each fan bolt position — flush pockets that bridge cleanly during printing. Bottom surface is completely flat.
 
 ### Top-Down View
 
 ![Top-down view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-top-down.png)
 
-Looking straight down. Shows the square frame, locating rim inside, circular center opening, 8 branch arms forking from the 4 corners, 4 fan bolt holes, and 2 thumbscrew holes at diagonally opposite corner T-junctions.
+Looking straight down. Branch forks are visibly offset from the frame corners — centered in the surrounding channels at 73.1mm from center. Thumbscrew holes at two diagonally opposite T-junctions.
 
 ### Bottom-Up View
 
 ![Bottom-up view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-bottom-up.png)
 
-Looking straight up. The hex counterbore pockets are visible at the 4 fan bolt positions. The bottom surface is flat — no wire channel, no protrusions.
+Looking straight up at the bottom face. Circular counterbore pockets visible at the 4 fan bolt positions.
 
 ## Cross-Section
 
@@ -62,37 +66,38 @@ How the parts stack when installed:
 ```
     Fan frame (drops inside locating rim)
   ┌──────────────────────────────────┐   ← locating rim (1.5mm)
-  ├══════════════════════════════════┤   ← plate (5mm), nut pockets on bottom
+  ├══════════════════════════════════┤   ← plate (5mm), counterbores on bottom
   ──╗                              ╔──   ← waffle squares (4.6mm)
-    ║   constrain branches         ║        surround the 5mm-thick branches
+    ║   branches centered in       ║        channels, constrained laterally
     ╚═══════════════╤══════════════╝
   ──────────────────┘                    ← lid surface
 ```
 
-The plate sits on the channel-level rim. Waffle squares rise 4.6mm around the 5mm-thick branches. Hex nut pockets (3.4mm deep) are recessed into the bottom face so the surface remains flat. The fan drops into the locating rim and bolts through.
-
 ## Geometry
 
-| Dimension | Value |
-|-----------|-------|
-| Cutout hole | 136.8 x 136.8 mm |
-| Frame outer (with flange) | 145.8 x 145.8 mm |
-| Overall bounding box | 186.8 x 186.8 x 6.5 mm |
-| Center opening | 105 mm diameter |
-| Fan bolt pattern | 107 x 107 mm (M4) |
-| Nut counterbore | 7.8mm AF hex, 3.4mm deep |
-| Locating rim | 120mm inner (119 + 0.5 clearance/side), 1.5mm tall, 2mm wall |
-| Branch width | 9.0 mm (0.4mm clearance in 9.4mm channels) |
-| Branch engagement length | 25 mm per arm |
-| Plate thickness | 5.0 mm |
-| Corner radius | 4.0 mm |
+| Dimension | Value | Notes |
+|-----------|-------|-------|
+| Waffle square | 63.7 mm | Measured at channel-level plane |
+| Channel width | 9.4 mm | Gap between adjacent squares |
+| Grid pitch | 73.1 mm | square + channel |
+| Cutout hole | 136.8 x 136.8 mm | 2 squares + 1 channel |
+| Frame outer (with flange) | 146.2 x 146.2 mm | cutout + channel_w |
+| Overall bounding box | 196.2 x 196.2 x 6.5 mm | Includes branch tips |
+| Branch root position | 73.1 mm from center | Centered in surrounding channels |
+| Center opening | 105 mm diameter | |
+| Fan bolt pattern | 107 x 107 mm (M4) | |
+| Nut counterbore | 7.8mm dia circular, 3.4mm deep | Bridges at 7.8mm (< 10mm limit) |
+| Locating rim | 120mm inner, 1.5mm tall, 2mm wall | |
+| Branch width | 9.0 mm | 0.4mm clearance in 9.4mm channels |
+| Branch engagement | 25 mm per arm from root | |
+| Plate thickness | 5.0 mm | |
 
 ## Fastener BOM
 
 | Qty | Item | Purpose |
 |-----|------|---------|
 | 4 | M4 x 12mm socket head bolts | Fan to adapter (through fan frame + plate) |
-| 4 | M4 nuts | Recessed in hex counterbores on bottom face |
+| 4 | M4 nuts | Seated in circular counterbores on bottom face |
 | 2 | M4 x 16mm thumbscrews | Adapter to lid clamping (at corner T-junctions) |
 | 2 | M4 wing nuts | Below-lid, tool-free removal |
 
@@ -105,18 +110,24 @@ The plate sits on the channel-level rim. Waffle squares rise 4.6mm around the 5m
 | Infill | 100% (thin plate, mostly perimeters) |
 | Supports | None needed |
 | Orientation | Bottom face on bed (counterbores print as recesses, rim on top) |
-| Estimated material | ~70 cm³ |
+| Estimated material | ~72 cm³ |
 
 ## Validation Results
 
 ```
-bbox.x:    186.8 mm  (expected 186 ±2)    PASS
-bbox.y:    186.8 mm  (expected 186 ±2)    PASS
+bbox.x:    196.2 mm  (expected 196 ±2)    PASS
+bbox.y:    196.2 mm  (expected 196 ±2)    PASS
 bbox.z:    6.5 mm    (expected 6.5 ±0.5)  PASS
 watertight: true                           PASS
-volume:    70.5 cm³  (expected 10–80)      PASS
-fits bed:  186.8 mm  (max 256)             PASS
+volume:    72.4 cm³  (expected 10–100)     PASS
+fits bed:  196.2 mm  (max 256)             PASS
 ```
+
+## Revision History
+
+- **v3** (current): Fix branch positions — offset to channel centers (73.1mm from center, was 68.4mm). Switch hex counterbores to circular for clean bridging. Physical prototype confirmed fan/bolt alignment is correct; branch fitment issue resolved by this fix.
+- **v2**: Flatten to single plane, add counterbores and locating rim, move thumbscrews to T-junctions
+- **v1**: Initial design with separate branch plane and standoffs
 
 ## Source Files
 
