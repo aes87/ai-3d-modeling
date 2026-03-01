@@ -15,7 +15,7 @@ The tub lid has a rigid waffle pattern — a grid of raised squares (63.7mm) sep
 
 The user cuts out a **2x2 block of waffle squares** (136.8 x 136.8mm) along the channel lines. The adapter is a flat frame that fills this hole, with Y-shaped corner branches that extend outward into the surrounding waffle channels for positive location.
 
-The plate is 5mm thick to accommodate circular nut counterbores on the bottom face (flush seating). A raised locating rim on top matches the fan's 119mm footprint for drop-in alignment.
+The plate uses a **stepped thickness** — a 5mm inner zone (bounded by the locating rim footprint) provides depth for circular nut counterbores, while the outer zone (flange and branches) is thinned to 4.6mm to sit flush with the surrounding waffle square tops. A raised locating rim on top matches the fan's 119mm footprint for drop-in alignment.
 
 ### Key Design Decision: Branch Positioning
 
@@ -23,9 +23,9 @@ The branches must be centered in the **surrounding channels**, not at the cutout
 
 ### Key Features
 
-**Y-Shaped Corner Branches** — Each of the 4 corners forks into two arms centered in the perpendicular waffle channels (branch root at 73.1mm from center, not 68.4mm). The waffle squares on either side constrain each arm laterally. 8 engagement points total provide anti-rotation and alignment. Branches are in-plane with the frame — same 5mm thickness.
+**Y-Shaped Corner Branches** — Each of the 4 corners forks into two arms centered in the perpendicular waffle channels (branch root at 73.1mm from center, not 68.4mm). The waffle squares on either side constrain each arm laterally. 8 engagement points total provide anti-rotation and alignment. Branches are in-plane with the outer zone at 4.6mm thickness — flush with waffle square tops.
 
-**Flange Lip** — The frame extends 4.7mm (half a channel width) beyond the cutout on all sides, so the frame edge aligns with the channel centers. This sits on the flat channel rim and prevents drop-through.
+**Flange Lip** — The frame extends 4.7mm (half a channel width) beyond the cutout on all sides, so the frame edge aligns with the channel centers. This sits on the flat channel rim at the outer zone thickness (4.6mm) and prevents drop-through.
 
 **Fan Locating Rim** — A 1.5mm raised square border on the top surface, sized to the fan's 119mm frame with 0.5mm clearance. Drop the fan into the rim, holes line up, thread bolts.
 
@@ -39,7 +39,7 @@ The branches must be centered in the **surrounding channels**, not at the cutout
 
 ![Isometric view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-iso.png)
 
-The 5mm-thick plate with branches extending outward from the frame corners into the surrounding channel positions. Locating rim visible as a raised square border. Four fan bolt through-holes at the 107mm pattern.
+Stepped plate with branches extending outward from the frame corners into the surrounding channel positions. The inner zone (5mm) is slightly proud of the outer zone (4.6mm). Locating rim visible as a raised square border. Four fan bolt through-holes at the 107mm pattern.
 
 ### Bottom (Isometric)
 
@@ -66,7 +66,8 @@ How the parts stack when installed:
 ```
     Fan frame (drops inside locating rim)
   ┌──────────────────────────────────┐   ← locating rim (1.5mm)
-  ├══════════════════════════════════┤   ← plate (5mm), counterbores on bottom
+  ├══════════════════════════════════┤   ← inner plate (5mm), counterbores on bottom
+  ──╬──────────────────────────────╬──   ← outer plate (4.6mm, flush with waffle tops)
   ──╗                              ╔──   ← waffle squares (4.6mm)
     ║   branches centered in       ║        channels, constrained laterally
     ╚═══════════════╤══════════════╝
@@ -90,7 +91,9 @@ How the parts stack when installed:
 | Locating rim | 120mm inner, 1.5mm tall, 2mm wall | |
 | Branch width | 9.0 mm | 0.4mm clearance in 9.4mm channels |
 | Branch engagement | 25 mm per arm from root | |
-| Plate thickness | 5.0 mm | |
+| Inner plate thickness | 5.0 mm | Fan mount zone (bounded by locating rim footprint) |
+| Outer plate thickness | 4.6 mm | Flange + branches, flush with waffle square tops |
+| Step height | 0.4 mm | Inner zone proud of outer zone |
 
 ## Fastener BOM
 
@@ -110,7 +113,7 @@ How the parts stack when installed:
 | Infill | 100% (thin plate, mostly perimeters) |
 | Supports | None needed |
 | Orientation | Bottom face on bed (counterbores print as recesses, rim on top) |
-| Estimated material | ~72 cm³ |
+| Estimated material | ~69 cm³ |
 
 ## Validation Results
 
@@ -119,13 +122,14 @@ bbox.x:    196.2 mm  (expected 196 ±2)    PASS
 bbox.y:    196.2 mm  (expected 196 ±2)    PASS
 bbox.z:    6.5 mm    (expected 6.5 ±0.5)  PASS
 watertight: true                           PASS
-volume:    72.4 cm³  (expected 10–100)     PASS
+volume:    69.3 cm³  (expected 10–100)     PASS
 fits bed:  196.2 mm  (max 256)             PASS
 ```
 
 ## Revision History
 
-- **v3** (current): Fix branch positions — offset to channel centers (73.1mm from center, was 68.4mm). Switch hex counterbores to circular for clean bridging. Physical prototype confirmed fan/bolt alignment is correct; branch fitment issue resolved by this fix.
+- **v4** (current): Stepped plate — outer zone (flange + branches) thinned to 4.6mm to sit flush with waffle square tops; inner zone remains 5mm for counterbore depth. Saves ~3 cm³ material.
+- **v3**: Fix branch positions — offset to channel centers (73.1mm from center, was 68.4mm). Switch hex counterbores to circular for clean bridging. Physical prototype confirmed fan/bolt alignment is correct; branch fitment issue resolved by this fix.
 - **v2**: Flatten to single plane, add counterbores and locating rim, move thumbscrews to T-junctions
 - **v1**: Initial design with separate branch plane and standoffs
 
