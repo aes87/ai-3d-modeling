@@ -1,10 +1,10 @@
 {
   "name": "fan-tub-adapter",
-  "description": "Adapter frame that replaces a 2x2 waffle-square cutout in an HDPE tub lid, mounting a 119mm waterproof fan. Y-shaped corner branches locate in waffle channels; thumbscrews clamp to lid. Flat single-plane plate — fan bolts directly to surface.",
+  "description": "Adapter frame for mounting 119mm fan into waffle-pattern tub lid. Flat plate with in-plane Y-branches, hex nut counterbores, and fan locating rim.",
   "dimensions": {
     "x": 186,
     "y": 186,
-    "z": 3
+    "z": 6.5
   },
   "defaultTolerance": 2.0,
   "tolerances": {
@@ -17,23 +17,28 @@
     "z": 256
   },
   "volume": {
-    "min": 5,
-    "max": 50
+    "min": 10,
+    "max": 80
   },
   "echoedDimensions": {
     "adapter": {
       "x": 186,
       "y": 186,
-      "z": 3
+      "z": 6.5
     }
   },
   "params": {
     "cutout_size": 136.8,
-    "frame_thickness": 3,
+    "frame_thickness": 5,
     "flange_width": 4.5,
+    "fan_frame_size": 119,
     "fan_bolt_spacing": 107,
     "fan_bolt_dia": 4,
     "center_opening_dia": 105,
+    "nut_across_flats": 7,
+    "nut_thickness": 3.2,
+    "locating_rim_height": 1.5,
+    "locating_rim_wall": 2,
     "branch_width": 9.0,
     "branch_length": 25,
     "corner_radius": 4,
