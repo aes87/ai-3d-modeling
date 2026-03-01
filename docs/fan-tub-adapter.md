@@ -13,9 +13,13 @@ The tub lid has a rigid waffle pattern — a grid of raised squares (63.7mm) sep
 
 ## Design Approach
 
-The user cuts out a **2x2 block of waffle squares** (136.8 x 136.8mm) along the channel lines. The adapter is a flat frame that fills this hole, with Y-shaped corner branches that extend outward into the surrounding waffle channels for positive location.
+The user cuts out a **2x2 block of waffle squares** (136.8 x 136.8mm) along the channel lines. The adapter is a stepped frame that fills this hole, with Y-shaped corner branches that extend outward into the surrounding waffle channels for positive location.
 
-The plate uses a **stepped thickness** — a 5mm inner zone (bounded by the locating rim footprint) provides depth for circular nut counterbores, while the outer zone (flange and branches) is thinned to 4.6mm to sit flush with the surrounding waffle square tops. A raised locating rim on top matches the fan's 119mm footprint for drop-in alignment.
+The plate has **two thickness zones**:
+- **Inner zone (5mm)** — bounded by the locating rim footprint (124mm square). Provides depth for circular M4 nut counterbores on the bottom face, ensuring flush seating.
+- **Outer zone (4.6mm)** — the flange and branches, thinned to match the waffle square height so they sit flush with the surrounding waffle tops. Saves material and print time.
+
+A raised locating rim on top matches the fan's 119mm footprint for drop-in alignment.
 
 ### Key Design Decision: Branch Positioning
 
@@ -23,13 +27,15 @@ The branches must be centered in the **surrounding channels**, not at the cutout
 
 ### Key Features
 
+**Stepped Plate** — The inner zone (124mm square, 5mm thick) is 0.4mm proud of the outer zone (4.6mm thick). This gives the fan mount area enough depth for nut counterbores while keeping the flange and branches flush with the waffle square tops. The step boundary follows the locating rim outer footprint.
+
 **Y-Shaped Corner Branches** — Each of the 4 corners forks into two arms centered in the perpendicular waffle channels (branch root at 73.1mm from center, not 68.4mm). The waffle squares on either side constrain each arm laterally. 8 engagement points total provide anti-rotation and alignment. Branches are in-plane with the outer zone at 4.6mm thickness — flush with waffle square tops.
 
 **Flange Lip** — The frame extends 4.7mm (half a channel width) beyond the cutout on all sides, so the frame edge aligns with the channel centers. This sits on the flat channel rim at the outer zone thickness (4.6mm) and prevents drop-through.
 
-**Fan Locating Rim** — A 1.5mm raised square border on the top surface, sized to the fan's 119mm frame with 0.5mm clearance. Drop the fan into the rim, holes line up, thread bolts.
+**Fan Locating Rim** — A 1.5mm raised square border on the top surface, sized to the fan's 119mm frame with 0.5mm clearance per side. Drop the fan into the rim, holes line up, thread bolts.
 
-**Circular Nut Counterbores** — The 4 fan bolt positions have circular pockets recessed into the bottom face (3.4mm deep, 7.8mm diameter). Circular profile bridges cleanly during printing (7.8mm span, well under the 10mm FDM limit). The nut corners press slightly into PLA for retention. Bottom surface stays flat.
+**Circular Nut Counterbores** — The 4 fan bolt positions have circular pockets recessed into the bottom face (3.4mm deep, 7.8mm diameter). Circular profile bridges cleanly during printing (7.8mm span, well under the 10mm FDM limit). The nut corners press slightly into PLA for retention. Bottom surface stays flat. The 5mm inner zone provides 1.6mm of floor above each counterbore.
 
 **Tool-Free Removal** — Two M4 thumbscrews at diagonally opposite corner T-junctions — the thickest point on the part where the frame corner, crotch blend, and both branch roots all overlap. They clamp the adapter to the lid with wing nuts below.
 
@@ -41,17 +47,23 @@ The branches must be centered in the **surrounding channels**, not at the cutout
 
 Stepped plate with branches extending outward from the frame corners into the surrounding channel positions. The inner zone (5mm) is slightly proud of the outer zone (4.6mm). Locating rim visible as a raised square border. Four fan bolt through-holes at the 107mm pattern.
 
+### Edge Profile
+
+![Edge profile view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-edge.png)
+
+Near-edge view showing the **stepped plate profile**: the thicker inner zone (5mm, with locating rim on top) sits 0.4mm proud of the thinner outer zone (4.6mm) and branch arms. Bottom face is flat — the step is only on the top surface.
+
 ### Bottom (Isometric)
 
 ![Bottom isometric view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-bottom-iso.png)
 
-Underside showing **circular nut counterbores** at each fan bolt position — flush pockets that bridge cleanly during printing. Bottom surface is completely flat.
+Underside showing **circular nut counterbores** at each fan bolt position — flush pockets that bridge cleanly during printing. Bottom surface is completely flat across both thickness zones.
 
 ### Top-Down View
 
 ![Top-down view of the fan-tub-adapter](images/fan-tub-adapter/fan-tub-adapter-top-down.png)
 
-Looking straight down. Branch forks are visibly offset from the frame corners — centered in the surrounding channels at 73.1mm from center. Thumbscrew holes at two diagonally opposite T-junctions.
+Looking straight down. Branch forks are visibly offset from the frame corners — centered in the surrounding channels at 73.1mm from center. Thumbscrew holes at two diagonally opposite T-junctions. The inner zone boundary is visible as a faint square outline around the locating rim.
 
 ### Bottom-Up View
 
@@ -74,12 +86,15 @@ How the parts stack when installed:
   ──────────────────┘                    ← lid surface
 ```
 
+The outer zone (4.6mm) matches the waffle square height exactly, so the flange and branches sit flush with the surrounding waffle tops. The inner zone steps up 0.4mm to provide the full 5mm needed for counterbore depth.
+
 ## Geometry
 
 | Dimension | Value | Notes |
 |-----------|-------|-------|
 | Waffle square | 63.7 mm | Measured at channel-level plane |
 | Channel width | 9.4 mm | Gap between adjacent squares |
+| Waffle square height | 4.6 mm | Height above channel surface |
 | Grid pitch | 73.1 mm | square + channel |
 | Cutout hole | 136.8 x 136.8 mm | 2 squares + 1 channel |
 | Frame outer (with flange) | 146.2 x 146.2 mm | cutout + channel_w |
@@ -88,12 +103,12 @@ How the parts stack when installed:
 | Center opening | 105 mm diameter | |
 | Fan bolt pattern | 107 x 107 mm (M4) | |
 | Nut counterbore | 7.8mm dia circular, 3.4mm deep | Bridges at 7.8mm (< 10mm limit) |
-| Locating rim | 120mm inner, 1.5mm tall, 2mm wall | |
+| Locating rim | 120mm inner, 124mm outer, 1.5mm tall, 2mm wall | |
 | Branch width | 9.0 mm | 0.4mm clearance in 9.4mm channels |
 | Branch engagement | 25 mm per arm from root | |
 | Inner plate thickness | 5.0 mm | Fan mount zone (bounded by locating rim footprint) |
 | Outer plate thickness | 4.6 mm | Flange + branches, flush with waffle square tops |
-| Step height | 0.4 mm | Inner zone proud of outer zone |
+| Step height | 0.4 mm | Inner zone proud of outer zone (top surface only) |
 
 ## Fastener BOM
 
