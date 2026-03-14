@@ -12,6 +12,37 @@ AI-native 3D modeling pipeline using OpenSCAD for parametric model generation.
 | Default material | PLA |
 | First layer width | 0.42 mm |
 
+## Printability Review
+
+Run this whenever geometry changes. Think in **print orientation**, not installed orientation.
+
+### Step 1 — State print orientation explicitly
+Which face is on the bed? Which direction do features grow?
+Document this in the design's `.md` file if it's non-obvious (e.g. "printed upside-down relative to installed orientation").
+
+### Step 2 — List features in print-Z order (bed → tip)
+Write them out in sequence. This forces you to think about what comes before what.
+
+### Step 3 — Check every feature-to-feature transition
+This is where overhangs hide. Features look fine in isolation — problems live at interfaces.
+For each transition from feature A (below) to feature B (above):
+
+> **Does feature B's first layer have its full XY cross-section covered by feature A's last layer?**
+
+If not: is the unsupported extent ≤45° (≤0.2mm horizontal per 0.2mm layer height)?
+If not: add a chamfer, fillet, or extend the supporting feature to cover the full cross-section.
+
+Do NOT only check each feature independently. Always check the transition.
+
+### Step 4 — Check tips and extremities
+Hooks, ledge edges, arm tips, cantilevered tabs: small unsupported steps concentrate here.
+For snap-fit hooks specifically, check **both faces**: outer (snap-in ramp) and inner (printability ramp).
+
+### Step 5 — Check all horizontal spans
+Any unsupported horizontal surface must bridge ≤10mm. Spans ≤2mm print reliably without support.
+
+---
+
 ## FDM/PLA Tolerances
 
 | Fit Type | Offset | Use Case |
@@ -37,11 +68,12 @@ AI-native 3D modeling pipeline using OpenSCAD for parametric model generation.
 After every design change — whether a validation fix, a user-requested revision, or a new feature — do ALL of the following before moving on:
 
 1. **Run validation** (`node bin/validate.js`) and confirm PASS
-2. **Re-render** all views including custom angles (top-down, bottom-iso, etc.) relevant to the design
-3. **Copy outputs** — updated PNGs to `docs/images/<name>/`, STL to `designs/<name>/`
-4. **Update the design's markdown doc** (`docs/<name>.md`) to reflect the current state: feature descriptions, render captions, geometry table, BOM, validation results. The doc must always describe what the part IS, not what it was three iterations ago.
-5. **Commit and push to git** with a concise message explaining what changed and why
-6. The markdown landing page is the user's primary way of reviewing the design. If it's stale, the user is reviewing the wrong thing.
+2. **Run printability review** (see checklist above) whenever geometry changes — work through all five steps in print orientation, not installed orientation
+3. **Re-render** all views including custom angles (top-down, bottom-iso, etc.) relevant to the design
+4. **Copy outputs** — updated PNGs to `docs/images/<name>/`, STL to `designs/<name>/`
+5. **Update the design's markdown doc** (`docs/<name>.md`) to reflect the current state: feature descriptions, render captions, geometry table, BOM, validation results. The doc must always describe what the part IS, not what it was three iterations ago.
+6. **Commit and push to git** with a concise message explaining what changed and why
+7. The markdown landing page is the user's primary way of reviewing the design. If it's stale, the user is reviewing the wrong thing.
 
 ## Commands
 
