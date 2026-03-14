@@ -30,8 +30,8 @@ spigot_id        = spigot_od - 2 * spigot_wall;  // 98mm — airflow bore
 fin_count        = 6;      // fins of each type, evenly spaced at 60°
 
 fin_int_t        = 2;      // mm — internal fin tangential thickness
-fin_int_d_base   = 6;      // mm — internal fin radial depth at spigot base (deepest)
-fin_int_d_top    = 0;      // mm — internal fin radial depth at spigot top (tapers to flush with bore wall)
+fin_int_d_base   = 6;      // mm — internal fin radial depth (full depth for most of height)
+fin_int_taper_z  = 10;     // mm — axial length of taper zone at top (depth fades 6mm→0 over this)
 
 fin_ext_t        = 3;      // mm — external shark fin tangential thickness
 fin_ext_r        = 9;      // mm — external shark fin radial protrusion at base

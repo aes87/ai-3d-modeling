@@ -135,24 +135,35 @@ module external_shark_fins() {
 }
 
 // Internal fins: radial ribs that protrude inward from the bore wall.
-// Fin inner tip is at r = r_bore - fin_int_d_*; outer face is at r = r_bore + fin_wall_lap
-// (1mm into the spigot wall), which avoids a coincident-face T-junction with the bore wall.
+// Fin inner tip at r = r_bore - fin_int_d_base; outer face at r = r_bore + fin_wall_lap
+// (1mm into the spigot wall), avoiding a coincident-face T-junction with the bore wall.
 // Placed OUTSIDE the main difference() so the center_bore does not eat them.
-// Taper from fin_int_d_base (deep, at spigot base) to fin_int_d_top (shallower, at top).
+// Shape: full depth (fin_int_d_base) from spigot base to fin_int_taper_z from the top,
+// then tapers linearly to zero (flush with bore wall) over the final fin_int_taper_z mm.
+// Printability: taper retreats the inner tip outward as z increases — each layer is fully
+// supported by the one below. No overhang.
 // Aligned with external shark fins (same count, same starting angle).
-// No overhangs: fins are vertical slabs. Print orientation: flat bottom on bed.
 fin_wall_lap = 1;  // mm of overlap into spigot wall — avoids bore-wall coincident face
 module internal_fins() {
-    r_bore = spigot_id / 2;   // 49mm — bore inner surface
+    r_bore        = spigot_id / 2;                    // 49mm — bore inner surface
+    z_taper_start = z_spigot_top - fin_int_taper_z;   // where constant depth ends
     for (i = [0 : fin_count - 1]) {
         rotate([0, 0, i * 360 / fin_count])
-            hull() {
-                // Base: tip at r_bore - fin_int_d_base, outer face 1mm into wall
-                translate([r_bore - fin_int_d_base, -fin_int_t/2, z_spigot_start])
-                    cube([fin_int_d_base + fin_wall_lap, fin_int_t, 0.01]);
-                // Top: tip at r_bore - fin_int_d_top, outer face 1mm into wall
-                translate([r_bore - fin_int_d_top, -fin_int_t/2, z_spigot_top - 0.01])
-                    cube([fin_int_d_top + fin_wall_lap, fin_int_t, 0.01]);
+            union() {
+                // Constant-depth body: base → taper start
+                hull() {
+                    translate([r_bore - fin_int_d_base, -fin_int_t/2, z_spigot_start])
+                        cube([fin_int_d_base + fin_wall_lap, fin_int_t, 0.01]);
+                    translate([r_bore - fin_int_d_base, -fin_int_t/2, z_taper_start])
+                        cube([fin_int_d_base + fin_wall_lap, fin_int_t, 0.01]);
+                }
+                // Taper zone: full depth at taper start → flush at spigot top
+                hull() {
+                    translate([r_bore - fin_int_d_base, -fin_int_t/2, z_taper_start])
+                        cube([fin_int_d_base + fin_wall_lap, fin_int_t, 0.01]);
+                    translate([r_bore, -fin_int_t/2, z_spigot_top - 0.01])
+                        cube([fin_wall_lap, fin_int_t, 0.01]);
+                }
             }
     }
 }
