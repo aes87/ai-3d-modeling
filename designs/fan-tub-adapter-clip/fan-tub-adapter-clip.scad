@@ -23,8 +23,11 @@ clip_frame_r     = fan_corner_r;   // 5mm corner radius
 // Arm center offset: arm sits just outside the rim ledge
 arm_center_offset = loc_outer / 2 + clip_ledge_depth + clip_arm_t / 2;  // 62 + 1.0 + 0.75 = 63.75
 
-// Tab bridge from frame edge to arm center
-tab_len = arm_center_offset - clip_frame_outer / 2;  // 63.75 - 59.5 = 4.25mm
+// Tab bridge from frame edge to arm outer face.
+// Extends to full arm width so the arm base has no overhang in print orientation
+// (frame on bed, arms up). Previously stopped at arm center (4.25mm), leaving the
+// outer 0.75mm of the arm unsupported at z_print=2.
+tab_len = arm_center_offset + clip_arm_t / 2 - clip_frame_outer / 2;  // 64.5 - 59.5 = 5.0mm
 
 // Local Z coordinate system (installed orientation):
 //   z = 0              hook bottom  (global: z_fan_top - clip_arm_len - clip_hook_h = 6.15)
