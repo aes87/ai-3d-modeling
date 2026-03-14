@@ -1,0 +1,45 @@
+{
+  "name": "humidity-output",
+  "description": "Duct mount for 4\" flex dryer duct. Caulked to bin lid via waffle-grid Y-branches. Sealed with EPDM foam + releasable zip tie.",
+  "dimensions": {
+    "x": 196,
+    "y": 196,
+    "z": 60
+  },
+  "defaultTolerance": 2.0,
+  "tolerances": {
+    "z": 1.0
+  },
+  "watertight": true,
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "volume": {
+    "min": 80,
+    "max": 300
+  },
+  "echoedDimensions": {
+    "humidityOutput": {
+      "x": 196,
+      "y": 196,
+      "z": 60
+    }
+  },
+  "params": {
+    "duct_ring_id_measured": 110,
+    "spigot_od": 108,
+    "spigot_id": 98,
+    "spigot_wall": 5,
+    "spigot_height_above_base": 55,
+    "foam_groove_depth": 2.5,
+    "foam_zone_width": 19,
+    "foam_spec": "closed-cell EPDM, 3/4\" wide x 1/8\" thick",
+    "lower_ridge_od": 114,
+    "upper_ridge_od": 112,
+    "zip_tie": "16\" releasable",
+    "waffle_cutout": 136.8,
+    "branch_engagement": 25
+  }
+}
