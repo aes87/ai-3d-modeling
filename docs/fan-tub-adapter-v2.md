@@ -58,19 +58,19 @@ Stepped plate with Y-branches extending into waffle channels. Taller 4mm locatin
 
 ![Base plate bottom](images/fan-tub-adapter-base/fan-tub-adapter-base-bottom-iso.png)
 
-Clean bottom face — no hex counterbores or bolt holes. This face gets caulked directly to the tub lid.
-
-#### Edge Profile
-
-![Base plate edge](images/fan-tub-adapter-base/fan-tub-adapter-base-edge.png)
-
-Shows the stepped plate profile: thick inner zone (5mm) with 4mm rim, thinner outer zone (4.6mm) flush with waffle square tops.
+Clean flat bottom face — no hex counterbores or bolt holes. This face gets caulked directly to the tub lid.
 
 #### Top-Down
 
 ![Base plate top-down](images/fan-tub-adapter-base/fan-tub-adapter-base-top-down.png)
 
 Branch forks centered in surrounding channels at 73.1mm from center. Locating rim inner edge defines fan drop-in area.
+
+#### Edge Profile
+
+![Base plate edge](images/fan-tub-adapter-base/fan-tub-adapter-base-edge.png)
+
+Shows the stepped plate profile: thick inner zone (5mm) with 4mm rim, thinner outer zone (4.6mm) flush with waffle square tops.
 
 ### Geometry
 
@@ -99,29 +99,19 @@ volume:    72.7 cm³  (expected 10–120)     PASS
 
 ### Renders
 
-#### Isometric
+#### Isometric (Top)
 
 ![Clip isometric](images/fan-tub-adapter-clip/fan-tub-adapter-clip-iso.png)
 
-Frame with four cantilever arms. Shown in installed orientation (frame on top, arms hanging down). Hooks visible at arm tips.
+Frame with four cantilever arms. Installed orientation: frame on top, arms hanging down. Root fillets visible as small triangular buttresses where each arm meets its tab.
 
-#### Side View
+#### Bottom Isometric
 
-![Clip side](images/fan-tub-adapter-clip/fan-tub-adapter-clip-side.png)
+![Clip bottom](images/fan-tub-adapter-clip/fan-tub-adapter-clip-bottom-iso.png)
 
-Tabs bridge from frame edge to arm positions. Arms are 1.5mm thick, 8mm wide, 22.05mm long.
+View from below showing all four hooks at arm tips. The 45° lead-in chamfer on each hook's outer-lower edge is visible as the angled entry face. Hook catches under base plate ledges at z=6.0–7.5mm.
 
-#### Front View
-
-![Clip front](images/fan-tub-adapter-clip/fan-tub-adapter-clip-front.png)
-
-Front elevation showing frame cross-section with arm hanging down on each side.
-
-#### Top-Down
-
-![Clip top-down](images/fan-tub-adapter-clip/fan-tub-adapter-clip-top-down.png)
-
-Frame ring with 105mm center opening. Four tabs visible extending to arm positions.
+> Note: orthographic side views (front/right/side) are uninformative for this part — the clip is 4-way symmetric and the 1.5mm arms are invisible from any flat angle. Isometric views show the geometry clearly.
 
 ### Clip Mechanism — Cantilever Snap-Fit
 

@@ -132,13 +132,13 @@ Single-piece adapter secured with M4 bolts and thumbscrews.
 
 Two-part design: permanently-caulked base plate + snap-on retention clip. No fasteners at all.
 
-| | Base Plate | Retention Clip |
-|---|---|---|
-| ![Base plate](docs/images/fan-tub-adapter-base/fan-tub-adapter-base-iso.png) | ![Clip](docs/images/fan-tub-adapter-clip/fan-tub-adapter-clip-iso.png) | |
+| Base Plate | Retention Clip |
+|---|---|
+| ![Base plate](docs/images/fan-tub-adapter-base/fan-tub-adapter-base-iso.png) | ![Clip](docs/images/fan-tub-adapter-clip/fan-tub-adapter-clip-bottom-iso.png) |
 
 **Base plate** — Same waffle-grid branches as v1, but all bolt/thumbscrew holes removed. Locating rim increased to 4.0mm (from 1.5mm). Four clip ledges (1mm outward protrusions) on the rim exterior provide catch points for the clip. Attached to lid with silicone caulk — permanent, no tools.
 
-**Retention clip** — A frame that sits on the fan top with four cantilever snap-fit arms. Each arm has a hook at the tip that catches under a base plate ledge. Press down to install, squeeze two opposite arms to release. Safety factor 2.06 (29 MPa stress vs 60 MPa PLA yield).
+**Retention clip** — A frame that sits on the fan top with four cantilever snap-fit arms. Each arm has a hook at the tip that catches under a base plate ledge. Press down to install, squeeze two opposite arms to release. Nominal SF 2.24 (29 MPa root stress, Bambu PLA yield ~65 MPa); 2mm root fillets reduce stress concentration Kt from ~2.5 to ~1.2 for reliable repeated cycling.
 
 | Part | Dimensions | Volume | Print Orientation |
 |------|-----------|--------|-------------------|
