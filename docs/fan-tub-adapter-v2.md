@@ -231,12 +231,11 @@ node bin/check-assembly.js assemblies/fan-tub-adapter-v2.json
 | Fan | 0, 0, 5.0 | Sits on inner plate (z=frame_t_inner) |
 | Clip | 0, 0, 6.15 | Local z=0 (hook bottom) → global z=6.15 |
 
-## Source Files
+## Downloads
 
-- [`fan-tub-adapter-base.scad`](../designs/fan-tub-adapter-base/fan-tub-adapter-base.scad) — Base plate OpenSCAD source
-- [`fan-tub-adapter-clip.scad`](../designs/fan-tub-adapter-clip/fan-tub-adapter-clip.scad) — Retention clip OpenSCAD source
-- [`fan-tub-adapter-params.scad`](../scad-lib/fan-tub-adapter-params.scad) — Shared parameters
-- Base plate spec: [`spec.json`](../designs/fan-tub-adapter-base/spec.json)
-- Clip spec: [`spec.json`](../designs/fan-tub-adapter-clip/spec.json)
-- Assembly spec: [`fan-tub-adapter-v2.json`](../assemblies/fan-tub-adapter-v2.json)
-- Fan reference SCAD: [`fan-frame-119.scad`](../scad-lib/reference/fan-frame-119.scad)
+| Part | STL | Source |
+|------|-----|--------|
+| Base plate | [`fan-tub-adapter-base.stl`](../designs/fan-tub-adapter-base/fan-tub-adapter-base.stl) | [`fan-tub-adapter-base.scad`](../designs/fan-tub-adapter-base/fan-tub-adapter-base.scad) |
+| Retention clip | [`fan-tub-adapter-clip.stl`](../designs/fan-tub-adapter-clip/fan-tub-adapter-clip.stl) | [`fan-tub-adapter-clip.scad`](../designs/fan-tub-adapter-clip/fan-tub-adapter-clip.scad) |
+
+Shared: [`fan-tub-adapter-params.scad`](../scad-lib/fan-tub-adapter-params.scad) · [`spec.json (base)`](../designs/fan-tub-adapter-base/spec.json) · [`spec.json (clip)`](../designs/fan-tub-adapter-clip/spec.json) · [`assembly spec`](../assemblies/fan-tub-adapter-v2.json)
