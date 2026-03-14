@@ -2,7 +2,7 @@
 // Mounts to bin lid via waffle-grid Y-branches (caulked, same architecture as fan-tub-adapter-base).
 // Duct spigot accepts standard 4" flex dryer duct.
 // Sealed with 3/4" closed-cell EPDM foam tape + releasable clamp.
-// Internal fins resist ring buckling under clamp load (wall ribs, bore cuts cleanly through them).
+// Internal fins protrude inward from bore wall — resist ring buckling under clamp load.
 // External shark fins are structural/aesthetic gussets at the spigot base, aligned with internal fins.
 
 include <fdm-pla.scad>
@@ -134,46 +134,50 @@ module external_shark_fins() {
     }
 }
 
-// Internal fins: radial ribs inside the spigot wall.
-// Taper from deep (fin_int_d_base) at the spigot base to shallow (fin_int_d_top) at the top.
-// Placed inside the main union — the center_bore cuts through them cleanly,
-// leaving rib material within the wall zone (r = spigot_id/2 to spigot_od/2).
+// Internal fins: radial ribs that protrude inward from the bore wall.
+// Fin inner tip is at r = r_bore - fin_int_d_*; outer face is at r = r_bore + fin_wall_lap
+// (1mm into the spigot wall), which avoids a coincident-face T-junction with the bore wall.
+// Placed OUTSIDE the main difference() so the center_bore does not eat them.
+// Taper from fin_int_d_base (deep, at spigot base) to fin_int_d_top (shallower, at top).
 // Aligned with external shark fins (same count, same starting angle).
-// No overhangs: fins are vertical. Print orientation: flat bottom on bed.
+// No overhangs: fins are vertical slabs. Print orientation: flat bottom on bed.
+fin_wall_lap = 1;  // mm of overlap into spigot wall — avoids bore-wall coincident face
 module internal_fins() {
-    r_bore     = spigot_id / 2;       // 49mm — bore inner surface
-    r_wall_out = spigot_od / 2;       // 54mm — spigot outer surface
+    r_bore = spigot_id / 2;   // 49mm — bore inner surface
     for (i = [0 : fin_count - 1]) {
         rotate([0, 0, i * 360 / fin_count])
             hull() {
-                // Base: fin tip at (r_bore - fin_int_d_base), outer face at r_wall_out
+                // Base: tip at r_bore - fin_int_d_base, outer face 1mm into wall
                 translate([r_bore - fin_int_d_base, -fin_int_t/2, z_spigot_start])
-                    cube([fin_int_d_base + (r_wall_out - r_bore), fin_int_t, 0.01]);
-                // Top: fin tip at (r_bore - fin_int_d_top), outer face at r_wall_out
+                    cube([fin_int_d_base + fin_wall_lap, fin_int_t, 0.01]);
+                // Top: tip at r_bore - fin_int_d_top, outer face 1mm into wall
                 translate([r_bore - fin_int_d_top, -fin_int_t/2, z_spigot_top - 0.01])
-                    cube([fin_int_d_top + (r_wall_out - r_bore), fin_int_t, 0.01]);
+                    cube([fin_int_d_top + fin_wall_lap, fin_int_t, 0.01]);
             }
     }
 }
 
 
 // === Assembly ===
-// All geometry — including both fin types — is in one union inside one difference.
-// The bore cuts cleanly through the internal fins, exposing their radial cross-sections
-// on the bore wall surface. No outer union wrapper needed.
+// Main body (plate + spigot + ridges + external fins) is differenced with bore + foam groove.
+// Internal fins are unioned AFTER the difference so the bore does not cut them.
+// Fins overlap 1mm into the spigot wall (fin_wall_lap) — no coincident face with bore wall.
 
-difference() {
-    union() {
-        outer_plate();
-        for (i = [0:3])
-            y_branch(i);
-        inner_pad();
-        spigot_body();
-        lower_ridge();
-        external_shark_fins();
-        internal_fins();
+union() {
+    difference() {
+        union() {
+            outer_plate();
+            for (i = [0:3])
+                y_branch(i);
+            inner_pad();
+            spigot_body();
+            lower_ridge();
+            external_shark_fins();
+        }
+
+        foam_groove();
+        center_bore();
     }
 
-    foam_groove();
-    center_bore();
+    internal_fins();
 }
