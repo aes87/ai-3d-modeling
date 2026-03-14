@@ -71,11 +71,11 @@ Designed for a **16" releasable zip tie** (standard) or a **screw-down hose clam
 | Foam groove | 2.5mm deep × 19mm wide | Groove bottom at 103mm OD |
 | Lower ridge OD | 114mm (3mm protrusion) | Stop ring; duct ring ID 110mm cannot pass |
 | Ridge chamfers | 45° on underside | No unsupported overhangs in print orientation |
-| Internal fins | 6×, 2mm thick, protrude 6mm at base → 3mm at top | Radial ribs protruding inward from bore wall; resist ring buckling under clamp load |
+| Internal fins | 6×, 2mm thick, protrude 6mm at base → 0mm at top | Radial ribs protruding inward from bore wall; taper to flush at spigot top; resist ring buckling under clamp load |
 | External shark fins | 6×, 3mm thick, 9mm radial × 13mm tall | Aesthetic gussets at spigot base; 55° slope, no support needed |
 | Fin alignment | Internal and external co-radial | Visual alignment through spigot at every 60° |
 | Branch engagement | 25mm per arm, 8 arms | Same as fan-tub-adapter-base |
-| Volume | 158.2 cm³ | |
+| Volume | 157.1 cm³ | |
 
 ## Renders
 
@@ -104,7 +104,7 @@ bbox.x:     196.2 mm  (expected 196 ±2)    PASS
 bbox.y:     196.2 mm  (expected 196 ±2)    PASS
 bbox.z:     62.0 mm   (expected 62 ±1)     PASS
 watertight: true                            PASS
-volume:     158.2 cm³ (expected 80–300)     PASS
+volume:     157.1 cm³ (expected 80–300)     PASS
 ```
 
 ## Print Settings
@@ -122,7 +122,7 @@ volume:     158.2 cm³ (expected 80–300)     PASS
 
 | Qty | Item | Notes |
 |-----|------|-------|
-| 1 | Duct mount (3D printed) | PLA, 158.2 cm³ |
+| 1 | Duct mount (3D printed) | PLA, 157.1 cm³ |
 | 1 | EPDM foam tape, 3/4" × 1/8" | ~340mm, hardware store weatherstripping |
 | 1 | 16" releasable zip tie **or** screw-down hose clamp (~110mm) | Zip tie for normal use; hose clamp / ratchet strap for maximum clamping force |
 | 1 | Silicone caulk | Aquarium-safe, for base plate to lid |
