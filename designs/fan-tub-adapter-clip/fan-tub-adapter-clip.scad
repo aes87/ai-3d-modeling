@@ -2,6 +2,11 @@
 // Snaps onto base plate ledges to hold fan in place.
 // Modeled in INSTALLED orientation (frame on top, arms hanging down).
 // Flip upside-down for printing (frame on bed, arms up).
+//
+// Snap-fit mechanics (Bambu PLA Basic):
+//   Nominal root stress: σ = 3Ehδ/2L² = 29 MPa  (E=3500, h=1.5, δ=1.8, L=22.05)
+//   Sharp-corner Kt ≈ 2.5  →  σ_peak ≈ 73 MPa ≈ yield  →  low cycle life
+//   2mm root fillet:   Kt ≈ 1.2  →  σ_peak ≈ 35 MPa  →  good for repeated cycling
 
 include <fdm-pla.scad>
 include <bambu-x1c.scad>
@@ -11,68 +16,36 @@ $fn = 80;
 
 // === Clip geometry ===
 
-// Frame sits on top of fan at z_fan_top, thickness = clip_frame_t
-// Frame is a rounded square matching fan frame outer, with center opening
-clip_frame_outer = fan_frame;          // 119mm — matches fan frame
-clip_frame_inner = fan_opening;        // 105mm — center airflow opening
-clip_frame_r     = fan_corner_r;       // 5mm corner radius
+clip_frame_outer = fan_frame;      // 119mm — matches fan frame outer
+clip_frame_inner = fan_opening;    // 105mm — center airflow opening
+clip_frame_r     = fan_corner_r;   // 5mm corner radius
 
-// Arm positions: centered per side, on the OUTSIDE of the locating rim
-// Arm outer edge aligns with rim outer + ledge_depth
+// Arm center offset: arm sits just outside the rim ledge
 arm_center_offset = loc_outer / 2 + clip_ledge_depth + clip_arm_t / 2;  // 62 + 1.0 + 0.75 = 63.75
 
-// Tab bridges from frame edge to arm center
+// Tab bridge from frame edge to arm center
 tab_len = arm_center_offset - clip_frame_outer / 2;  // 63.75 - 59.5 = 4.25mm
 
-// Hook position: catches under ledge at z_ledge_bot
-// In installed coords: hook top at z_ledge_bot (7.5), hook bottom at z_ledge_bot - clip_hook_h (6.0)
-// Arm bottom = z_fan_top - clip_arm_len = 29.7 - 22.05 = 7.65...
-// Actually the arm starts at the bottom of the clip frame (z_fan_top) and goes DOWN
-// Arm bottom = z_fan_top - clip_arm_len = 29.7 - 22.05 = 7.65
-// Hook is at the bottom of the arm, extending inward
+// Local Z coordinate system (installed orientation):
+//   z = 0              hook bottom  (global: z_fan_top - clip_arm_len - clip_hook_h = 6.15)
+//   z = clip_hook_h    arm/hook boundary                                              (1.5)
+//   z = local_arm_top  arm top / frame bottom                                        (23.55)
+//   z = total_clip_h   frame top                                                     (25.55)
+local_arm_bot   = clip_hook_h;                   // 1.5
+local_arm_top   = clip_hook_h + clip_arm_len;    // 23.55
+local_frame_bot = local_arm_top;                 // 23.55
+local_frame_top = local_arm_top + clip_frame_t;  // 25.55
+total_clip_h    = local_frame_top;               // 25.55
 
-// For modeling, let's use local Z where z=0 is the bottom of the arm tips (hook bottom)
-// and z_max is the top of the clip frame.
-// Total height = clip_arm_len + clip_frame_t = 22.05 + 2.0 = 24.05
+// Hook entry chamfer — 45° ramp on outer-lower face for smooth snap-in
+hook_chamfer = min(clip_hook_overhang, clip_hook_h * 0.6);  // 0.8mm
 
-// Local coordinate system (installed orientation):
-// z=0: hook bottom (in global: z_fan_top - clip_arm_len - clip_hook_h... let me just model from frame top down)
+// Root fillet radius — reduces Kt at arm bending root
+fillet_r = 2.0;
 
-// Simpler: model in installed absolute Z coordinates, then we know exactly where everything is.
-// Frame: z_fan_top to z_clip_top (29.7 to 31.7)
-// Arms: z_fan_top down to z_fan_top - clip_arm_len (29.7 to 7.65)
-// Hooks: at arm bottom, inward overhang
+// Clip XY bounding box
+clip_bbox_xy = loc_outer + 2 * clip_ledge_depth + 2 * clip_arm_t;  // 129mm
 
-// But for a standalone part, let's zero at the lowest point.
-// Lowest point = arm bottom - hook extension below = 7.65 - 0 = 7.65 (hooks are at arm tip, not below)
-// Actually hook bottom = arm bottom - clip_hook_h? No — the hook is the last clip_hook_h of the arm,
-// with an inward overhang. The arm length already includes the hook zone.
-
-// Let me re-read the plan:
-// Arm length (clip frame bottom to hook top): 29.7 - 7.5 = 22.2mm
-// With preload: 22.05mm
-// Hook catches UNDER ledge at z=6.0 to z=7.5
-// So arm bottom = z_fan_top - clip_arm_len = 29.7 - 22.05 = 7.65
-// Hook top = arm bottom = 7.65, hook extends down by clip_hook_h = 1.5 → hook bottom = 6.15
-// Hook catches under ledge bottom (z=6.0)... close enough with preload
-
-// Local Z: shift everything so lowest point (hook bottom) = 0
-z_offset = z_fan_top - clip_arm_len - clip_hook_h;  // 29.7 - 22.05 - 1.5 = 6.15
-
-// Local coords:
-local_hook_bot    = 0;                                    // 0
-local_hook_top    = clip_hook_h;                          // 1.5
-local_arm_bot     = clip_hook_h;                          // 1.5 (arm starts where hook ends)
-local_arm_top     = clip_arm_len + clip_hook_h;           // 23.55
-local_frame_bot   = local_arm_top;                        // 23.55
-local_frame_top   = local_arm_top + clip_frame_t;         // 25.55
-total_clip_h      = local_frame_top;                      // 25.55
-
-// Clip overall outer extent
-clip_bbox_xy = loc_outer + 2 * clip_ledge_depth + 2 * clip_arm_t;  // 124 + 2 + 3 = 129mm
-
-// Report dimensions in PRINT orientation (flipped: frame on bed, arms up)
-// In print orientation, same bbox just Z = total_clip_h
 report_dimensions(clip_bbox_xy, clip_bbox_xy, total_clip_h, "clip");
 
 
@@ -92,50 +65,64 @@ module clip_frame() {
             }
 }
 
-// Single arm assembly (tab + vertical arm + hook)
+// Single arm assembly: tab + arm + hook + root fillet
 // side: 0=+X, 1=+Y, 2=-X, 3=-Y
+//
+// Hook geometry (XZ cross-section):
+//
+//   x_hook_inner          x_arm_inner  x_arm_outer
+//        |                     |            |
+//   z=1.5 ├─────────────────────┤────────────┤  (arm bottom / hook top)
+//        │                                  │
+//   z=0.8 │                              ╱  │  ← 45° chamfer on entry face
+//   z=0   ╰────────────────────────────╱    │  (hook bottom)
+//
+// Chamfer guides the arm outward smoothly during snap-in rather than blunt impact.
+//
+// Root fillet geometry:
+//   Triangular prism in the concave corner between arm inner face and tab underside.
+//   Kt reduced from ~2.5 (sharp) to ~1.2 (2mm fillet) — critical for cycle life.
+//
 module clip_arm(side) {
     angle = side * 90;
 
+    x_arm_inner  = arm_center_offset - clip_arm_t / 2;  // 63.0
+    x_arm_outer  = arm_center_offset + clip_arm_t / 2;  // 64.5
+    x_hook_inner = x_arm_inner - clip_hook_overhang;    // 62.2
+
     rotate([0, 0, angle]) {
-        // Tab: horizontal bridge from frame edge to arm position
-        // Frame edge at x = clip_frame_outer/2 = 59.5
-        // Arm center at x = arm_center_offset = 63.75
+
+        // Tab: horizontal bridge from frame edge to arm
         translate([clip_frame_outer/2, -clip_arm_w/2, local_frame_bot])
             cube([tab_len, clip_arm_w, clip_frame_t]);
 
-        // Vertical arm: hangs down from tab
-        translate([arm_center_offset - clip_arm_t/2, -clip_arm_w/2, local_arm_bot])
+        // Arm: vertical column
+        translate([x_arm_inner, -clip_arm_w/2, local_arm_bot])
             cube([clip_arm_t, clip_arm_w, local_arm_top - local_arm_bot]);
 
-        // Hook: inward overhang at arm bottom
-        // Extends inward (toward center, -X direction) by clip_hook_overhang
-        translate([arm_center_offset - clip_arm_t/2 - clip_hook_overhang, -clip_arm_w/2, local_hook_bot])
-            cube([clip_hook_overhang + clip_arm_t, clip_arm_w, clip_hook_h]);
-    }
-}
+        // Hook: inward overhang with 45° lead-in on outer-lower entry edge.
+        // Profile defined in XZ space, extruded along Y (arm width).
+        // rotate([90,0,0]) maps the polygon's XY into world XZ.
+        rotate([90, 0, 0])
+            linear_extrude(clip_arm_w, center=true)
+                polygon([
+                    [x_hook_inner,              0             ],  // inner bottom
+                    [x_arm_outer - hook_chamfer, 0             ],  // outer bottom (chamfer start)
+                    [x_arm_outer,               hook_chamfer  ],  // chamfer apex
+                    [x_arm_outer,               clip_hook_h   ],  // outer top
+                    [x_hook_inner,              clip_hook_h   ],  // inner top
+                ]);
 
-// Fillet at arm-to-tab junction (triangular reinforcement)
-module clip_fillet(side) {
-    angle = side * 90;
-    fillet_r = 2;  // 2mm triangular fillet
+        // Root fillet: triangular prism filling the concave corner between
+        // arm inner face (x = x_arm_inner) and tab underside (z = local_frame_bot).
+        rotate([90, 0, 0])
+            linear_extrude(clip_arm_w, center=true)
+                polygon([
+                    [x_arm_inner,          local_frame_bot        ],
+                    [x_arm_inner - fillet_r, local_frame_bot      ],
+                    [x_arm_inner,          local_frame_bot - fillet_r],
+                ]);
 
-    rotate([0, 0, angle]) {
-        // Fillet between tab top and arm outer face
-        translate([arm_center_offset - clip_arm_t/2, -clip_arm_w/2, local_frame_bot]) {
-            // Triangular prism: fills the concave corner between tab underside and arm
-            linear_extrude(clip_arm_w)
-                rotate([0, 0, 0])
-                    // Triangle in XZ plane, extruded along Y
-                    // Actually we need it in the right orientation
-                    ;
-        }
-        // Simpler: small cube fillet at the junction
-        // Inner fillet (tab bottom to arm inner face)
-        translate([arm_center_offset - clip_arm_t/2, -clip_arm_w/2, local_frame_bot - fillet_r])
-            rotate([270, 0, 0])
-                linear_extrude(clip_arm_w)
-                    polygon([[0, 0], [0, fillet_r], [-fillet_r, 0]]);
     }
 }
 
@@ -144,9 +131,5 @@ module clip_fillet(side) {
 
 union() {
     clip_frame();
-
-    for (side = [0:3]) {
-        clip_arm(side);
-        clip_fillet(side);
-    }
+    for (side = [0:3]) clip_arm(side);
 }

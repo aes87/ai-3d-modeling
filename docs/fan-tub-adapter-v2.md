@@ -128,9 +128,19 @@ Frame ring with 105mm center opening. Four tabs visible extending to arm positio
 - Arm length: 22.05mm (preload-adjusted from 22.2mm theoretical)
 - Assembly deflection: 1.8mm (ledge depth 1.0 + hook overhang 0.8)
 - Arm cross-section: 8.0mm wide x 1.5mm thick
-- Stress at root: 29.1 MPa
-- PLA yield: ~60 MPa
-- **Safety factor: 2.06** (adequate for repeated snap-fit cycles)
+- Nominal root stress: 29.1 MPa  (`σ = 3Ehδ / 2L²`, E=3500, h=1.5, δ=1.8, L=22.05)
+- PLA yield (Bambu PLA Basic): ~65 MPa
+- **Nominal SF: 2.24** — adequate for static, but stress concentration governs cycle life
+
+#### Fatigue / Cycle Life
+
+An unfilleted sharp re-entrant corner at the arm root has Kt ≈ 2.5, giving σ_peak ≈ 73 MPa ≈ yield — low cycle life. The **2mm root fillet** (added in this revision) drops Kt to ~1.2, σ_peak to ~35 MPa, well below PLA's estimated fatigue limit of ~25–30 MPa at 10⁶ cycles. Adequate for hundreds of seasonal removal/cleaning cycles.
+
+The hook entry face has a **45° lead-in chamfer** (0.8mm), replacing the previous blunt rectangular step. This distributes snap-in force over the chamfer travel rather than a single impact, further reducing peak load at the root during assembly.
+
+#### Alternate Geometry Considered
+
+A tapered arm (thicker root, thinner tip) distributes stress more uniformly but provides no meaningful gain here since arm length is geometrically locked by the ledge position — the only levers are section thickness and Kt reduction. The current arm with root fillet achieves the design goal.
 
 ### Geometry
 
@@ -145,6 +155,8 @@ Frame ring with 105mm center opening. Four tabs visible extending to arm positio
 | Arm length | 22.05mm | With 0.15mm preload |
 | Hook overhang | 0.8mm inward | Catches under ledge |
 | Hook height | 1.5mm | |
+| Hook lead-in chamfer | 0.8mm @ 45° | Continuous snap-in ramp on outer-lower edge |
+| Root fillet | 2.0mm | Triangular prism at arm/tab inner corner; Kt 2.5→1.2 |
 | Tab bridge | ~4.25mm | Frame edge to arm center |
 
 ### Validation

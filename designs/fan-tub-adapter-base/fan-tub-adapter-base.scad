@@ -55,21 +55,9 @@ module fan_locating_rim() {
 }
 
 // Clip ledges — four 1.0mm outward protrusions on rim exterior
-// One centered per side, 8mm wide, at z=6.0 to z=7.5 (z_ledge_bot - clip_ledge_h to z_ledge_bot)
-// Actually: ledge at z_ledge_bot (7.5) down by clip_ledge_h (1.5) = z=6.0 to z=7.5
+// One centered per side, 8mm wide, spanning z=6.0 to z=7.5
 module clip_ledges() {
-    ledge_z_bot = z_ledge_bot - clip_ledge_h + clip_ledge_h;  // z_ledge_bot = 7.5
-    // Per the plan: z=6.0 to z=7.5
-    // z_ledge_bot = 7.5 is the TOP of the ledge (= rim_top - clip_ledge_h... wait)
-    // Plan says: z=6.0 to z=7.5, ledge_h=1.5
-    // z_rim_top=9.0, clip_ledge_h=1.5
-    // z_ledge_bot = z_rim_top - clip_ledge_h = 7.5 — this is ledge bottom per params
-    // So ledge runs from z=7.5 to z=7.5+1.5=9.0? No, that's the top of the rim.
-    // Re-reading the plan cross-section:
-    //   z=7.5 ╠══╗  ledge (1.0mm out, 1.5mm tall)
-    //   z=6.0 ╠══╝
-    // So ledge is z=6.0 to z=7.5, height = 1.5mm
-    ledge_z = frame_t_inner + loc_rim_h - clip_ledge_h - clip_ledge_h;  // 5+4-1.5-1.5 = 6.0
+    ledge_z = frame_t_inner + loc_rim_h - 2 * clip_ledge_h;  // 5+4-3 = 6.0
     ledge_h = clip_ledge_h;  // 1.5mm
 
     half_outer = loc_outer / 2;  // 62mm — rim outer edge from center
