@@ -1,0 +1,30 @@
+{
+  "name": "fan-tub-adapter-clip-shame",
+  "description": "CLAUDE SHAME EDITION. Retention clip with arms offset −8mm in local Y to mate with the pre-fix base plate (commit b33a000), which had clip ledges offset by one clip_arm_w due to a sign error. Do not use with the corrected base.",
+  "dimensions": {
+    "x": 133,
+    "y": 133,
+    "z": 27.1
+  },
+  "defaultTolerance": 2.0,
+  "tolerances": {
+    "z": 1.0
+  },
+  "watertight": true,
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "volume": {
+    "min": 2,
+    "max": 40
+  },
+  "echoedDimensions": {
+    "clip": {
+      "x": 133,
+      "y": 133,
+      "z": 27.1
+    }
+  }
+}
