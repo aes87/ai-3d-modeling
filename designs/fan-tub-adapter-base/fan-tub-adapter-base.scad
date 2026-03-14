@@ -76,7 +76,7 @@ module clip_ledges() {
 
     for (angle = [0, 90, 180, 270]) {
         rotate([0, 0, angle])
-        translate([0, -clip_arm_w/2, 0])
+        translate([0, clip_arm_w/2, 0])
             rotate([90, 0, 0])
                 linear_extrude(clip_arm_w)
                     polygon([
