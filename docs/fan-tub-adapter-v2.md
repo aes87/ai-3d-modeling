@@ -126,7 +126,9 @@ View from below showing all four hooks at arm tips. The 45° lead-in chamfer on 
 
 An unfilleted sharp re-entrant corner at the arm root has Kt ≈ 2.5, giving σ_peak ≈ 73 MPa ≈ yield — low cycle life. The **2mm root fillet** (added in this revision) drops Kt to ~1.2, σ_peak to ~35 MPa, well below PLA's estimated fatigue limit of ~25–30 MPa at 10⁶ cycles. Adequate for hundreds of seasonal removal/cleaning cycles.
 
-The hook entry face has a **45° lead-in chamfer** (0.8mm), replacing the previous blunt rectangular step. This distributes snap-in force over the chamfer travel rather than a single impact, further reducing peak load at the root during assembly.
+The hook has **45° chamfers on both faces**:
+- **Outer chamfer** (snap-in ramp): distributes snap-in force over the chamfer travel rather than a blunt impact, reducing peak root load during assembly.
+- **Inner chamfer** (printability): eliminates the 90° overhang at the arm/hook junction in print orientation (frame on bed, hooks at top). Without it, the 0.8mm inner step would print unsupported. With it, every layer transitions at ≤45°.
 
 #### Alternate Geometry Considered
 
@@ -145,7 +147,8 @@ A tapered arm (thicker root, thinner tip) distributes stress more uniformly but 
 | Arm length | 22.05mm | With 0.15mm preload |
 | Hook overhang | 0.8mm inward | Catches under ledge |
 | Hook height | 1.5mm | |
-| Hook lead-in chamfer | 0.8mm @ 45° | Continuous snap-in ramp on outer-lower edge |
+| Hook outer chamfer | 0.8mm @ 45° | Snap-in ramp on outer-lower edge |
+| Hook inner chamfer | 0.8mm @ 45° | Printability ramp on inner-upper edge; no overhang in print orientation |
 | Root fillet | 2.0mm | Triangular prism at arm/tab inner corner; Kt 2.5→1.2 |
 | Tab bridge | ~4.25mm | Frame edge to arm center |
 
@@ -185,7 +188,7 @@ No fasteners required.
 | Layer height | 0.2mm | 0.2mm |
 | Infill | 100% | 100% |
 | Supports | None | None |
-| Notes | Rim builds upward, ledges are 1mm steps | Hooks are 0.8mm inward steps at tips |
+| Notes | Rim builds upward, ledges are 1mm steps | Hooks print at top; dual 45° chamfers ensure no unsupported overhangs |
 
 ## Changes from v1.0
 

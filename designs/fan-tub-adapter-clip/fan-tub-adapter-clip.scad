@@ -72,12 +72,17 @@ module clip_frame() {
 //
 //   x_hook_inner          x_arm_inner  x_arm_outer
 //        |                     |            |
-//   z=1.5 ├─────────────────────┤────────────┤  (arm bottom / hook top)
+//   z=1.5 │                     ╲────────────┤  arm inner face → inner chamfer start
+//        │                      ╲           │
+//   z=0.8 │                      ╰───────────┤  ← inner chamfer (printability, 45°)
 //        │                                  │
-//   z=0.8 │                              ╱  │  ← 45° chamfer on entry face
-//   z=0   ╰────────────────────────────╱    │  (hook bottom)
+//   z=0.7 ├──────────────────────            │  inner face (hook width)
+//        │                              ╱   │
+//   z=0.0 ╰────────────────────────────╱    │  ← outer chamfer (snap-in, 45°)
+//                                      x=63.7
 //
-// Chamfer guides the arm outward smoothly during snap-in rather than blunt impact.
+// Outer chamfer: guides arm outward during snap-in (snap-in ramp).
+// Inner chamfer: eliminates 90° overhang at arm/hook junction in print orientation.
 //
 // Root fillet geometry:
 //   Triangular prism in the concave corner between arm inner face and tab underside.
@@ -100,17 +105,23 @@ module clip_arm(side) {
         translate([x_arm_inner, -clip_arm_w/2, local_arm_bot])
             cube([clip_arm_t, clip_arm_w, local_arm_top - local_arm_bot]);
 
-        // Hook: inward overhang with 45° lead-in on outer-lower entry edge.
+        // Hook: inward overhang with 45° chamfers on both entry faces.
+        // Outer chamfer (snap-in): ramps arm outward smoothly during installation.
+        // Inner chamfer (printability): eliminates the 90° overhang at the arm/hook
+        //   junction in print orientation (frame on bed, hooks at top). Without it,
+        //   the 0.8mm inner step at z=clip_hook_h would print unsupported.
+        //   Both chamfers are 45°: hook_chamfer (0.8mm) horizontal over 0.8mm vertical.
         // Profile defined in XZ space, extruded along Y (arm width).
         // rotate([90,0,0]) maps the polygon's XY into world XZ.
         rotate([90, 0, 0])
             linear_extrude(clip_arm_w, center=true)
                 polygon([
-                    [x_hook_inner,              0             ],  // inner bottom
-                    [x_arm_outer - hook_chamfer, 0             ],  // outer bottom (chamfer start)
-                    [x_arm_outer,               hook_chamfer  ],  // chamfer apex
-                    [x_arm_outer,               clip_hook_h   ],  // outer top
-                    [x_hook_inner,              clip_hook_h   ],  // inner top
+                    [x_hook_inner,               0                        ],  // inner bottom
+                    [x_arm_outer - hook_chamfer,  0                        ],  // outer bottom (chamfer start)
+                    [x_arm_outer,                hook_chamfer             ],  // outer chamfer apex
+                    [x_arm_outer,                clip_hook_h              ],  // outer top / arm outer face
+                    [x_arm_inner,                clip_hook_h              ],  // inner top / arm inner face
+                    [x_hook_inner,               clip_hook_h - hook_chamfer],  // inner chamfer apex
                 ]);
 
         // Root fillet: triangular prism filling the concave corner between
