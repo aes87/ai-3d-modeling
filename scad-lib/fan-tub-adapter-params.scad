@@ -20,7 +20,7 @@ flange_w      = channel_w / 2;  // 4.7mm
 // === Fan Geometry ===
 fan_frame     = 119;     // mm — fan outer dimension (square)
 fan_frame_t   = 24.7;    // mm — fan frame thickness (measured)
-fan_opening   = 105;     // mm — center airflow diameter
+fan_opening   = 115;     // mm — center airflow diameter (matches fan inner circle)
 fan_corner_r  = 5;       // mm — fan frame corner radius
 
 // === Locating Rim ===

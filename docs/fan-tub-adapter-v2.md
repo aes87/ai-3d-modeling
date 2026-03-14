@@ -82,7 +82,7 @@ Shows the stepped plate profile: thick inner zone (5mm) with 4mm rim, thinner ou
 | Ledge Z position | z=6.0 to z=7.5 | 1.5mm below rim top |
 | Inner plate | 5.0mm thick | Fan mount zone |
 | Outer plate | 4.6mm thick | Flush with waffle tops |
-| Center opening | 105mm diameter | |
+| Center opening | 115mm diameter | Matches fan inner circle |
 | Branch engagement | 25mm per arm | 8 arms total |
 
 ### Validation
@@ -92,7 +92,7 @@ bbox.x:    196.2 mm  (expected 196 ±2)    PASS
 bbox.y:    196.2 mm  (expected 196 ±2)    PASS
 bbox.z:    9.0 mm    (expected 9.0 ±0.5)  PASS
 watertight: true                           PASS
-volume:    72.7 cm³  (expected 10–120)     PASS
+volume:    64.1 cm³  (expected 10–120)     PASS
 ```
 
 ## Part 2: Retention Clip
@@ -173,7 +173,7 @@ volume:    7.7 cm³   (expected 5–40)        PASS
 
 | Qty | Item | Notes |
 |-----|------|-------|
-| 1 | Base plate (3D printed) | PLA, 72.7 cm³ |
+| 1 | Base plate (3D printed) | PLA, 64.1 cm³ |
 | 1 | Retention clip (3D printed) | PLA, 7.7 cm³ |
 | 1 | Silicone caulk | Aquarium-safe, for base plate to lid |
 
@@ -201,7 +201,7 @@ No fasteners required.
 | Tool-free removal | Thumbscrews only (fan still bolted) | Both fan and clip are tool-free |
 | Locating rim height | 1.5mm | 4.0mm |
 | Bolt holes | 4x M4 + hex counterbores | None |
-| Total print volume | 69.4 cm³ | 80.4 cm³ (72.7 + 7.7) |
+| Total print volume | 69.4 cm³ | 71.8 cm³ (64.1 + 7.7) |
 
 ## Assembly Validation
 
