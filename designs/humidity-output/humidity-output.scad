@@ -91,16 +91,6 @@ module lower_ridge() {
         }
 }
 
-// Upper guide ridge with 45° underside chamfer.
-module upper_ridge() {
-    translate([0, 0, z_upper_ridge_bot])
-        union() {
-            cylinder(d1=spigot_od, d2=spigot_od + 2*upper_ridge_h, h=upper_ridge_h);
-            translate([0, 0, upper_ridge_h])
-                cylinder(d=spigot_od + 2*upper_ridge_h, h=upper_ridge_w - upper_ridge_h);
-        }
-}
-
 // Foam groove: annular channel on spigot OD in the seal zone.
 module foam_groove() {
     r_inner = spigot_od / 2 - foam_groove_d;
@@ -180,7 +170,6 @@ difference() {
         inner_pad();
         spigot_body();
         lower_ridge();
-        upper_ridge();
         external_shark_fins();
         internal_fins();
     }

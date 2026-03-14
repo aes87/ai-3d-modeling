@@ -13,10 +13,9 @@ Mounts a standard 4" flex dryer duct to the bin lid. Uses the same waffle-grid Y
 ```
    duct (sliding down from above)
           ↓
-   ┌──────────────────────┐  z=65  spigot top
+   ┌──────────────────────┐  z=62  spigot top
    │   above-seal zone    │
    │      (19mm)          │
-   ╠═════════╦════════════╣  z=46  upper guide ridge (OD 112mm, 2mm tall, 45° underside chamfer)
    ║  foam   ║            ║
    ║  zone   ║  clamp     ║  z=43  — foam zone top
    ║  (19mm) ║  lands     ║        groove depth 2.5mm, foam proud ~0.7mm
@@ -63,15 +62,14 @@ Designed for a **16" releasable zip tie** (standard) or a **screw-down hose clam
 
 | Dimension | Value | Notes |
 |-----------|-------|-------|
-| Overall bounding box | 196.2 × 196.2 × 65.0 mm | Same XY as fan-tub-adapter-base |
+| Overall bounding box | 196.2 × 196.2 × 62.0 mm | Same XY as fan-tub-adapter-base |
 | Outer plate | 146.2mm square, 4.6mm thick | Flush with waffle tops |
 | Inner pad | 130mm square, 5.0mm thick | Spigot base zone |
 | Spigot OD | 108mm | 1mm per-side clearance under duct rings |
 | Spigot ID (airflow bore) | 98mm | 5mm wall |
-| Spigot height above base | 60mm | 15mm insertion + 4mm ridge + 19mm foam + 3mm ridge + 19mm above |
+| Spigot height above base | 57mm | 15mm insertion + 4mm ridge + 19mm foam + 19mm above |
 | Foam groove | 2.5mm deep × 19mm wide | Groove bottom at 103mm OD |
 | Lower ridge OD | 114mm (3mm protrusion) | Stop ring; duct ring ID 110mm cannot pass |
-| Upper ridge OD | 112mm (2mm protrusion) | Clamp keeper |
 | Ridge chamfers | 45° on underside | No unsupported overhangs in print orientation |
 | Internal fins | 6×, 2mm thick, 5mm wall ribs | Radial ribs in wall; resist ring buckling under clamp load |
 | External shark fins | 6×, 3mm thick, 9mm radial × 13mm tall | Aesthetic gussets at spigot base; 55° slope, no support needed |
@@ -104,9 +102,9 @@ Top-down view shows the 98mm airflow bore and the circular ridge/groove features
 ```
 bbox.x:     196.2 mm  (expected 196 ±2)    PASS
 bbox.y:     196.2 mm  (expected 196 ±2)    PASS
-bbox.z:     65.0 mm   (expected 65 ±1)     PASS
+bbox.z:     62.0 mm   (expected 62 ±1)     PASS
 watertight: true                            PASS
-volume:     161.3 cm³ (expected 80–300)     PASS
+volume:     155.1 cm³ (expected 80–300)     PASS
 ```
 
 ## Print Settings
@@ -124,7 +122,7 @@ volume:     161.3 cm³ (expected 80–300)     PASS
 
 | Qty | Item | Notes |
 |-----|------|-------|
-| 1 | Duct mount (3D printed) | PLA, 161.3 cm³ |
+| 1 | Duct mount (3D printed) | PLA, 155.1 cm³ |
 | 1 | EPDM foam tape, 3/4" × 1/8" | ~340mm, hardware store weatherstripping |
 | 1 | 16" releasable zip tie **or** screw-down hose clamp (~110mm) | Zip tie for normal use; hose clamp / ratchet strap for maximum clamping force |
 | 1 | Silicone caulk | Aquarium-safe, for base plate to lid |

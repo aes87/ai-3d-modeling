@@ -47,20 +47,13 @@ foam_groove_d    = 2.5;    // mm — groove depth into spigot OD
 lower_ridge_h    = 3;      // mm — protrusion above spigot OD surface
 lower_ridge_w    = 4;      // mm — axial width of ridge
 
-// Upper guide ridge: prevents clamp migration upward
-upper_ridge_h    = 2;      // mm — protrusion above spigot OD
-upper_ridge_w    = 3;      // mm — axial width
-
 // === Vertical Stackup (Z from base plate bottom) ===
 z_spigot_start    = ho_inner_pad_t;                         // 5.0  — spigot begins at inner pad top
-z_lower_ridge_bot = z_spigot_start + 15;                    // 20.0 — 15mm insertion zone (up from 10mm to
-                                                             //         clear external shark fin zone)
+z_lower_ridge_bot = z_spigot_start + 15;                    // 20.0 — 15mm insertion zone
 z_lower_ridge_top = z_lower_ridge_bot + lower_ridge_w;      // 24.0
 z_foam_bot        = z_lower_ridge_top;                       // 24.0
 z_foam_top        = z_foam_bot + foam_w;                     // 43.0
-z_upper_ridge_bot = z_foam_top;                              // 43.0
-z_upper_ridge_top = z_upper_ridge_bot + upper_ridge_w;       // 46.0
-z_spigot_top      = z_upper_ridge_top + 19;                  // 65.0 — 19mm above-seal grip zone
+z_spigot_top      = z_foam_top + 19;                         // 62.0 — 19mm above-seal grip zone
 
 // External shark fin height: fills from spigot start up to 2mm below lower ridge bottom.
 // Keeps fins clear of the duct body (duct end stops at lower ridge at z=20).
