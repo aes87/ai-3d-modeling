@@ -24,11 +24,11 @@ No bolts, no nuts, no thumbscrews, no tools.
             │                     │      │
             │   fan (24.7mm)      │  arm │  (1.5mm thick, 8mm wide)
             │                     │      │
-    z=9.0   ║                     ║      │  rim top
-            ║   rim (4mm tall)    ║      │
-    z=7.5   ║                     ╠══╗   │  ledge (1.0mm out, 1.5mm tall)
-            ║                     ║  ║┌──┤  hook catches UNDER ledge
-    z=6.0   ║                     ╠══╝└──┤
+    z=9.0   ║                     ╠═══╗  │  rim top / ledge top (3.0mm out, 5.0mm tall)
+            ║   rim (4mm tall)    ║   ║  │  flat engagement zone (z=7–9)
+    z=7.0   ║                     ╠   ║┌─┤  hook catches UNDER flat zone
+            ║                     ║   ╝  │
+    z=4.0   ║                     ╠╗     │  ledge chamfer start (45°, self-supporting)
             ║                     ║      │
     z=5.0   ╩═════════════════════╩══════╧  inner plate top
 ```
@@ -40,7 +40,7 @@ No bolts, no nuts, no thumbscrews, no tools.
 | 0.0 | Base plate bottom (caulked to lid) |
 | 5.0 | Inner plate top surface |
 | 5.0–9.0 | Locating rim (4.0mm tall) |
-| 6.0–7.5 | Clip ledge zone (1.0mm outward protrusion) |
+| 4.0–9.0 | Clip ledge zone (3.0mm outward; chamfer z=4–7, flat engagement z=7–9) |
 | 5.0–29.7 | Fan frame (24.7mm thick) |
 | 29.7–31.7 | Clip frame (2.0mm thick) |
 
@@ -189,7 +189,7 @@ No fasteners required.
 | Layer height | 0.2mm | 0.2mm |
 | Infill | 100% | 100% |
 | Supports | None | None |
-| Notes | Rim builds upward, ledges are 1mm steps | Hooks print at top; dual 45° chamfers (2.5mm each) ensure no unsupported overhangs |
+| Notes | Rim builds upward; ledges are 3mm protrusions with 45° chamfered underside | Hooks print at top; dual 45° chamfers (2.5mm each) ensure no unsupported overhangs |
 
 ## Changes from v1.0
 
