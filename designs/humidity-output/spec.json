@@ -4,7 +4,7 @@
   "dimensions": {
     "x": 196,
     "y": 196,
-    "z": 60
+    "z": 65
   },
   "defaultTolerance": 2.0,
   "tolerances": {
@@ -24,7 +24,7 @@
     "humidityOutput": {
       "x": 196,
       "y": 196,
-      "z": 60
+      "z": 65
     }
   },
   "params": {
