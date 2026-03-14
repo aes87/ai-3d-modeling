@@ -2,9 +2,9 @@
   "name": "fan-tub-adapter-clip",
   "description": "Retention clip for fan-tub adapter v2.0. Snaps onto base plate ledges to hold fan without tools.",
   "dimensions": {
-    "x": 129,
-    "y": 129,
-    "z": 25.5
+    "x": 133,
+    "y": 133,
+    "z": 27.1
   },
   "defaultTolerance": 2.0,
   "tolerances": {
@@ -17,14 +17,14 @@
     "z": 256
   },
   "volume": {
-    "min": 5,
+    "min": 2,
     "max": 40
   },
   "echoedDimensions": {
     "clip": {
-      "x": 129,
-      "y": 129,
-      "z": 25.5
+      "x": 133,
+      "y": 133,
+      "z": 27.1
     }
   },
   "params": {
@@ -34,8 +34,8 @@
     "clip_arm_width": 8.0,
     "clip_arm_thickness": 1.5,
     "clip_arm_length": 22.05,
-    "clip_hook_overhang": 0.8,
-    "clip_hook_height": 1.5,
+    "clip_hook_overhang": 2.5,
+    "clip_hook_height": 3.0,
     "clip_tab_width": 3.5
   }
 }

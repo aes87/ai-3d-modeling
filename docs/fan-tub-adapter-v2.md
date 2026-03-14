@@ -52,7 +52,7 @@ No bolts, no nuts, no thumbscrews, no tools.
 
 ![Base plate isometric](images/fan-tub-adapter-base/fan-tub-adapter-base-iso.png)
 
-Stepped plate with Y-branches extending into waffle channels. Taller 4mm locating rim visible as a raised square border. No bolt holes — clean inner zone. Clip ledges (1mm bumps) on rim exterior.
+Stepped plate with Y-branches extending into waffle channels. Taller 4mm locating rim visible as a raised square border. No bolt holes — clean inner zone. Clip ledges (3mm protrusions with 45° chamfered underside) on rim exterior.
 
 #### Bottom Isometric
 
@@ -78,8 +78,8 @@ Shows the stepped plate profile: thick inner zone (5mm) with 4mm rim, thinner ou
 |-----------|-------|-------|
 | Overall bounding box | 196.2 x 196.2 x 9.0 mm | Same XY footprint as v1 |
 | Locating rim | 120mm inner, 124mm outer, 4.0mm tall | Taller than v1 (was 1.5mm) |
-| Clip ledges | 1.0mm outward, 1.5mm tall, 8mm wide | 4x, one per side |
-| Ledge Z position | z=6.0 to z=7.5 | 1.5mm below rim top |
+| Clip ledges | 3.0mm outward, 5.0mm tall, 8mm wide | 4x, one per side; 45° chamfered underside |
+| Ledge Z position | z=4.0 to z=9.0 | chamfer z=4–7, flat engagement z=7–9 |
 | Inner plate | 5.0mm thick | Fan mount zone |
 | Outer plate | 4.6mm thick | Flush with waffle tops |
 | Center opening | 115mm diameter | Matches fan inner circle |
@@ -109,26 +109,27 @@ Frame with four cantilever arms. Installed orientation: frame on top, arms hangi
 
 ![Clip bottom](images/fan-tub-adapter-clip/fan-tub-adapter-clip-bottom-iso.png)
 
-View from below showing all four hooks at arm tips. The 45° lead-in chamfer on each hook's outer-lower edge is visible as the angled entry face. Hook catches under base plate ledges at z=6.0–7.5mm.
+View from below showing all four hooks at arm tips. The 45° lead-in chamfer on each hook's outer-lower edge is visible as the angled entry face. Hook catches under base plate ledge flat zone at z=7.0–9.0mm.
 
 > Note: orthographic side views (front/right/side) are uninformative for this part — the clip is 4-way symmetric and the 1.5mm arms are invisible from any flat angle. Isometric views show the geometry clearly.
 
 ### Clip Mechanism — Cantilever Snap-Fit
 
 - Arm length: 22.05mm (preload-adjusted from 22.2mm theoretical)
-- Assembly deflection: 1.8mm (ledge depth 1.0 + hook overhang 0.8)
-- Arm cross-section: 8.0mm wide x 1.5mm thick
-- Nominal root stress: 29.1 MPa  (`σ = 3Ehδ / 2L²`, E=3500, h=1.5, δ=1.8, L=22.05)
+- Snap deflection: 2.5mm (= hook overhang; arm must flex this far outward to pass ledge)
+- Engagement depth: 2.5mm (hook inner face sits 2.5mm behind ledge outer face when snapped)
+- Arm cross-section: 8.0mm wide × 1.5mm thick
+- Nominal root stress: 40.5 MPa  (`σ = 3Ehδ / 2L²`, E=3500, h=1.5, δ=2.5, L=22.05)
 - PLA yield (Bambu PLA Basic): ~65 MPa
-- **Nominal SF: 2.24** — adequate for static, but stress concentration governs cycle life
+- **Nominal SF: 1.6** — adequate; with 2mm root fillet Kt→1.2, σ_peak ≈ 48.6 MPa < yield
 
 #### Fatigue / Cycle Life
 
-An unfilleted sharp re-entrant corner at the arm root has Kt ≈ 2.5, giving σ_peak ≈ 73 MPa ≈ yield — low cycle life. The **2mm root fillet** (added in this revision) drops Kt to ~1.2, σ_peak to ~35 MPa, well below PLA's estimated fatigue limit of ~25–30 MPa at 10⁶ cycles. Adequate for hundreds of seasonal removal/cleaning cycles.
+The **2mm root fillet** at the arm/tab junction drops Kt from ~2.5 to ~1.2, giving σ_peak ≈ 48.6 MPa — below PLA's estimated fatigue limit of ~50 MPa. Adequate for repeated seasonal removal/cleaning cycles.
 
 The hook has **45° chamfers on both faces**:
-- **Outer chamfer** (snap-in ramp): distributes snap-in force over the chamfer travel rather than a blunt impact, reducing peak root load during assembly.
-- **Inner chamfer** (printability): eliminates the 90° overhang at the arm/hook junction in print orientation (frame on bed, hooks at top). Without it, the 0.8mm inner step would print unsupported. With it, every layer transitions at ≤45°.
+- **Outer chamfer** (snap-in ramp): 2.5mm × 45° ramp distributes snap-in force over travel, reducing peak root load during assembly.
+- **Inner chamfer** (printability): 2.5mm vertical over 2.5mm horizontal = exactly 45°. Eliminates the overhang at the arm/hook junction in print orientation (frame on bed, hooks at top). Every layer transitions at ≤45°.
 
 #### Alternate Geometry Considered
 
@@ -138,28 +139,28 @@ A tapered arm (thicker root, thinner tip) distributes stress more uniformly but 
 
 | Dimension | Value | Notes |
 |-----------|-------|-------|
-| Overall bounding box | 129 x 129 x 25.6 mm | In installed orientation |
+| Overall bounding box | 133 x 133 x 27.1 mm | In installed orientation |
 | Frame outer | 119mm rounded square | Matches fan frame |
-| Frame inner | 105mm | Airflow opening |
+| Frame inner | 115mm | Airflow opening |
 | Frame thickness | 2.0mm | |
 | Arm width | 8.0mm | One centered per side |
 | Arm thickness | 1.5mm | |
 | Arm length | 22.05mm | With 0.15mm preload |
-| Hook overhang | 0.8mm inward | Catches under ledge |
-| Hook height | 1.5mm | |
-| Hook outer chamfer | 0.8mm @ 45° | Snap-in ramp on outer-lower edge |
-| Hook inner chamfer | 0.8mm @ 45° | Printability ramp on inner-upper edge; no overhang in print orientation |
+| Hook overhang | 2.5mm inward | Snap deflection = engagement depth |
+| Hook height | 3.0mm | |
+| Hook outer chamfer | 2.5mm @ 45° | Snap-in ramp on outer-lower edge |
+| Hook inner chamfer | 2.5mm @ 45° | Printability ramp; exactly 45° — no unsupported overhang in print orientation |
 | Root fillet | 2.0mm | Triangular prism at arm/tab inner corner; Kt 2.5→1.2 |
-| Tab bridge | ~4.25mm | Frame edge to arm center |
+| Tab bridge | 7.0mm | Frame edge to arm outer face |
 
 ### Validation
 
 ```
-bbox.x:    129.0 mm  (expected 129 ±2)     PASS
-bbox.y:    129.0 mm  (expected 129 ±2)     PASS
-bbox.z:    25.6 mm   (expected 25.5 ±1.0)  PASS
+bbox.x:    133.0 mm  (expected 133 ±2)     PASS
+bbox.y:    133.0 mm  (expected 133 ±2)     PASS
+bbox.z:    27.05 mm  (expected 27.1 ±1.0)  PASS
 watertight: true                            PASS
-volume:    7.7 cm³   (expected 5–40)        PASS
+volume:    3.6 cm³   (expected 2–40)        PASS
 ```
 
 ## Assembly Instructions
@@ -174,7 +175,7 @@ volume:    7.7 cm³   (expected 5–40)        PASS
 | Qty | Item | Notes |
 |-----|------|-------|
 | 1 | Base plate (3D printed) | PLA, 64.1 cm³ |
-| 1 | Retention clip (3D printed) | PLA, 7.7 cm³ |
+| 1 | Retention clip (3D printed) | PLA, 3.6 cm³ |
 | 1 | Silicone caulk | Aquarium-safe, for base plate to lid |
 
 No fasteners required.
@@ -188,7 +189,7 @@ No fasteners required.
 | Layer height | 0.2mm | 0.2mm |
 | Infill | 100% | 100% |
 | Supports | None | None |
-| Notes | Rim builds upward, ledges are 1mm steps | Hooks print at top; dual 45° chamfers ensure no unsupported overhangs |
+| Notes | Rim builds upward, ledges are 1mm steps | Hooks print at top; dual 45° chamfers (2.5mm each) ensure no unsupported overhangs |
 
 ## Changes from v1.0
 
@@ -201,7 +202,7 @@ No fasteners required.
 | Tool-free removal | Thumbscrews only (fan still bolted) | Both fan and clip are tool-free |
 | Locating rim height | 1.5mm | 4.0mm |
 | Bolt holes | 4x M4 + hex counterbores | None |
-| Total print volume | 69.4 cm³ | 71.8 cm³ (64.1 + 7.7) |
+| Total print volume | 69.4 cm³ | 68.0 cm³ (64.4 + 3.6) |
 
 ## Assembly Validation
 

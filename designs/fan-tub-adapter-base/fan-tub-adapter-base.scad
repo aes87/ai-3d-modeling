@@ -54,19 +54,37 @@ module fan_locating_rim() {
     }
 }
 
-// Clip ledges — four 1.0mm outward protrusions on rim exterior
-// One centered per side, 8mm wide, spanning z=6.0 to z=7.5
+// Clip ledges — four outward protrusions on rim exterior, one per side.
+// Each ledge has a 45° chamfer on its underside for printability (no overhang),
+// followed by a flat engagement zone at the top where the hook catches.
+//
+// XZ cross-section (X = radial outward, Z = up):
+//
+//   z_flat_top  ┌──────────────┐  rim top / ledge top
+//               │  flat zone   │  clip_ledge_flat mm tall — hook catches here
+//   z_flat_bot  ├──────────────┘
+//               │╲  chamfer    |  45°: rises clip_ledge_depth mm over clip_ledge_depth mm
+//   z_cham_bot  ╧              |  chamfer start — 0 protrusion, self-supporting from here
+//               x_rim          x_ledge
+//
 module clip_ledges() {
-    ledge_z = frame_t_inner + loc_rim_h - 2 * clip_ledge_h;  // 5+4-3 = 6.0
-    ledge_h = clip_ledge_h;  // 1.5mm
+    x_rim    = loc_outer / 2;                    // 62mm — rim outer face
+    x_ledge  = x_rim + clip_ledge_depth;         // 65mm — ledge outer face
+    z_top    = frame_t_inner + loc_rim_h;        // 9.0mm — rim top
+    z_flat_bot = z_top - clip_ledge_flat;        // 7.0mm — flat zone bottom
+    z_cham_bot = z_flat_bot - clip_ledge_depth;  // 4.0mm — chamfer start (45°)
 
-    half_outer = loc_outer / 2;  // 62mm — rim outer edge from center
-
-    // Four ledges, one centered per side
     for (angle = [0, 90, 180, 270]) {
         rotate([0, 0, angle])
-        translate([half_outer, -clip_arm_w/2, ledge_z])
-            cube([clip_ledge_depth, clip_arm_w, ledge_h]);
+        translate([0, -clip_arm_w/2, 0])
+            rotate([90, 0, 0])
+                linear_extrude(clip_arm_w)
+                    polygon([
+                        [x_rim,   z_cham_bot],  // chamfer base (0 protrusion)
+                        [x_ledge, z_flat_bot],  // chamfer top / flat bottom
+                        [x_ledge, z_top],       // ledge outer top
+                        [x_rim,   z_top],       // ledge inner top
+                    ]);
     }
 }
 

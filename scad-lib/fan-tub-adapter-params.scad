@@ -33,13 +33,18 @@ branch_w      = 9.0;     // mm — branch width (9.4 channel - 0.4 clearance)
 branch_len    = 25;      // mm — engagement length into channel from root
 
 // === Clip Mechanism ===
-clip_ledge_depth   = 1.0;  // mm — outward protrusion on rim exterior
-clip_ledge_h       = 1.5;  // mm — ledge height
+// Ledge on rim exterior: chamfered underside for printability.
+//   Bottom zone: 45° chamfer ramps from 0 to full depth over clip_ledge_depth height.
+//   Top zone:    flat engagement face, clip_ledge_flat mm tall — hook catches here.
+//   Total ledge height = clip_ledge_depth (chamfer) + clip_ledge_flat (flat).
+clip_ledge_depth   = 3.0;  // mm — outward protrusion; also sets chamfer height (45°)
+clip_ledge_flat    = 2.0;  // mm — flat engagement zone at ledge top (hook catches here)
+clip_ledge_h       = clip_ledge_depth + clip_ledge_flat;  // 5.0mm total ledge height
 clip_arm_w         = 8.0;  // mm — arm width
 clip_arm_t         = 1.5;  // mm — arm thickness
 clip_arm_len       = 22.05; // mm — arm length (preload-adjusted)
-clip_hook_overhang = 0.8;  // mm — hook inward protrusion
-clip_hook_h        = 1.5;  // mm — hook height
+clip_hook_overhang = 2.5;  // mm — hook inward protrusion (snap deflection + engagement)
+clip_hook_h        = 3.0;  // mm — hook height
 clip_frame_t       = 2.0;  // mm — clip frame thickness
 clip_tab_w         = 3.5;  // mm — outward bridge from frame edge to arm
 

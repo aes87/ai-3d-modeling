@@ -40,8 +40,9 @@ local_frame_bot = local_arm_top;                 // 23.55
 local_frame_top = local_arm_top + clip_frame_t;  // 25.55
 total_clip_h    = local_frame_top;               // 25.55
 
-// Hook entry chamfer — 45° ramp on outer-lower face for smooth snap-in
-hook_chamfer = min(clip_hook_overhang, clip_hook_h * 0.6);  // 0.8mm
+// Hook entry chamfer — 45° ramp on outer-lower face for smooth snap-in.
+// Inner chamfer uses hook_h as limit (not 0.6×) so overhang stays ≤45° in print orientation.
+hook_chamfer = min(clip_hook_overhang, clip_hook_h);  // 2.5mm
 
 // Root fillet radius — reduces Kt at arm bending root
 fillet_r = 2.0;
