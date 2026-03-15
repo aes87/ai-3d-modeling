@@ -20,34 +20,50 @@ All FDM/PLA tolerance constants (press fit, clearance fit, hole compensation, wa
 Complex designs are handled by specialized agents, each with a focused role and its own context window. Agents communicate through structured files, not conversation history.
 
 ```
-                          User
-                           |
-                     Orchestrator
-                      (top-level)
-                           |
-              ┌────────────┼────────────┐
-              v            v            v
-         spec-writer   (decisions)   shipper
-              |                        ^
-              v                        |
-     requirements.md              (all pass)
-        spec.json                      |
-              |            ┌───────────┤
-              v            v           |
-          modeler ──► geometry    fit-reviewer
-           (×N)      analyzer      (if multi-
-              |       (×N)          part)
-              v            |           ^
-        <name>.scad        v           |
-        modeling-      geometry-       |
-        report.json    report.json     |
-              |        slicer-         |
-              |        report.json     |
-              v            |           |
-         print-reviewer ◄─┘           |
-              |                        |
-              v                        |
-        review-printability.md ────────┘
+                            User
+                             |
+                       Orchestrator
+                        (top-level)
+                             |
+                ┌────────────┼────────────┐
+                v            v            v
+           spec-writer   (decisions)   shipper
+                |                        ^
+                v                        |
+       requirements.md            (all complete)
+          spec.json                      |
+          testPrintCandidates            |
+                |            ┌───────────┤
+                v            v           |
+            modeler ──► geometry    fit-reviewer
+             (×N)      analyzer      (if multi-
+                |       (×N)          part)
+                v            |           ^
+          <name>.scad        v           |
+          modeling-      geometry-       |
+          report.json    report.json     |
+                |        slicer-         |
+                |        report.json     |
+                v            |           |
+           print-reviewer ◄─┘           |
+                |                        |
+                v                        |
+          review-printability.md         |
+          (+ test print recs)            |
+                |                        |
+                v                        |
+         test-print-planner              |
+                |                        |
+                v                        |
+          test-prints.json               |
+          + stub design dirs             |
+                |                        |
+                v                        |
+            modeler (×N)                 |
+          (test pieces)                  |
+                |                        |
+                v                        |
+          test piece STLs ───────────────┘
 ```
 
 ### Agent Roles
@@ -59,6 +75,7 @@ Complex designs are handled by specialized agents, each with a focused role and 
 | **geometry-analyzer** | Mesh-based printability analysis from ground-truth geometry | Read, Bash | Rendered STL | `geometry-report.json`, `slicer-report.json` |
 | **print-reviewer** | Evaluate printability from quantitative data, issue verdict | Read | Geometry + slicer reports | `review-printability.md` |
 | **fit-reviewer** | Assembly interference and fit checks | Read, Bash | Multiple STLs, assembly spec | `review-fitment.json` |
+| **test-print-planner** | Identify critical geometries, produce minimal test piece specs | Read, Write | All finalized reports | `test-prints.json`, test piece design dirs |
 | **shipper** | Copy outputs, update docs, commit and push | Read, Write, Edit, Bash | All reports | Committed artifacts |
 
 ### Pipeline by Complexity
@@ -66,8 +83,8 @@ Complex designs are handled by specialized agents, each with a focused role and 
 | Complexity | Criteria | Pipeline |
 |---|---|---|
 | **Simple** | Single part, ≤5 features | `spec-writer` → `modeler` (inline print check) → `shipper` |
-| **Medium** | Single part, >5 features | `spec-writer` → `modeler` → `geometry-analyzer` → `print-reviewer` → `shipper` |
-| **Complex** | Multi-part assembly | `spec-writer` → `modeler` (×N parallel) → `geometry-analyzer` (×N parallel) → `print-reviewer` + `fit-reviewer` (parallel) → `shipper` |
+| **Medium** | Single part, >5 features | `spec-writer` → `modeler` → `geometry-analyzer` → `print-reviewer` → `test-print-planner` → `modeler` (test pieces) → `shipper` |
+| **Complex** | Multi-part assembly | `spec-writer` → `modeler` (×N parallel) → `geometry-analyzer` (×N parallel) → `print-reviewer` + `fit-reviewer` (parallel) → `test-print-planner` → `modeler` (test pieces, parallel) → `shipper` |
 
 ### Geometry Analysis Pipeline
 
@@ -86,12 +103,14 @@ The print-reviewer reads quantitative reports, not SCAD source. It falls back to
 | **v1** | Monolithic | Single CLAUDE.md with inline instructions. Validation pipeline renders + analyzes STL, but printability review is manual/inline. |
 | **v2** | Multi-agent | Specialized agents (spec-writer, modeler, print-reviewer, fit-reviewer, shipper) with file-based handoff. Print reviewer reads SCAD source and does manual arithmetic. |
 | **v3** | Ground-truth geometry | New geometry-analyzer agent produces mesh-based reports (trimesh layer slicing + PrusaSlicer G-code analysis). Print reviewer consumes quantitative data instead of inferring geometry from source. |
+| **v4** | Test print planning | New test-print-planner agent identifies critical geometries (fitment interfaces, tight tolerances, near-limit printability) and spawns modelers to produce minimal-material test pieces. Upstream agents flag candidates via `testPrintCandidates` (spec-writer) and Test Print Recommendations (print-reviewer). |
 
 ## Designs
 
 | Design | Preview | Architecture | Description | STL |
 |--------|---------|:------------:|-------------|-----|
 | [Humidity-Output Duct Mount](docs/humidity-output.md) | ![](docs/images/humidity-output/humidity-output-iso.png) | v1 | Mounts a 4" flex dryer duct to the same waffle-cutout bin lid. Caulked base plate with Y-branch waffle engagement. Spigot accepts standard flex duct; sealed airtight with EPDM foam tape + releasable zip tie. Ridges auto-position the zip tie over the foam. | [STL](designs/humidity-output/humidity-output.stl) |
+| [Humidity-Output V2](docs/humidity-output-v2.md) | ![](docs/images/humidity-output-v2/humidity-output-v2-iso.png) | v4 | V2 rebuild of the humidity duct mount: spigot OD reduced 108→106mm for duct clearance, lead-in taper added, internal fins extended to z=0. Includes 2 test prints for critical fitment interfaces. | [STL](designs/humidity-output-v2/output/humidity-output-v2.stl) |
 | [Fan-Tub Adapter v2.0](docs/fan-tub-adapter-v2.md) | ![](docs/images/fan-tub-adapter-base/fan-tub-adapter-base-iso.png) | v1 | Mounts a 119mm waterproof fan into a waffle-cutout HDPE tub lid for mushroom cultivation Martha tents. Two-part tool-free system: base plate caulked permanently to lid, snap-on retention clip with cantilever snap-fit arms and root fillets for fatigue resistance. Zero fasteners. | [Base](designs/fan-tub-adapter-base/fan-tub-adapter-base.stl) · [Clip](designs/fan-tub-adapter-clip/fan-tub-adapter-clip.stl) |
 | [Fan-Tub Adapter v1.0](docs/fan-tub-adapter.md) *(frozen)* | ![](docs/images/fan-tub-adapter/fan-tub-adapter-iso.png) | v1 | Original single-piece bolt-on version of the fan mount. Notable for Y-branch waffle engagement, anti-rotation hex nut counterbores, and thumbscrew lid attachment. Superseded by v2.0. | [STL](designs/fan-tub-adapter/fan-tub-adapter.stl) |
 

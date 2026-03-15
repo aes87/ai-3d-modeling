@@ -1,0 +1,22 @@
+{
+  "name": "humidity-output-v2-test-spigot-duct-fit",
+  "description": "Test print: 90-degree arc section of spigot to verify duct wire ring OD clearance (106mm vs 107.6mm ID), foam groove depth (2.5mm +/-0.2mm), lower ridge hard stop, and lead-in taper. Validates the critical v1-to-v2 OD correction.",
+  "dimensions": { "x": 62, "y": 62, "z": 62 },
+  "defaultTolerance": 2.0,
+  "tolerances": {
+    "z": 1.0,
+    "spigotOD": 0.3,
+    "foamGrooveDepth": 0.2
+  },
+  "watertight": true,
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "volume": { "min": 5, "max": 50 },
+  "echoedDimensions": {
+    "spigotDuctFit": { "x": 62, "y": 62, "z": 62 }
+  },
+  "views": ["front", "iso"],
+  "params": {
+    "parent_design": "humidity-output-v2",
+    "params_file": "scad-lib/humidity-output-v2-params.scad"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "humidity-output-v2-test-y-branch-channel-fit",
+  "description": "Test print: single corner Y-branch fork to verify arm width (9.0mm) fits 9.4mm waffle grid channels on the bin lid. Tests 0.2mm/side clearance fit.",
+  "dimensions": { "x": 58, "y": 58, "z": 4.6 },
+  "defaultTolerance": 2.0,
+  "tolerances": {
+    "branchArmWidth": 0.3
+  },
+  "watertight": true,
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "volume": { "min": 1, "max": 15 },
+  "echoedDimensions": {
+    "yBranchChannelFit": { "x": 58, "y": 58, "z": 4.6 }
+  },
+  "views": ["front", "iso"],
+  "params": {
+    "parent_design": "humidity-output-v2",
+    "params_file": "scad-lib/humidity-output-v2-params.scad"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "designName": "y-branch-channel-fit",
+  "validationPass": true,
+  "iterations": 2,
+  "dimensions": {
+    "actual": { "x": 58, "y": 58, "z": 4.6 },
+    "expected": { "x": 58, "y": 58, "z": 4.6 },
+    "withinTolerance": true
+  },
+  "features": [
+    {
+      "name": "base_plate_section",
+      "description": "Clipped section of the outer plate (33mm inward from fork root in both X and Y) providing structural support and flat bed adhesion surface. Uses parent outer plate geometry with rounded corners.",
+      "z_range": [0, 4.6],
+      "outer_extent": 33,
+      "inner_extent": null,
+      "scad_line": 64,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "x_direction_arm",
+      "description": "Branch arm extending in +X from root, 9.0mm wide (ho2_branch_w) and 25mm engagement length. Hull of two cylinders creates rounded-tip geometry. This is the critical dimension being tested for 9.4mm channel fit.",
+      "z_range": [0, 4.6],
+      "outer_extent": 25,
+      "inner_extent": null,
+      "scad_line": 70,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "y_direction_arm",
+      "description": "Branch arm extending in +Y from root, 9.0mm wide (ho2_branch_w) and 25mm engagement length. Hull of two cylinders creates rounded-tip geometry. Identical cross-section to X arm.",
+      "z_range": [0, 4.6],
+      "outer_extent": 25,
+      "inner_extent": null,
+      "scad_line": 77,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "root_blob",
+      "description": "Enlarged cylinder (d=11mm, branch_w+2) at the fork junction for smooth Y-branch transition. Matches parent design root geometry.",
+      "z_range": [0, 4.6],
+      "outer_extent": 11,
+      "inner_extent": null,
+      "scad_line": 84,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    }
+  ],
+  "printOrientation": {
+    "bed_face": "bottom face of base plate (z=0 plane)",
+    "z_direction": "plate thickness direction (same as parent design Z)"
+  },
+  "specDeviations": []
+}

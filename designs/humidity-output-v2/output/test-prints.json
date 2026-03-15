@@ -1,0 +1,60 @@
+{
+  "parentDesign": "humidity-output-v2",
+  "parentParams": "scad-lib/humidity-output-v2-params.scad",
+  "testPrints": [
+    {
+      "id": "spigot-duct-fit",
+      "name": "Spigot Arc — Duct Fitment & Seal Zone",
+      "category": "fitment",
+      "priority": "high",
+      "reason": "The spigot OD (106mm) must slide inside duct wire ring ID (107.6mm) with only 0.8mm/side radial gap. V1 failed at 108mm OD — this 106mm value is untested on the printer. The foam groove (2.5mm deep, +/-0.2mm tolerance — tightest in the design) must correctly recess EPDM tape. The lower stop ridge chamfer is exactly at the 45-degree overhang limit. A 90-degree arc section tests all three questions in one piece.",
+      "features": [
+        "spigot_body",
+        "lead_in_taper",
+        "lower_stop_ridge",
+        "foam_groove",
+        "above_seal_grip",
+        "internal_fins"
+      ],
+      "zRange": [0, 62],
+      "criticalDimensions": {
+        "spigotOD": { "nominal": 106.0, "tolerance": 0.3 },
+        "foamGrooveDepth": { "nominal": 2.5, "tolerance": 0.2 },
+        "foamGrooveWidth": { "nominal": 19.0, "tolerance": 0.5 },
+        "lowerRidgeOD": { "nominal": 114.0, "tolerance": 0.5 },
+        "taperTipOD": { "nominal": 100.0, "tolerance": 0.5 },
+        "wallAtGroove": { "nominal": 2.5, "tolerance": 0.3 },
+        "taperTipWall": { "nominal": 2.0, "tolerance": 0.3 }
+      },
+      "matePart": "4-inch flex dryer duct (wire ring ID 107.6mm)",
+      "simplification": "90-degree arc sector (quarter circle, first quadrant) of the full spigot from z=0 to z=62. Include 1 internal fin within the arc. Include a 3mm-thick rectangular base plate at z=0 extending to the ridge radius for bed adhesion. Close the two cut faces with 2mm-thick chord walls. Do NOT include outer plate, Y-branches, or shark fins — they are not relevant to duct fitment.",
+      "verificationMethod": "1) Caliper spigot OD at arc midpoint — should read 106.0 +/-0.3mm. 2) Caliper foam groove depth — should read 2.5 +/-0.2mm. 3) Trial fit: slide actual duct wire ring over the arc — ring should pass over spigot OD with light clearance and stop against the ridge. 4) Seat foam tape in groove — tape should recess below the spigot OD surface. 5) Visual check: ridge chamfer underside should print cleanly without drooping (45-degree limit).",
+      "designDir": "designs/humidity-output-v2/test-prints/spigot-duct-fit"
+    },
+    {
+      "id": "y-branch-channel-fit",
+      "name": "Y-Branch Arm — Waffle Channel Engagement",
+      "category": "fitment",
+      "priority": "medium",
+      "reason": "Y-branch arms (9.0mm wide) must fit into 9.4mm waffle channels with only 0.2mm/side clearance. While the fit is caulked (not precision), a too-wide arm prevents installation entirely. This is a mating interface and per policy must be tested. One corner fork (2 arms) is sufficient.",
+      "features": [
+        "y_branch_arms",
+        "outer_plate"
+      ],
+      "zRange": [0, 4.6],
+      "criticalDimensions": {
+        "branchArmWidth": { "nominal": 9.0, "tolerance": 0.3 },
+        "branchEngagementLength": { "nominal": 25.0, "tolerance": 1.0 }
+      },
+      "matePart": "HDPE bin lid waffle grid (9.4mm channel width)",
+      "simplification": "Extract one corner Y-branch fork (2 arms + root blob) with a minimal section of the outer plate as a base — just enough plate to structurally support the fork root (approximately 30mm square around the root center). Full arm length (25mm) and width (9.0mm). Full outer plate thickness (4.6mm). No spigot, no inner pad, no other corners needed.",
+      "verificationMethod": "1) Caliper arm width at midpoint — should read 9.0 +/-0.3mm. 2) Trial fit: insert both arms into waffle channels on the actual bin lid — arms should slide in without force but not be sloppy loose. 3) Check arm length reaches expected engagement depth.",
+      "designDir": "designs/humidity-output-v2/test-prints/y-branch-channel-fit"
+    }
+  ],
+  "sources": {
+    "fromSpecWriter": [],
+    "fromPrintReviewer": [],
+    "fromPlanner": ["spigot-duct-fit", "y-branch-channel-fit"]
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "designName": "spigot-duct-fit",
+  "validationPass": true,
+  "iterations": 2,
+  "dimensions": {
+    "actual": { "x": 61, "y": 61, "z": 62 },
+    "expected": { "x": 62, "y": 62, "z": 62 },
+    "withinTolerance": true
+  },
+  "features": [
+    {
+      "name": "base_plate",
+      "description": "3mm-thick rectangular slab for bed adhesion, spans from -2 to 59mm in X and Y",
+      "z_range": [0, 3],
+      "outer_extent": 61,
+      "inner_extent": null,
+      "scad_line": 140,
+      "transitions": {
+        "below": "bed",
+        "above": "spigot_base_fill"
+      }
+    },
+    {
+      "name": "chord_wall_x",
+      "description": "2mm-thick flat wall closing the angle=0 (Y-negative) cut face of the arc sector",
+      "z_range": [0, 62],
+      "outer_extent": 59,
+      "inner_extent": null,
+      "scad_line": 152,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "chord_wall_y",
+      "description": "2mm-thick flat wall closing the angle=90 (X-negative) cut face of the arc sector",
+      "z_range": [0, 62],
+      "outer_extent": 59,
+      "inner_extent": null,
+      "scad_line": 156,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "spigot_base_fill",
+      "description": "Solid quarter-cylinder fill bridging from base plate top (z=3) to spigot start (z=5) at spigot OD",
+      "z_range": [3, 5],
+      "outer_extent": 53,
+      "inner_extent": null,
+      "scad_line": 165,
+      "transitions": {
+        "below": "base_plate",
+        "above": "spigot_wall"
+      }
+    },
+    {
+      "name": "spigot_wall",
+      "description": "90-degree arc of spigot at OD 106mm, wall thickness 5mm (OD 53r, ID 48r), plain zone below ridge",
+      "z_range": [5, 20],
+      "outer_extent": 106,
+      "inner_extent": 96,
+      "scad_line": 68,
+      "transitions": {
+        "below": "spigot_base_fill",
+        "above": "lower_stop_ridge"
+      }
+    },
+    {
+      "name": "lower_stop_ridge",
+      "description": "Ridge OD 114mm with 45-degree underside chamfer (z=20-24) and 1mm flat top (z=24-25). Prevents duct wire ring from sliding past.",
+      "z_range": [20, 25],
+      "outer_extent": 114,
+      "inner_extent": 96,
+      "scad_line": 80,
+      "transitions": {
+        "below": "spigot_wall",
+        "above": "foam_groove"
+      }
+    },
+    {
+      "name": "foam_groove",
+      "description": "2.5mm-deep annular recess in spigot OD for 3/4-inch closed-cell EPDM foam tape. OD at groove floor = 101mm, width 19mm axial.",
+      "z_range": [25, 44],
+      "outer_extent": 101,
+      "inner_extent": 96,
+      "scad_line": 95,
+      "transitions": {
+        "below": "lower_stop_ridge",
+        "above": "above_seal_grip"
+      }
+    },
+    {
+      "name": "above_seal_grip",
+      "description": "Plain spigot wall at full OD 106mm above the foam groove, provides grip zone for zip tie clamping",
+      "z_range": [44, 54],
+      "outer_extent": 106,
+      "inner_extent": 96,
+      "scad_line": 68,
+      "transitions": {
+        "below": "foam_groove",
+        "above": "lead_in_taper"
+      }
+    },
+    {
+      "name": "lead_in_taper",
+      "description": "Conical taper from OD 106mm down to 100mm over 8mm height. Tip wall thickness 2.0mm. Guides duct onto spigot.",
+      "z_range": [54, 62],
+      "outer_extent": 100,
+      "inner_extent": 96,
+      "scad_line": 74,
+      "transitions": {
+        "below": "above_seal_grip",
+        "above": "top"
+      }
+    },
+    {
+      "name": "internal_fin",
+      "description": "Single radial fin at 45 degrees (arc midpoint), 2mm thick, 6mm radial depth, with 10mm taper zone at top. Overlaps 1mm into spigot wall.",
+      "z_range": [0, 62],
+      "outer_extent": null,
+      "inner_extent": 84,
+      "scad_line": 115,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "center_bore",
+      "description": "Hollow bore at ID 96mm through entire part height (subtracted from spigot wall)",
+      "z_range": [0, 62],
+      "outer_extent": null,
+      "inner_extent": 96,
+      "scad_line": 109,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    }
+  ],
+  "printOrientation": {
+    "bed_face": "base plate bottom (z=0)",
+    "z_direction": "spigot axis (same as parent design)"
+  },
+  "specDeviations": [
+    {
+      "dimension": "x",
+      "expected": 62,
+      "actual": 61,
+      "reason": "XY extent is ridge_r (57) + 2*chord_wall (4) = 61mm. The spec target of 62 assumed approximate rounding; actual geometry is 61mm, within the 2mm default tolerance."
+    },
+    {
+      "dimension": "y",
+      "expected": 62,
+      "actual": 61,
+      "reason": "Same as X -- symmetric quarter arc geometry."
+    }
+  ]
+}
