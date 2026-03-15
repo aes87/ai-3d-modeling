@@ -79,13 +79,21 @@ The geometry analyzer separates **measuring geometry** from **judging printabili
 
 The print-reviewer reads quantitative reports, not SCAD source. It falls back to source-code inference only when geometry reports are unavailable.
 
+## Architecture Versions
+
+| Version | Name | Key change |
+|---------|------|------------|
+| **v1** | Monolithic | Single CLAUDE.md with inline instructions. Validation pipeline renders + analyzes STL, but printability review is manual/inline. |
+| **v2** | Multi-agent | Specialized agents (spec-writer, modeler, print-reviewer, fit-reviewer, shipper) with file-based handoff. Print reviewer reads SCAD source and does manual arithmetic. |
+| **v3** | Ground-truth geometry | New geometry-analyzer agent produces mesh-based reports (trimesh layer slicing + PrusaSlicer G-code analysis). Print reviewer consumes quantitative data instead of inferring geometry from source. |
+
 ## Designs
 
-| Design | Preview | Description | STL |
-|--------|---------|-------------|-----|
-| [Humidity-Output Duct Mount](docs/humidity-output.md) | ![](docs/images/humidity-output/humidity-output-iso.png) | Mounts a 4" flex dryer duct to the same waffle-cutout bin lid. Caulked base plate with Y-branch waffle engagement. Spigot accepts standard flex duct; sealed airtight with EPDM foam tape + releasable zip tie. Ridges auto-position the zip tie over the foam. | [STL](designs/humidity-output/humidity-output.stl) |
-| [Fan-Tub Adapter v2.0](docs/fan-tub-adapter-v2.md) | ![](docs/images/fan-tub-adapter-base/fan-tub-adapter-base-iso.png) | Mounts a 119mm waterproof fan into a waffle-cutout HDPE tub lid for mushroom cultivation Martha tents. Two-part tool-free system: base plate caulked permanently to lid, snap-on retention clip with cantilever snap-fit arms and root fillets for fatigue resistance. Zero fasteners. | [Base](designs/fan-tub-adapter-base/fan-tub-adapter-base.stl) · [Clip](designs/fan-tub-adapter-clip/fan-tub-adapter-clip.stl) |
-| [Fan-Tub Adapter v1.0](docs/fan-tub-adapter.md) *(frozen)* | ![](docs/images/fan-tub-adapter/fan-tub-adapter-iso.png) | Original single-piece bolt-on version of the fan mount. Notable for Y-branch waffle engagement, anti-rotation hex nut counterbores, and thumbscrew lid attachment. Superseded by v2.0. | [STL](designs/fan-tub-adapter/fan-tub-adapter.stl) |
+| Design | Preview | Architecture | Description | STL |
+|--------|---------|:------------:|-------------|-----|
+| [Humidity-Output Duct Mount](docs/humidity-output.md) | ![](docs/images/humidity-output/humidity-output-iso.png) | v1 | Mounts a 4" flex dryer duct to the same waffle-cutout bin lid. Caulked base plate with Y-branch waffle engagement. Spigot accepts standard flex duct; sealed airtight with EPDM foam tape + releasable zip tie. Ridges auto-position the zip tie over the foam. | [STL](designs/humidity-output/humidity-output.stl) |
+| [Fan-Tub Adapter v2.0](docs/fan-tub-adapter-v2.md) | ![](docs/images/fan-tub-adapter-base/fan-tub-adapter-base-iso.png) | v1 | Mounts a 119mm waterproof fan into a waffle-cutout HDPE tub lid for mushroom cultivation Martha tents. Two-part tool-free system: base plate caulked permanently to lid, snap-on retention clip with cantilever snap-fit arms and root fillets for fatigue resistance. Zero fasteners. | [Base](designs/fan-tub-adapter-base/fan-tub-adapter-base.stl) · [Clip](designs/fan-tub-adapter-clip/fan-tub-adapter-clip.stl) |
+| [Fan-Tub Adapter v1.0](docs/fan-tub-adapter.md) *(frozen)* | ![](docs/images/fan-tub-adapter/fan-tub-adapter-iso.png) | v1 | Original single-piece bolt-on version of the fan mount. Notable for Y-branch waffle engagement, anti-rotation hex nut counterbores, and thumbscrew lid attachment. Superseded by v2.0. | [STL](designs/fan-tub-adapter/fan-tub-adapter.stl) |
 
 > Preview images link directly to committed render files — they update automatically whenever a design is revised and pushed.
 
