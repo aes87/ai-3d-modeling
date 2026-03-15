@@ -11,15 +11,16 @@ This project uses specialized agents to manage context across complex design tas
 | Complexity | Criteria | Pipeline |
 |---|---|---|
 | **Simple** | Single part, ≤5 features, no assembly | `spec-writer` → `modeler` (with inline print check) → `shipper` |
-| **Medium** | Single part, >5 features | `spec-writer` → `modeler` → `print-reviewer` → `shipper` |
-| **Complex** | Multi-part assembly | `spec-writer` → `modeler` (per part, parallel) → `print-reviewer` + `fit-reviewer` (parallel) → `shipper` |
+| **Medium** | Single part, >5 features | `spec-writer` → `modeler` → `geometry-analyzer` → `print-reviewer` → `shipper` |
+| **Complex** | Multi-part assembly | `spec-writer` → `modeler` (per part, parallel) → `geometry-analyzer` (per part, parallel) → `print-reviewer` + `fit-reviewer` (parallel) → `shipper` |
 
 ### Agent dispatch rules
 
 1. **Spec stage:** Dispatch `spec-writer`. Wait for `requirements.md` + `spec.json` before proceeding.
 2. **Model stage:** Dispatch `modeler` with the design directory path. For multi-part assemblies, dispatch one modeler per part in parallel. Wait for all to report PASS.
-3. **Review stage:** Dispatch `print-reviewer` and (if multi-part) `fit-reviewer` in parallel. Both are read-only — they report findings but don't modify code. If either reports FAIL, dispatch `modeler` with the specific fix instructions, then re-review.
-4. **Ship stage:** Dispatch `shipper` once all reviews pass.
+3. **Geometry stage:** Dispatch `geometry-analyzer` per part (parallel for multi-part). Produces `geometry-report.json` (mesh analysis) and `slicer-report.json` (PrusaSlicer G-code analysis, if slicer is installed). These are ground-truth geometry data for the reviewer.
+4. **Review stage:** Dispatch `print-reviewer` and (if multi-part) `fit-reviewer` in parallel. The print-reviewer now reads quantitative geometry data from the analyzer, not SCAD source. Both are read-only. If either reports FAIL, dispatch `modeler` with the specific fix instructions, re-run geometry analysis, then re-review.
+5. **Ship stage:** Dispatch `shipper` once all reviews pass.
 
 ### Orchestrator responsibilities
 
@@ -39,6 +40,8 @@ designs/<name>/
 ├── <name>.scad               ← modeler output
 ├── output/
 │   ├── modeling-report.json  ← modeler output (dims + feature inventory)
+│   ├── geometry-report.json  ← geometry-analyzer output (mesh analysis)
+│   ├── slicer-report.json    ← geometry-analyzer output (PrusaSlicer analysis)
 │   ├── validation-report.json ← pipeline output
 │   ├── review-printability.md ← print-reviewer output (verbose)
 │   ├── review-fitment.json   ← fit-reviewer output
@@ -91,6 +94,12 @@ node bin/validate.js designs/<name> --render-only
 # Analyze only (skip rendering, use existing STL)
 node bin/validate.js designs/<name> --analyze-only
 
+# Geometry analysis (mesh + slicer, requires rendered STL)
+node bin/geometry-analyze.js designs/<name>
+
+# Geometry analysis (mesh only, skip slicer)
+node bin/geometry-analyze.js designs/<name> --skip-slicer
+
 # Check an assembly
 node bin/check-assembly.js assemblies/<name>.json
 
@@ -123,13 +132,24 @@ Assembly specs live in `assemblies/<name>.json` and define:
 - **checks.interference** — pairs to check for mesh overlap (with max allowed volume)
 - **fitSpecs** — clearance/interference measurements with expected ranges
 
-The pipeline uses Python (trimesh + PyVista) via a project-local `.venv/`. Run `bash setup.sh` to set up.
+The pipeline uses Python (trimesh + PyVista + shapely) via a project-local `.venv/`. Run `bash setup.sh` to set up.
 Reference parts (external components) live in `scad-lib/reference/`.
+
+## Geometry Analysis Pipeline
+
+The `geometry-analyzer` agent (and `bin/geometry-analyze.js` CLI) provides ground-truth printability data from the actual mesh, replacing source-code inference:
+
+1. **Mesh analysis** (`python/geometry_analyze.py`, trimesh): slices the STL at every layer height, computes per-layer cross-sections, detects overhang faces, bridge spans, thin walls, and cross-section transitions.
+2. **Slicer analysis** (`python/slicer_analyze.py`, PrusaSlicer CLI): slices the STL with production slicer settings, parses G-code for support requirements, bridge detection, and layer-by-layer extrusion types.
+
+The print-reviewer agent consumes these reports (`geometry-report.json`, `slicer-report.json`) as primary inputs. It falls back to SCAD source reading only when geometry reports are unavailable.
 
 ## Key Conventions
 
 - OpenSCAD `ECHO:` lines on stderr are parsed for dimension reporting
 - STL analysis via `node-stl` (bbox, volume, watertight check)
+- Mesh geometry analysis via `trimesh` (cross-sections, overhangs, wall thickness)
+- Slicer validation via PrusaSlicer CLI (G-code analysis, support detection)
 - Headless rendering via `xvfb-run` (OpenSCAD needs X11 even in CLI mode)
 - All JavaScript is ESM
 - Tests use `node --test` (zero dev dependencies)

@@ -10,9 +10,74 @@ AI-native parametric 3D modeling pipeline. [Claude Code](https://docs.anthropic.
 2. Claude writes `spec.json` (expected dimensions, tolerances) and a parametric `.scad` file using project libraries for FDM/PLA tolerances
 3. Pipeline renders STL + PNGs, analyzes the mesh, and compares against spec
 4. On failure: Claude reads the structured error report, fixes the `.scad`, re-runs (up to 6 rounds)
-5. On pass: Claude reviews rendered PNGs visually — done
+5. On pass: geometry analyzer produces ground-truth printability data from the mesh
+6. Print reviewer evaluates quantitative data and issues a final verdict
 
 All FDM/PLA tolerance constants (press fit, clearance fit, hole compensation, wall minimums, overhang limits) live in [`scad-lib/fdm-pla.scad`](scad-lib/fdm-pla.scad) and are used by every design. Multi-part assemblies can be checked for fit and interference via a separate pipeline using trimesh + PyVista — see [`bin/check-assembly.js`](bin/check-assembly.js).
+
+## Multi-Agent Architecture
+
+Complex designs are handled by specialized agents, each with a focused role and its own context window. Agents communicate through structured files, not conversation history.
+
+```
+                          User
+                           |
+                     Orchestrator
+                      (top-level)
+                           |
+              ┌────────────┼────────────┐
+              v            v            v
+         spec-writer   (decisions)   shipper
+              |                        ^
+              v                        |
+     requirements.md              (all pass)
+        spec.json                      |
+              |            ┌───────────┤
+              v            v           |
+          modeler ──► geometry    fit-reviewer
+           (×N)      analyzer      (if multi-
+              |       (×N)          part)
+              v            |           ^
+        <name>.scad        v           |
+        modeling-      geometry-       |
+        report.json    report.json     |
+              |        slicer-         |
+              |        report.json     |
+              v            |           |
+         print-reviewer ◄─┘           |
+              |                        |
+              v                        |
+        review-printability.md ────────┘
+```
+
+### Agent Roles
+
+| Agent | Role | Tools | Inputs | Outputs |
+|-------|------|-------|--------|---------|
+| **spec-writer** | Intake requirements, screen for printability conflicts | Read, Write | User description | `requirements.md`, `spec.json` |
+| **modeler** | Write OpenSCAD code, iterate against validation | Read, Write, Edit, Bash | `requirements.md`, `spec.json` | `<name>.scad`, `modeling-report.json` |
+| **geometry-analyzer** | Mesh-based printability analysis from ground-truth geometry | Read, Bash | Rendered STL | `geometry-report.json`, `slicer-report.json` |
+| **print-reviewer** | Evaluate printability from quantitative data, issue verdict | Read | Geometry + slicer reports | `review-printability.md` |
+| **fit-reviewer** | Assembly interference and fit checks | Read, Bash | Multiple STLs, assembly spec | `review-fitment.json` |
+| **shipper** | Copy outputs, update docs, commit and push | Read, Write, Edit, Bash | All reports | Committed artifacts |
+
+### Pipeline by Complexity
+
+| Complexity | Criteria | Pipeline |
+|---|---|---|
+| **Simple** | Single part, ≤5 features | `spec-writer` → `modeler` (inline print check) → `shipper` |
+| **Medium** | Single part, >5 features | `spec-writer` → `modeler` → `geometry-analyzer` → `print-reviewer` → `shipper` |
+| **Complex** | Multi-part assembly | `spec-writer` → `modeler` (×N parallel) → `geometry-analyzer` (×N parallel) → `print-reviewer` + `fit-reviewer` (parallel) → `shipper` |
+
+### Geometry Analysis Pipeline
+
+The geometry analyzer separates **measuring geometry** from **judging printability**:
+
+1. **Mesh analysis** (`python/geometry_analyze.py`, trimesh) — slices the STL at every layer height, computing per-layer cross-sections, overhang angles, bridge spans, wall thicknesses, and transition detection. This is the ground truth for what the part actually looks like, independent of the SCAD source.
+
+2. **Slicer analysis** (`python/slicer_analyze.py`, PrusaSlicer CLI) — slices with production settings, parses G-code for support requirements, bridge detection, and per-layer extrusion types. Uses the same engine as OrcaSlicer (Slic3r → PrusaSlicer → BambuStudio → OrcaSlicer lineage). Gracefully skipped if PrusaSlicer isn't installed.
+
+The print-reviewer reads quantitative reports, not SCAD source. It falls back to source-code inference only when geometry reports are unavailable.
 
 ## Designs
 
@@ -26,11 +91,14 @@ All FDM/PLA tolerance constants (press fit, clearance fit, hole compensation, wa
 
 ## Setup
 
-Requires **Node.js 18+**, **OpenSCAD**, and **Xvfb** (headless rendering).
+Requires **Node.js 18+**, **OpenSCAD**, **Xvfb** (headless rendering), and optionally **PrusaSlicer** (slicer analysis).
 
 ```bash
-# Install system dependencies (Debian/Ubuntu)
-sudo apt-get install -y openscad xvfb xauth
+# Install all system dependencies + Python venv (recommended)
+sudo bash setup.sh
+
+# Or install manually:
+sudo apt-get install -y openscad xvfb prusa-slicer
 
 # Install Node dependencies
 npm install
@@ -39,7 +107,7 @@ npm install
 npm test
 ```
 
-For assembly checking, also run `sudo bash setup.sh` to set up the Python venv (trimesh + PyVista).
+The `setup.sh` script installs OpenSCAD, Xvfb, PrusaSlicer, and sets up a Python virtual environment with trimesh, PyVista, shapely, and manifold3d for mesh analysis.
 
 ## Usage
 
@@ -53,6 +121,12 @@ node bin/validate.js designs/<name> --render-only
 # Analyze only (existing STL)
 node bin/validate.js designs/<name> --analyze-only
 
+# Geometry analysis (mesh + slicer, requires rendered STL)
+node bin/geometry-analyze.js designs/<name>
+
+# Geometry analysis (mesh only, skip slicer)
+node bin/geometry-analyze.js designs/<name> --skip-slicer
+
 # Check a multi-part assembly
 node bin/check-assembly.js assemblies/<name>.json
 ```
@@ -62,7 +136,8 @@ node bin/check-assembly.js assemblies/<name>.json
 1. Create `designs/<name>/` with `spec.json` and `<name>.scad`
 2. Include `fdm-pla.scad` and `bambu-x1c.scad`; call `report_dimensions(x, y, z, "label")`
 3. Run `node bin/validate.js designs/<name>` and iterate
-4. Add a row to the Designs table above with a link to `docs/<name>.md`
+4. Run `node bin/geometry-analyze.js designs/<name>` for printability data
+5. Add a row to the Designs table above with a link to `docs/<name>.md`
 
 See existing designs for the pattern.
 

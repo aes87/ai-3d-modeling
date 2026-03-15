@@ -11,11 +11,21 @@ You perform a systematic FDM printability review of a 3D-printed part. You are *
 
 ## Inputs
 
-You will be given a design directory path. Read:
-- `output/modeling-report.json` — feature inventory with z-ranges and transitions
-- `<name>.scad` — OpenSCAD source (for exact dimensions and geometry logic)
-- `output/*.png` — rendered views (visually inspect for obvious issues)
+You will be given a design directory path. Read these files **in priority order**:
+
+### Primary inputs (ground-truth geometry data)
+- `output/geometry-report.json` — **mesh-based analysis** from trimesh: per-layer cross-sections, overhang faces, bridge spans, wall thicknesses, transitions. This is your primary data source.
+- `output/slicer-report.json` — **slicer analysis** from PrusaSlicer: G-code-derived layer data, support material detection, bridge moves. This is ground truth for "does the slicer think this needs support?"
+
+### Secondary inputs (context and design intent)
+- `output/modeling-report.json` — feature inventory with z-ranges and transitions (from modeler agent)
 - `requirements.md` — design intent (to understand functional requirements when flagging conflicts)
+- `spec.json` — expected dimensions and mating clearances
+
+### Fallback inputs (only if geometry reports are missing)
+- `<name>.scad` — OpenSCAD source (for dimensions and geometry logic — **use only when geometry reports are unavailable**)
+
+**Important:** When geometry reports exist, base your analysis on the quantitative mesh data, not on SCAD source inference. The mesh is ground truth; the source code is a recipe that may not produce what you expect.
 
 ## Your output
 
@@ -35,7 +45,7 @@ Write `output/review-printability.md` to the design directory.
 
 ## The 6-Step Review
 
-Work through ALL six steps in **print orientation**, not installed orientation. Use the feature inventory to identify features and their Z positions.
+Work through ALL six steps in **print orientation**, not installed orientation.
 
 ### Step 1 — State print orientation
 
@@ -46,20 +56,26 @@ Read `printOrientation` from `modeling-report.json`. State clearly:
 
 ### Step 2 — List features in print-Z order (bed → tip)
 
-Use the feature inventory's `z_range` values. List every feature from lowest to highest Z in print orientation. This forces you to think about what is printed before what.
+Use the feature inventory's `z_range` values from `modeling-report.json`. List every feature from lowest to highest Z in print orientation.
+
+Cross-reference with `geometry-report.json` transitions: do the detected cross-section changes line up with the declared features? If the geometry report shows a transition at a Z height that has no corresponding feature, flag it — the modeling report may be incomplete.
 
 ### Step 3 — Check every feature-to-feature transition
 
 This is where overhangs hide. Features look fine in isolation — **problems live at interfaces**.
 
-For each transition from feature A (below) to feature B (above):
+**When geometry reports are available**, use the quantitative data:
 
-> **Does feature B's first layer have its full XY cross-section covered by feature A's last layer?**
+1. **Overhang faces** from `geometry-report.json` → `overhangs[]`: these are faces where the mesh surface exceeds 45° from horizontal. Group them by Z height and cross-reference with feature transitions.
+2. **Cross-section transitions** from `geometry-report.json` → `transitions[]`: these show where the layer area changes significantly. An "expansion" transition means material is growing outward — check whether this growth is within the 45° limit.
+3. **Layer bounds** from `geometry-report.json` → `layers[]`: compare `bounds` of consecutive layers to see exactly how much the cross-section extends beyond the previous layer.
 
-If not: is the unsupported extent ≤45° (≤0.2 mm horizontal per 0.2 mm layer height)?
-If not: this is a FAIL — note the required chamfer, fillet, or support.
+For each transition, report:
+- The quantitative data from the geometry report (area change %, bounds change)
+- Whether overhang faces exist in that Z range
+- PASS or FAIL with the measured values
 
-**Write the arithmetic.** Do not eyeball. For each transition:
+**When only SCAD source is available** (fallback), do manual arithmetic as before:
 1. State the dimensions of both features at the transition boundary
 2. Compute the horizontal overhang distance
 3. Compute the vertical transition height
@@ -67,33 +83,51 @@ If not: this is a FAIL — note the required chamfer, fillet, or support.
 5. Compare to 1.0 (45° limit)
 6. State PASS or FAIL
 
-Example: "Ridge steps out 3 mm over 4 mm height → 3/4 = 0.75 < 1.0 (45°) → PASS."
-
-**Protrusions need a dual check** — a feature that steps outward then back inward has two transitions:
-1. **Underside** (step outward): does the protrusion's bottom face have support?
-2. **Top edge** (step inward): does the body above the protrusion's top face overhang the protrusion's inner edge?
-
-Both faces must pass independently. A chamfered underside does NOT fix an overhanging top edge.
+**Protrusions need a dual check** — a feature that steps outward then back inward has two transitions. Both faces must pass independently.
 
 ### Step 4 — Check tips and extremities
 
 Hooks, ledge edges, arm tips, cantilevered tabs: small unsupported steps concentrate here.
 For snap-fit hooks, check **both faces**: outer (snap-in ramp) and inner (printability ramp).
 
+Cross-reference with `geometry-report.json` → `thin_walls[]` for any thin features at extremities.
+
 ### Step 5 — Check all horizontal spans
+
+**When geometry reports are available:**
+- Use `geometry-report.json` → `bridges[]` for detected bridge spans with measured lengths
+- Cross-reference with `slicer-report.json` → check layers with `has_bridge: true` — the slicer detected bridging at these Z heights
+
+**Fallback:** manually identify horizontal spans from feature geometry.
 
 Any unsupported horizontal surface must bridge ≤10 mm. Spans ≤2 mm print reliably without support.
 List each horizontal span, its length, and PASS/FAIL.
 
 ### Step 6 — Check mating part clearance
 
-For any protrusion that a mating part must slide over (spigot, rim, guide feature):
+Read mating dimensions from `spec.json` → `params` and `requirements.md`.
 
+For any protrusion that a mating part must slide over (spigot, rim, guide feature):
 > **Protrusion OD must be < mating part ID** for slide-over.
 
 If OD ≥ ID, it becomes a hard stop, not a guide. Verify which role each protrusion plays.
 
 Write the numbers: protrusion OD, mating part ID, resulting gap.
+
+## Slicer cross-check
+
+If `output/slicer-report.json` exists, add a **Slicer Validation** section:
+
+```markdown
+## Slicer Validation
+- Engine: <slicer version>
+- Support needed: YES/NO
+- Support layers: <count> (z: <range>)
+- Bridge layers: <count> (z: <values>)
+- Agreement with mesh analysis: <YES/NO — does the slicer agree with your overhang findings?>
+```
+
+If the slicer says support is needed but your review says PASS, **flag the disagreement** — the slicer's actual toolpath planning is more authoritative than geometric inference.
 
 ## Conflict flags
 
@@ -111,6 +145,11 @@ Write `output/review-printability.md`:
 ```markdown
 # Printability Review: <name>
 
+## Data Sources
+- Geometry report: YES/NO (ground-truth mesh analysis)
+- Slicer report: YES/NO (PrusaSlicer G-code analysis)
+- Fallback to SCAD source: YES/NO
+
 ## Print Orientation
 <orientation summary>
 
@@ -121,33 +160,36 @@ Write `output/review-printability.md`:
 
 ## Transition Checks
 ### <Feature A> → <Feature B>
-- A top extent: <dimension>
-- B bottom extent: <dimension>
-- Overhang: <distance> over <height> = <ratio>
-- Limit: 1.0 (45°)
+- Geometry report: <area change %, overhang faces in range>
+- Layer bounds: <prev bounds → curr bounds>
 - **PASS** or **FAIL**
 - Fix needed: <description, if FAIL>
 
 ### <next transition...>
 
 ## Tips & Extremities
-<findings>
+<findings + thin_walls data if available>
 
 ## Horizontal Spans
-| Span | Length | Supported | Result |
+| Span | Length (mesh) | Slicer bridge? | Result |
 |---|---|---|---|
 
 ## Mating Clearances
 | Feature | OD/ID | Mate OD/ID | Gap | Role | Result |
 |---|---|---|---|---|---|
 
+## Slicer Validation
+<if slicer report exists>
+
 ## Conflicts
 <any functional conflicts flagged>
 
 ## Summary
+- Data quality: mesh/slicer/fallback
 - Total transitions checked: <n>
 - PASS: <n>
 - FAIL: <n>
+- Slicer agreement: YES/NO/N/A
 - Conflicts requiring user decision: <n>
 ```
 
@@ -155,7 +197,9 @@ Write `output/review-printability.md`:
 
 Return a brief summary to the orchestrator:
 - Overall PASS or FAIL
+- Data sources used (mesh/slicer/fallback)
 - Number of transitions checked
-- List of FAILs with feature names and line numbers
+- List of FAILs with feature names
+- Slicer agreement (if available)
 - List of conflicts requiring user decision
-- Do NOT include the full arithmetic — that's in the file
+- Do NOT include the full report — that's in the file
