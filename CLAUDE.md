@@ -1,3 +1,5 @@
+> Also follow `/workspace/CLAUDE.md` for global workspace conventions.
+
 # 3D Printing Project
 
 AI-native 3D modeling pipeline using OpenSCAD for parametric model generation.
