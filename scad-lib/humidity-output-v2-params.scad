@@ -46,6 +46,7 @@ ho2_fin_ext_r    = 9;      // mm — external shark fin radial protrusion at bas
 // === Seal Zone Geometry ===
 ho2_foam_w       = 19;     // mm — groove axial width (matches 3/4" foam tape)
 ho2_foam_groove_d = 2.5;   // mm — groove depth into spigot OD
+ho2_foam_groove_chamfer_h = ho2_foam_groove_d;  // mm — 45° chamfer height at groove top (= groove depth for exact 45°)
 
 ho2_lower_ridge_h = 4;     // mm — protrusion above spigot OD surface (was 3; increased for 45° chamfer)
 ho2_lower_ridge_w = 5;     // mm — axial width of ridge (was 4; preserves 1mm flat top)

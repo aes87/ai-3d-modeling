@@ -115,6 +115,9 @@ module ho2_lower_ridge() {
 }
 
 // Foam groove: annular channel on spigot OD in the seal zone.
+// V2.1: 45° chamfer at groove top eliminates horizontal bridge at foam_top.
+// The subtraction extends chamfer_h above foam_w, tapering from groove floor
+// back to spigot OD — exactly 45° (chamfer_h == groove_d == 2.5mm).
 module ho2_foam_groove() {
     r_inner = ho2_spigot_od / 2 - ho2_foam_groove_d;
     r_outer = ho2_spigot_od / 2 + 1;  // extend past OD for clean subtraction
@@ -123,7 +126,7 @@ module ho2_foam_groove() {
             polygon([
                 [r_inner, 0],
                 [r_outer, 0],
-                [r_outer, ho2_foam_w],
+                [r_outer, ho2_foam_w + ho2_foam_groove_chamfer_h],
                 [r_inner, ho2_foam_w],
             ]);
 }

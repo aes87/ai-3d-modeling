@@ -100,8 +100,19 @@ Cross-reference with `geometry-report.json` → `thin_walls[]` for any thin feat
 
 **Fallback:** manually identify horizontal spans from feature geometry.
 
-Any unsupported horizontal surface must bridge ≤10 mm. Spans ≤2 mm print reliably without support.
-List each horizontal span, its length, and PASS/FAIL.
+**Hard limit:** Any unsupported horizontal surface must bridge ≤10 mm. Bridges >10 mm → **FAIL**.
+
+**Avoidable bridge policy:** Even bridges within the 10mm limit should be **eliminated when they are not critical to design intent**. A bridge that exists only because a transition wasn't chamfered — not because the flat surface serves a functional purpose — is an avoidable bridge. For each bridge detected:
+
+1. **Is the horizontal surface functionally required?** (e.g., a shelf that seats a component, a flat mating face, a structural ledge). If YES → PASS with note.
+2. **Could a chamfer or taper eliminate the bridge without harming function?** If YES → flag as a **Conflict** requiring user decision. Do NOT silently pass it.
+
+Classify every bridge span:
+- **PASS (functional)** — the flat surface serves a purpose, bridge is unavoidable
+- **PASS (trivial, ≤1mm)** — too small to matter
+- **CONFLICT (avoidable)** — bridge exists due to geometry choice, not function. Recommend a chamfer/taper fix and ask the user whether to apply it
+
+The user prefers to be asked about avoidable bridges rather than having them silently accepted. When in doubt, flag it.
 
 ### Step 6 — Check mating part clearance
 

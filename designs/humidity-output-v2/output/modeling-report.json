@@ -14,7 +14,7 @@
       "z_range": [0, 4.6],
       "outer_extent": 146.2,
       "inner_extent": null,
-      "scad_line": 42,
+      "scad_line": 44,
       "transitions": {
         "below": "bed",
         "above": "inner_pad"
@@ -26,7 +26,7 @@
       "z_range": [0, 4.6],
       "outer_extent": 196.2,
       "inner_extent": null,
-      "scad_line": 48,
+      "scad_line": 56,
       "transitions": {
         "below": "bed",
         "above": "top"
@@ -38,7 +38,7 @@
       "z_range": [0, 5.0],
       "outer_extent": 130,
       "inner_extent": null,
-      "scad_line": 47,
+      "scad_line": 50,
       "transitions": {
         "below": "bed",
         "above": "spigot_body"
@@ -50,7 +50,7 @@
       "z_range": [0, 62],
       "outer_extent": null,
       "inner_extent": 42,
-      "scad_line": 136,
+      "scad_line": 162,
       "transitions": {
         "below": "bed",
         "above": "top"
@@ -62,7 +62,7 @@
       "z_range": [5, 54],
       "outer_extent": 106,
       "inner_extent": 96,
-      "scad_line": 82,
+      "scad_line": 89,
       "transitions": {
         "below": "inner_pad",
         "above": "lead_in_taper"
@@ -74,7 +74,7 @@
       "z_range": [5, 18],
       "outer_extent": 62,
       "inner_extent": null,
-      "scad_line": 108,
+      "scad_line": 143,
       "transitions": {
         "below": "inner_pad",
         "above": "lower_stop_ridge"
@@ -82,11 +82,11 @@
     },
     {
       "name": "lower_stop_ridge",
-      "description": "Annular ridge (OD 114mm) that prevents duct from sliding past insertion depth. 45-degree chamfer on underside (4mm rise over 4mm radial run, exactly 45 deg — self-supporting), 1mm flat top. 5mm axial width.",
+      "description": "Annular ridge (OD 114mm) that prevents duct from sliding past insertion depth. 45-degree chamfer on underside (4mm rise over 4mm radial run, exactly 45 deg -- self-supporting), 1mm flat top. 5mm axial width.",
       "z_range": [20, 25],
       "outer_extent": 114,
       "inner_extent": null,
-      "scad_line": 92,
+      "scad_line": 103,
       "transitions": {
         "below": "external_shark_fins",
         "above": "foam_groove"
@@ -94,25 +94,37 @@
     },
     {
       "name": "foam_groove",
-      "description": "Annular channel (2.5mm deep, 19mm wide) recessed into spigot OD surface. Accepts 3/4-inch closed-cell EPDM foam tape. Wall at groove bottom = 2.5mm. Groove OD = 101mm.",
+      "description": "Annular channel (2.5mm deep, 19mm wide) recessed into spigot OD surface. Accepts 3/4-inch closed-cell EPDM foam tape. Wall at groove bottom = 2.5mm. Groove OD = 101mm. Groove floor is flat -- foam seating unaffected by top chamfer.",
       "z_range": [25, 44],
       "outer_extent": 106,
       "inner_extent": 101,
-      "scad_line": 100,
+      "scad_line": 121,
       "transitions": {
         "below": "lower_stop_ridge",
+        "above": "foam_groove_chamfer"
+      }
+    },
+    {
+      "name": "foam_groove_chamfer",
+      "description": "45-degree chamfer at top of foam groove. OD transitions from 101mm (groove floor) back to 106mm (full spigot OD) over 2.5mm of height. Eliminates the horizontal bridge that existed at z=44 where the groove ended abruptly. Chamfer height equals groove depth (2.5mm) for exact 45-degree angle -- fully self-supporting.",
+      "z_range": [44, 46.5],
+      "outer_extent": 106,
+      "inner_extent": 101,
+      "scad_line": 121,
+      "transitions": {
+        "below": "foam_groove",
         "above": "above_seal_grip"
       }
     },
     {
       "name": "above_seal_grip",
-      "description": "Upper portion of spigot above foam groove. 10mm tall plain cylinder zone at full 106mm OD. Provides grip surface for duct and zip tie above the seal.",
-      "z_range": [44, 54],
+      "description": "Upper portion of spigot above foam groove chamfer. 7.5mm tall plain cylinder zone at full 106mm OD. Provides grip surface for duct and zip tie above the seal. Shortened from 10mm by the 2.5mm groove chamfer -- ample room remains.",
+      "z_range": [46.5, 54],
       "outer_extent": 106,
       "inner_extent": 96,
-      "scad_line": 82,
+      "scad_line": 89,
       "transitions": {
-        "below": "foam_groove",
+        "below": "foam_groove_chamfer",
         "above": "lead_in_taper"
       }
     },
@@ -122,7 +134,7 @@
       "z_range": [54, 62],
       "outer_extent": 106,
       "inner_extent": 96,
-      "scad_line": 87,
+      "scad_line": 96,
       "transitions": {
         "below": "above_seal_grip",
         "above": "top"
