@@ -1,0 +1,73 @@
+{
+  "name": "fan-tub-adapter-v3-cap",
+  "description": "Shroud cap for fan-tub adapter v3.0. Box cap with 4 walls wrapping fan sides (12mm deep) + 2 snap arms (±X) replacing the v2 thin-ring clip.",
+  "dimensions": {
+    "x": 133,
+    "y": 124,
+    "z": 27.0
+  },
+  "defaultTolerance": 2.0,
+  "tolerances": {
+    "z": 1.0
+  },
+  "watertight": true,
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "volume": {
+    "min": 8,
+    "max": 30
+  },
+  "echoedDimensions": {
+    "cap": {
+      "x": 133,
+      "y": 124,
+      "z": 27.0
+    }
+  },
+  "views": ["front", "top", "right", "iso", "bottom-iso", "top-down", "arm-section"],
+  "params": {
+    "fan_frame_size": 119,
+    "fan_opening_dia": 115,
+    "fan_frame_thickness": 24.7,
+    "fan_top_z_global": 29.7,
+    "cap_top_plate_thickness": 2.0,
+    "cap_top_z_global": 31.7,
+    "cap_wall_depth": 12.0,
+    "cap_wall_thickness": 2.0,
+    "cap_wall_bottom_z_global": 17.7,
+    "cap_inner_xy": 120,
+    "cap_outer_xy": 124,
+    "cap_inner_corner_radius": 5.0,
+    "cap_outer_corner_radius": 7.0,
+    "fan_frame_clearance_per_side": 0.5,
+    "arm_count": 2,
+    "arm_sides": "±X only",
+    "arm_width": 8.0,
+    "arm_thickness": 1.5,
+    "arm_length": 15.0,
+    "arm_root_z_global": 22.0,
+    "arm_root_z_print_local": 9.7,
+    "arm_bottom_z_global": 7.0,
+    "arm_center_offset": 65.75,
+    "arm_inner_face_offset": 65.0,
+    "arm_outer_face_offset": 66.5,
+    "hook_overhang": 1.25,
+    "hook_height": 2.0,
+    "hook_bottom_z_global": 5.0,
+    "hook_inner_face_offset": 63.75,
+    "hook_outer_chamfer": 1.25,
+    "hook_inner_chamfer": 1.25,
+    "root_fillet_radius": 2.0,
+    "snap_deflection": 1.25,
+    "arm_root_stress_mpa": 43.75,
+    "arm_peak_stress_mpa_kt12": 52.5,
+    "pla_yield_mpa": 65,
+    "safety_factor": 1.24,
+    "bbox_x_installed": 133,
+    "bbox_y_installed": 124,
+    "bbox_z_installed": 26.7
+  }
+}

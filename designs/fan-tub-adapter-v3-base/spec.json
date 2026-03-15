@@ -1,0 +1,66 @@
+{
+  "name": "fan-tub-adapter-v3-base",
+  "description": "Base plate for fan-tub adapter v3.0. 2 clip ledges (±X only) with integral guide channels flanking each ledge. All other v2 geometry unchanged.",
+  "dimensions": {
+    "x": 196,
+    "y": 196,
+    "z": 15.0
+  },
+  "defaultTolerance": 2.0,
+  "tolerances": {
+    "z": 0.5
+  },
+  "watertight": true,
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "volume": {
+    "min": 10,
+    "max": 140
+  },
+  "echoedDimensions": {
+    "base": {
+      "x": 196,
+      "y": 196,
+      "z": 15.0
+    }
+  },
+  "views": ["front", "top", "right", "iso", "bottom-iso", "top-down", "channel-section"],
+  "params": {
+    "square_size": 63.7,
+    "channel_width": 9.4,
+    "cutout_size": 136.8,
+    "frame_thickness_inner": 5.0,
+    "frame_thickness_outer": 4.6,
+    "fan_frame_size": 119,
+    "fan_frame_thickness": 24.7,
+    "center_opening_dia": 115,
+    "locating_rim_height": 4.0,
+    "locating_rim_wall": 2,
+    "locating_rim_inner": 120,
+    "locating_rim_outer": 124,
+    "clip_ledge_count": 2,
+    "clip_ledge_sides": "±X only",
+    "clip_ledge_depth": 3.0,
+    "clip_ledge_flat": 2.0,
+    "clip_ledge_height": 5.0,
+    "clip_ledge_z_chamfer_bot": 4.0,
+    "clip_ledge_z_flat_bot": 7.0,
+    "clip_ledge_z_top": 9.0,
+    "clip_arm_w": 8.0,
+    "channel_inner_width": 8.7,
+    "channel_wall_thickness": 2.0,
+    "channel_outer_width": 12.7,
+    "channel_wall_height": 10.0,
+    "channel_z_bot": 5.0,
+    "channel_z_top": 15.0,
+    "branch_width": 9.0,
+    "branch_length": 25,
+    "branch_root_offset": 73.1,
+    "corner_radius": 4,
+    "bbox_z_v2": 9.0,
+    "bbox_z_v3": 15.0
+  }
+}
