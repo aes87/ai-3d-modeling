@@ -1,0 +1,75 @@
+{
+  "name": "humidity-output-v2",
+  "description": "V2 duct mount for 4\" flex dryer duct. Reduced spigot OD (108->106mm), lead-in taper at top, internal fins extended to z=0.",
+  "dimensions": {
+    "x": 196,
+    "y": 196,
+    "z": 62
+  },
+  "defaultTolerance": 2.0,
+  "tolerances": {
+    "z": 1.0,
+    "spigotOD": 0.3,
+    "boreID": 0.5,
+    "foamGrooveDepth": 0.2
+  },
+  "watertight": true,
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "volume": {
+    "min": 75,
+    "max": 300
+  },
+  "echoedDimensions": {
+    "humidityOutputV2": {
+      "x": 196,
+      "y": 196,
+      "z": 62
+    }
+  },
+  "views": ["front", "top", "right", "iso"],
+  "params": {
+    "duct_ring_od_measured": 110,
+    "duct_wire_ring_thickness": 1.2,
+    "duct_ring_id_effective": 107.6,
+    "spigot_od": 106,
+    "spigot_id": 96,
+    "spigot_wall": 5,
+    "spigot_height_above_base": 57,
+    "taper_zone_height": 8,
+    "taper_tip_od": 100,
+    "taper_tip_wall": 2.0,
+    "taper_half_angle_deg": 20.6,
+    "foam_groove_depth": 2.5,
+    "foam_zone_width": 19,
+    "foam_spec": "closed-cell EPDM, 3/4\" wide x 1/8\" thick",
+    "lower_ridge_od": 114,
+    "lower_ridge_protrusion": 4,
+    "lower_ridge_axial_width": 5,
+    "zip_tie": "16\" releasable",
+    "waffle_cutout": 136.8,
+    "branch_engagement": 25,
+    "branch_arm_width": 9.0,
+    "inner_pad_size": 130,
+    "inner_pad_thickness": 5.0,
+    "internal_fin_z_start": 0,
+    "internal_fin_count": 6,
+    "internal_fin_thickness": 2.0,
+    "internal_fin_radial_depth": 6.0,
+    "internal_fin_taper_zone_height": 10,
+    "external_shark_fin_count": 6,
+    "external_shark_fin_thickness": 3.0,
+    "external_shark_fin_radial_extent": 9.0,
+    "external_shark_fin_height": 13,
+    "z_spigot_start": 5,
+    "z_lower_ridge_bot": 20,
+    "z_lower_ridge_top": 25,
+    "z_foam_bot": 25,
+    "z_foam_top": 44,
+    "z_spigot_top": 62,
+    "params_file": "scad-lib/humidity-output-v2-params.scad"
+  }
+}

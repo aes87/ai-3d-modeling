@@ -125,7 +125,7 @@ def slice_mesh(mesh, layer_height):
         if section is not None:
             try:
                 # Project to 2D for area/perimeter calculation
-                flat, _transform = section.to_planar()
+                flat, _transform = section.to_2D()
                 layer_data["area_mm2"] = round(float(flat.area), 3)
                 layer_data["perimeter_mm"] = round(float(flat.length), 3)
                 layer_data["num_contours"] = len(flat.entities) if hasattr(flat, 'entities') else 0
@@ -217,7 +217,7 @@ def estimate_wall_thickness(mesh, layer_height, sample_layers=None):
             continue
 
         try:
-            flat, transform = section.to_planar()
+            flat, transform = section.to_2D()
             if len(flat.vertices) < 3:
                 continue
 

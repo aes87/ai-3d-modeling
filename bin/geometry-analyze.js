@@ -32,11 +32,21 @@ async function fileExists(p) {
 
 async function runPythonScript(scriptName, args, timeout = 300_000) {
   const scriptPath = path.join(PYTHON_DIR, scriptName);
-  const result = await execFileAsync(VENV_PYTHON, [scriptPath, ...args], {
-    timeout,
-    maxBuffer: 50 * 1024 * 1024,
-    cwd: PROJECT_ROOT,
-  });
+  let result;
+  try {
+    result = await execFileAsync(VENV_PYTHON, [scriptPath, ...args], {
+      timeout,
+      maxBuffer: 50 * 1024 * 1024,
+      cwd: PROJECT_ROOT,
+    });
+  } catch (err) {
+    // Exit code 1 = issues found (report still written), only re-throw on real crashes
+    if (err.code === 1 && err.stderr && !err.stderr.includes('Traceback')) {
+      result = { stdout: err.stdout || '', stderr: err.stderr || '' };
+    } else {
+      throw err;
+    }
+  }
 
   if (result.stderr) {
     process.stderr.write(result.stderr);

@@ -1,0 +1,150 @@
+{
+  "designName": "humidity-output-v2",
+  "validationPass": true,
+  "iterations": 1,
+  "dimensions": {
+    "actual": { "x": 196.2, "y": 196.2, "z": 62 },
+    "expected": { "x": 196, "y": 196, "z": 62 },
+    "withinTolerance": true
+  },
+  "features": [
+    {
+      "name": "outer_plate",
+      "description": "Wide flange (146.2mm square, 4mm corner radius) that sits on top of bin lid. Caulked in place for adhesion. 4.6mm thick, flush with waffle grid tops.",
+      "z_range": [0, 4.6],
+      "outer_extent": 146.2,
+      "inner_extent": null,
+      "scad_line": 42,
+      "transitions": {
+        "below": "bed",
+        "above": "inner_pad"
+      }
+    },
+    {
+      "name": "y_branch_arms",
+      "description": "4 corner Y-branch forks (2 arms each) that engage into 9.4mm waffle grid channels. 9.0mm wide arms with 25mm engagement length. Root at 73.1mm from origin.",
+      "z_range": [0, 4.6],
+      "outer_extent": 196.2,
+      "inner_extent": null,
+      "scad_line": 48,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "inner_pad",
+      "description": "Thickened 130mm square central zone (8mm corner radius) that raises the spigot base above the outer plate. 5.0mm thick.",
+      "z_range": [0, 5.0],
+      "outer_extent": 130,
+      "inner_extent": null,
+      "scad_line": 47,
+      "transitions": {
+        "below": "bed",
+        "above": "spigot_body"
+      }
+    },
+    {
+      "name": "internal_fins",
+      "description": "6 radial ribs projecting inward from bore wall (2mm thick, 6mm deep, 1mm wall overlap). Start at z=0 (V2 fix: was z=5 in v1). Full depth to z=52, then taper to zero over top 10mm. Resist bore ovalization under zip-tie clamping.",
+      "z_range": [0, 62],
+      "outer_extent": null,
+      "inner_extent": 42,
+      "scad_line": 136,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "spigot_body",
+      "description": "Cylindrical sleeve (OD 106mm, ID 96mm, wall 5mm) that the 4-inch flex duct slides over. V2 reduced from 108mm OD. Extends from z=5 to z=54 as a straight cylinder.",
+      "z_range": [5, 54],
+      "outer_extent": 106,
+      "inner_extent": 96,
+      "scad_line": 82,
+      "transitions": {
+        "below": "inner_pad",
+        "above": "lead_in_taper"
+      }
+    },
+    {
+      "name": "external_shark_fins",
+      "description": "6 triangular gussets at spigot-to-pad junction. 3mm thick, 9mm radial extent, 13mm tall. Right-triangle profile in r-z plane. Structural and alignment markers. 55 deg from horizontal (35 deg from vertical).",
+      "z_range": [5, 18],
+      "outer_extent": 62,
+      "inner_extent": null,
+      "scad_line": 108,
+      "transitions": {
+        "below": "inner_pad",
+        "above": "lower_stop_ridge"
+      }
+    },
+    {
+      "name": "lower_stop_ridge",
+      "description": "Annular ridge (OD 114mm) that prevents duct from sliding past insertion depth. 45-degree chamfer on underside (4mm rise over 4mm radial run, exactly 45 deg — self-supporting), 1mm flat top. 5mm axial width.",
+      "z_range": [20, 25],
+      "outer_extent": 114,
+      "inner_extent": null,
+      "scad_line": 92,
+      "transitions": {
+        "below": "external_shark_fins",
+        "above": "foam_groove"
+      }
+    },
+    {
+      "name": "foam_groove",
+      "description": "Annular channel (2.5mm deep, 19mm wide) recessed into spigot OD surface. Accepts 3/4-inch closed-cell EPDM foam tape. Wall at groove bottom = 2.5mm. Groove OD = 101mm.",
+      "z_range": [25, 44],
+      "outer_extent": 106,
+      "inner_extent": 101,
+      "scad_line": 100,
+      "transitions": {
+        "below": "lower_stop_ridge",
+        "above": "above_seal_grip"
+      }
+    },
+    {
+      "name": "above_seal_grip",
+      "description": "Upper portion of spigot above foam groove. 10mm tall plain cylinder zone at full 106mm OD. Provides grip surface for duct and zip tie above the seal.",
+      "z_range": [44, 54],
+      "outer_extent": 106,
+      "inner_extent": 96,
+      "scad_line": 82,
+      "transitions": {
+        "below": "foam_groove",
+        "above": "lead_in_taper"
+      }
+    },
+    {
+      "name": "lead_in_taper",
+      "description": "NEW in V2: Conical taper at spigot top. OD transitions from 106mm to 100mm over 8mm height. Guides duct onto spigot for easy location. Taper half-angle 20.6 deg from vertical (well within 45 deg limit). Tip wall = 2.0mm.",
+      "z_range": [54, 62],
+      "outer_extent": 106,
+      "inner_extent": 96,
+      "scad_line": 87,
+      "transitions": {
+        "below": "above_seal_grip",
+        "above": "top"
+      }
+    }
+  ],
+  "printOrientation": {
+    "bed_face": "Base plate bottom (z=0)",
+    "z_direction": "Spigot grows upward from base plate; taper tip is the topmost feature at z=62"
+  },
+  "specDeviations": [
+    {
+      "dimension": "x",
+      "expected": 196,
+      "actual": 196.2,
+      "reason": "Y-branch arm geometry uses rounded cylinder endpoints; 0.2mm overshoot is within 2.0mm tolerance and matches v1 behavior"
+    },
+    {
+      "dimension": "y",
+      "expected": 196,
+      "actual": 196.2,
+      "reason": "Same as x -- symmetric Y-branch layout"
+    }
+  ]
+}
