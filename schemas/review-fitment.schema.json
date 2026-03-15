@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fitment Review",
+  "description": "Output from the fit-reviewer agent — assembly interference and fit spec results",
+  "type": "object",
+  "required": ["assemblyName", "pass", "interferenceChecks", "fitChecks"],
+  "properties": {
+    "assemblyName": {
+      "type": "string"
+    },
+    "pass": {
+      "type": "boolean",
+      "description": "True only if ALL interference and fit checks pass"
+    },
+    "interferenceChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["partA", "partB", "intersectionVolume", "maxAllowed", "pass"],
+        "properties": {
+          "partA": { "type": "string" },
+          "partB": { "type": "string" },
+          "intersectionVolume": {
+            "type": "number",
+            "description": "Measured intersection volume in mm³"
+          },
+          "maxAllowed": {
+            "type": "number",
+            "description": "Maximum allowed intersection volume from spec"
+          },
+          "pass": { "type": "boolean" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "fitChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "actual", "expected", "pass"],
+        "properties": {
+          "name": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["clearance", "interference"]
+          },
+          "actual": { "type": "number" },
+          "expected": {
+            "type": "object",
+            "required": ["min", "max"],
+            "properties": {
+              "min": { "type": "number" },
+              "max": { "type": "number" }
+            }
+          },
+          "pass": { "type": "boolean" }
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

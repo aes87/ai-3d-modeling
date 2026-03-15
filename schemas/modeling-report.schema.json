@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Modeling Report",
+  "description": "Output from the modeler agent — dimensions, validation status, and feature inventory for downstream reviewers",
+  "type": "object",
+  "required": ["designName", "validationPass", "iterations", "dimensions", "features", "printOrientation"],
+  "properties": {
+    "designName": {
+      "type": "string",
+      "description": "Design directory name (e.g., 'fan-tub-adapter-base')"
+    },
+    "validationPass": {
+      "type": "boolean",
+      "description": "Whether the final validation run passed"
+    },
+    "iterations": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 6,
+      "description": "Number of validation rounds needed"
+    },
+    "dimensions": {
+      "type": "object",
+      "required": ["actual", "expected", "withinTolerance"],
+      "properties": {
+        "actual": {
+          "type": "object",
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "expected": {
+          "type": "object",
+          "required": ["x", "y", "z"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "withinTolerance": { "type": "boolean" }
+      }
+    },
+    "features": {
+      "type": "array",
+      "description": "Features listed in print-Z order (bed → top)",
+      "items": {
+        "type": "object",
+        "required": ["name", "description", "z_range"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Snake_case feature identifier"
+          },
+          "description": {
+            "type": "string",
+            "description": "What this feature does"
+          },
+          "z_range": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "[bottom_mm, top_mm] in print orientation"
+          },
+          "outer_extent": {
+            "type": ["number", "null"],
+            "description": "Outer diameter or width at this feature (mm)"
+          },
+          "inner_extent": {
+            "type": ["number", "null"],
+            "description": "Inner diameter or opening at this feature (mm)"
+          },
+          "scad_line": {
+            "type": "integer",
+            "description": "Line number in the .scad file where this feature is defined"
+          },
+          "transitions": {
+            "type": "object",
+            "properties": {
+              "below": {
+                "type": "string",
+                "description": "Feature name below this one, or 'bed'"
+              },
+              "above": {
+                "type": "string",
+                "description": "Feature name above this one, or 'top'"
+              }
+            }
+          }
+        }
+      }
+    },
+    "printOrientation": {
+      "type": "object",
+      "required": ["bed_face", "z_direction"],
+      "properties": {
+        "bed_face": {
+          "type": "string",
+          "description": "Which face of the design touches the print bed"
+        },
+        "z_direction": {
+          "type": "string",
+          "description": "What design direction corresponds to print-Z (e.g., 'upward from base')"
+        }
+      }
+    },
+    "specDeviations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dimension", "expected", "actual", "reason"],
+        "properties": {
+          "dimension": { "type": "string" },
+          "expected": { "type": "number" },
+          "actual": { "type": "number" },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  }
+}
