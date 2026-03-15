@@ -63,9 +63,31 @@ Validation spec for the pipeline:
   "volume": { "min": <cm3>, "max": <cm3> },
   "echoedDimensions": { "<label>": { "x": <mm>, "y": <mm>, "z": <mm> } },
   "views": ["front", "top", "right", "iso", "<custom-angles>"],
-  "params": { "<key>": "<value>" }
+  "params": { "<key>": "<value>" },
+  "testPrintCandidates": [
+    {
+      "feature": "<feature name>",
+      "reason": "<why this needs a test print>",
+      "category": "fitment|sizing|printability",
+      "priority": "high|medium|low"
+    }
+  ]
 }
 ```
+
+### Test print candidates
+
+Flag features in `testPrintCandidates` that the user should verify with a small test print before committing to the full part. The downstream test-print-planner agent will consume these flags and produce simplified test piece specs.
+
+**Always flag:**
+- Mating interfaces with < 2mm diametric clearance
+- Press fits or snap fits
+- Any dimension with tolerance < 0.5mm that affects function
+
+**Don't flag:**
+- Features with generous clearance (> 2mm all around)
+- Purely decorative geometry
+- Standard proven patterns (simple cylinders, flat plates)
 
 ## Rules
 

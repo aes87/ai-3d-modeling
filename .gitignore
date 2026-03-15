@@ -1,6 +1,5 @@
 node_modules/
 designs/*/iterations/
-designs/*/output/*.stl
 designs/*/output/*.png
 test/fixtures/*.stl
 !test/fixtures/.gitkeep

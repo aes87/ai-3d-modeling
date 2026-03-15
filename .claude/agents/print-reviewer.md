@@ -193,6 +193,28 @@ Write `output/review-printability.md`:
 - Conflicts requiring user decision: <n>
 ```
 
+## Step 7 — Test print recommendations
+
+After completing the 6-step review, add a **Test Print Recommendations** section identifying features that would benefit from a test print before committing to the full part.
+
+Flag features that are:
+- **Near limits** — overhangs at or close to 45°, bridges > 5mm, walls close to 1.2mm
+- **Critical fitment** — mating interfaces with tight clearances
+- **First-of-kind** — geometry patterns not previously validated in this project
+
+For each recommendation, state:
+- Which feature(s) to test
+- Why (what risk the test print mitigates)
+- Suggested simplification (arc section, height slice, minimal base)
+
+```markdown
+## Test Print Recommendations
+- **<feature>**: <reason>. Suggest <simplification>.
+- **<feature>**: <reason>. Suggest <simplification>.
+```
+
+If no features warrant test prints, write: "No test prints recommended — all features within comfortable margins."
+
 ## Return format
 
 Return a brief summary to the orchestrator:
@@ -202,4 +224,5 @@ Return a brief summary to the orchestrator:
 - List of FAILs with feature names
 - Slicer agreement (if available)
 - List of conflicts requiring user decision
+- Number of test print recommendations
 - Do NOT include the full report — that's in the file
