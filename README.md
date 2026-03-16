@@ -37,37 +37,30 @@ config:
     lineColor: '#8b949e'
     fontSize: '14px'
 ---
-flowchart LR
+flowchart TD
     subgraph SPEC["  Spec  "]
-        direction TB
-        SW["spec-writer"]
+        SW(["spec-writer"])
     end
 
     subgraph BUILD["  Build  "]
-        direction TB
-        M["modeler"]
+        M(["modeler"])
     end
 
     subgraph ANALYZE["  Analyze  "]
-        direction TB
-        GA["geometry-analyzer"]
-        FR["fit-reviewer"]
+        direction LR
+        GA(["geometry-analyzer"]) ~~~ FR(["fit-reviewer"])
     end
 
     subgraph REVIEW["  Review  "]
-        direction TB
-        PR["print-reviewer"]
+        PR(["print-reviewer"])
     end
 
     subgraph TEST["  Test Prints  "]
-        direction TB
-        TPP["test-print-planner"]
-        TM["modeler"]
+        TPP(["test-print-planner"]) --> TM(["modeler"])
     end
 
     subgraph SHIP["  Ship  "]
-        direction TB
-        S["shipper"]
+        S(["shipper"])
     end
 
     SW -- "requirements.md + spec.json" --> M
@@ -76,9 +69,8 @@ flowchart LR
     GA -. "if multi-part" .-> FR
     FR -. "fitment.json" .-> PR
     PR -- "review + test recs" --> TPP
-    TPP -- "test piece specs" --> TM
     TM --> S
-    PR -- "FAIL" --> M
+    PR -. "FAIL" .-> M
 
     style SW fill:#1f6feb,color:#fff,stroke:#1f6feb
     style M fill:#1f6feb,color:#fff,stroke:#1f6feb
