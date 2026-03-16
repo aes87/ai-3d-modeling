@@ -28,32 +28,73 @@ This is an AI-native parametric modeling pipeline built on [Claude Code](https:/
 Seven specialized agents split the work — each owns a stage, communicates through structured files, and never sees the full conversation history. The orchestrator (top-level Claude session) manages user dialogue and dispatches agents.
 
 ```mermaid
-graph TD
-    User([User]) --> Orch[Orchestrator]
+---
+config:
+  theme: dark
+  themeVariables:
+    primaryColor: '#1f6feb'
+    primaryTextColor: '#fff'
+    lineColor: '#8b949e'
+    fontSize: '14px'
+---
+flowchart LR
+    subgraph SPEC["  Spec  "]
+        direction TB
+        SW["spec-writer"]
+    end
 
-    Orch --> SW[spec-writer]
-    SW -->|requirements.md\nspec.json| M[modeler ×N]
-    M -->|.scad\nmodeling-report.json| GA[geometry-analyzer ×N]
-    GA -->|geometry-report.json\nslicer-report.json| PR[print-reviewer]
-    GA --> FR[fit-reviewer\nif multi-part]
+    subgraph BUILD["  Build  "]
+        direction TB
+        M["modeler"]
+    end
 
-    PR -->|review-printability.md| TPP[test-print-planner]
-    FR -.->|review-fitment.json| TPP
-    TPP -->|test-prints.json\nstub design dirs| TM[modeler ×N\ntest pieces]
-    TM --> Ship[shipper]
-    Ship -->|docs page\ncommit + push| Done([GitHub])
+    subgraph ANALYZE["  Analyze  "]
+        direction TB
+        GA["geometry-analyzer"]
+        FR["fit-reviewer"]
+    end
 
-    PR -->|FAIL| M
-    FR -->|FAIL| M
+    subgraph REVIEW["  Review  "]
+        direction TB
+        PR["print-reviewer"]
+    end
 
-    style SW fill:#1f6feb,color:#fff
-    style M fill:#1f6feb,color:#fff
-    style GA fill:#238636,color:#fff
-    style PR fill:#238636,color:#fff
-    style FR fill:#238636,color:#fff
-    style TPP fill:#9e6a03,color:#fff
-    style TM fill:#9e6a03,color:#fff
-    style Ship fill:#8b949e,color:#fff
+    subgraph TEST["  Test Prints  "]
+        direction TB
+        TPP["test-print-planner"]
+        TM["modeler"]
+    end
+
+    subgraph SHIP["  Ship  "]
+        direction TB
+        S["shipper"]
+    end
+
+    SW -- "requirements.md + spec.json" --> M
+    M -- ".scad + STL" --> GA
+    GA -- "geometry-report.json" --> PR
+    GA -. "if multi-part" .-> FR
+    FR -. "fitment.json" .-> PR
+    PR -- "review + test recs" --> TPP
+    TPP -- "test piece specs" --> TM
+    TM --> S
+    PR -- "FAIL" --> M
+
+    style SW fill:#1f6feb,color:#fff,stroke:#1f6feb
+    style M fill:#1f6feb,color:#fff,stroke:#1f6feb
+    style GA fill:#238636,color:#fff,stroke:#238636
+    style FR fill:#238636,color:#fff,stroke:#238636
+    style PR fill:#da3633,color:#fff,stroke:#da3633
+    style TPP fill:#9e6a03,color:#fff,stroke:#9e6a03
+    style TM fill:#9e6a03,color:#fff,stroke:#9e6a03
+    style S fill:#8b949e,color:#fff,stroke:#8b949e
+
+    style SPEC fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
+    style BUILD fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
+    style ANALYZE fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
+    style REVIEW fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
+    style TEST fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
+    style SHIP fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
 ```
 
 <details>
