@@ -1,172 +1,160 @@
 # AI 3D Modeling
 
-AI-native parametric 3D modeling pipeline. [Claude Code](https://docs.anthropic.com/en/docs/claude-code) designs parts in [OpenSCAD](https://openscad.org/), validates them automatically, and iterates until they pass. The human describes what they need; the AI handles all CAD work, iteration, and validation.
+Describe a part. Get a printable STL — spec'd, validated, reviewed for printability, and shipped with test prints for critical fitment. No CAD skills required.
 
-**Printer:** Bambu Lab X1 Carbon — 256 × 256 × 256 mm, 0.4mm nozzle, PLA.
+This is an AI-native parametric modeling pipeline built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [OpenSCAD](https://openscad.org/). The human owns the design intent — dimensions, constraints, how things mate. The AI handles the CAD work, iterates against a validation pipeline, and doesn't ship until the geometry passes quantitative review.
 
-## How It Works
+**Printer:** Bambu Lab X1 Carbon — 256 × 256 × 256 mm, 0.4 mm nozzle, PLA.
 
-1. Describe the part — dimensions, constraints, how it fits with other components
-2. Claude writes `spec.json` (expected dimensions, tolerances) and a parametric `.scad` file using project libraries for FDM/PLA tolerances
-3. Pipeline renders STL + PNGs, analyzes the mesh, and compares against spec
-4. On failure: Claude reads the structured error report, fixes the `.scad`, re-runs (up to 6 rounds)
-5. On pass: geometry analyzer produces ground-truth printability data from the mesh
-6. Print reviewer evaluates quantitative data and issues a final verdict
+## What It Does
 
-All FDM/PLA tolerance constants (press fit, clearance fit, hole compensation, wall minimums, overhang limits) live in [`scad-lib/fdm-pla.scad`](scad-lib/fdm-pla.scad) and are used by every design. Multi-part assemblies can be checked for fit and interference via a separate pipeline using trimesh + PyVista — see [`bin/check-assembly.js`](bin/check-assembly.js).
-
-## Multi-Agent Architecture
-
-Complex designs are handled by specialized agents, each with a focused role and its own context window. Agents communicate through structured files, not conversation history.
-
-```
-                            User
-                             |
-                       Orchestrator
-                        (top-level)
-                             |
-                ┌────────────┼────────────┐
-                v            v            v
-           spec-writer   (decisions)   shipper
-                |                        ^
-                v                        |
-       requirements.md            (all complete)
-          spec.json                      |
-          testPrintCandidates            |
-                |            ┌───────────┤
-                v            v           |
-            modeler ──► geometry    fit-reviewer
-             (×N)      analyzer      (if multi-
-                |       (×N)          part)
-                v            |           ^
-          <name>.scad        v           |
-          modeling-      geometry-       |
-          report.json    report.json     |
-                |        slicer-         |
-                |        report.json     |
-                v            |           |
-           print-reviewer ◄─┘           |
-                |                        |
-                v                        |
-          review-printability.md         |
-          (+ test print recs)            |
-                |                        |
-                v                        |
-         test-print-planner              |
-                |                        |
-                v                        |
-          test-prints.json               |
-          + stub design dirs             |
-                |                        |
-                v                        |
-            modeler (×N)                 |
-          (test pieces)                  |
-                |                        |
-                v                        |
-          test piece STLs ───────────────┘
-```
-
-### Agent Roles
-
-| Agent | Role | Tools | Inputs | Outputs |
-|-------|------|-------|--------|---------|
-| **spec-writer** | Intake requirements, screen for printability conflicts | Read, Write | User description | `requirements.md`, `spec.json` |
-| **modeler** | Write OpenSCAD code, iterate against validation | Read, Write, Edit, Bash | `requirements.md`, `spec.json` | `<name>.scad`, `modeling-report.json` |
-| **geometry-analyzer** | Mesh-based printability analysis from ground-truth geometry | Read, Bash | Rendered STL | `geometry-report.json`, `slicer-report.json` |
-| **print-reviewer** | Evaluate printability from quantitative data, issue verdict | Read | Geometry + slicer reports | `review-printability.md` |
-| **fit-reviewer** | Assembly interference and fit checks | Read, Bash | Multiple STLs, assembly spec | `review-fitment.json` |
-| **test-print-planner** | Identify critical geometries, produce minimal test piece specs | Read, Write | All finalized reports | `test-prints.json`, test piece design dirs |
-| **shipper** | Copy outputs, update docs, commit and push | Read, Write, Edit, Bash | All reports | Committed artifacts |
-
-### Pipeline by Complexity
-
-| Complexity | Criteria | Pipeline |
-|---|---|---|
-| **Simple** | Single part, ≤5 features | `spec-writer` → `modeler` (inline print check) → `shipper` |
-| **Medium** | Single part, >5 features | `spec-writer` → `modeler` → `geometry-analyzer` → `print-reviewer` → `test-print-planner` → `modeler` (test pieces) → `shipper` |
-| **Complex** | Multi-part assembly | `spec-writer` → `modeler` (×N parallel) → `geometry-analyzer` (×N parallel) → `print-reviewer` + `fit-reviewer` (parallel) → `test-print-planner` → `modeler` (test pieces, parallel) → `shipper` |
-
-### Geometry Analysis Pipeline
-
-The geometry analyzer separates **measuring geometry** from **judging printability**:
-
-1. **Mesh analysis** (`python/geometry_analyze.py`, trimesh) — slices the STL at every layer height, computing per-layer cross-sections, overhang angles, bridge spans, wall thicknesses, and transition detection. This is the ground truth for what the part actually looks like, independent of the SCAD source.
-
-2. **Slicer analysis** (`python/slicer_analyze.py`, PrusaSlicer CLI) — slices with production settings, parses G-code for support requirements, bridge detection, and per-layer extrusion types. Uses the same engine as OrcaSlicer (Slic3r → PrusaSlicer → BambuStudio → OrcaSlicer lineage). Gracefully skipped if PrusaSlicer isn't installed.
-
-The print-reviewer reads quantitative reports, not SCAD source. It falls back to source-code inference only when geometry reports are unavailable.
-
-## Architecture Versions
-
-| Version | Name | Key change |
-|---------|------|------------|
-| **v1** | Monolithic | Single CLAUDE.md with inline instructions. Validation pipeline renders + analyzes STL, but printability review is manual/inline. |
-| **v2** | Multi-agent | Specialized agents (spec-writer, modeler, print-reviewer, fit-reviewer, shipper) with file-based handoff. Print reviewer reads SCAD source and does manual arithmetic. |
-| **v3** | Ground-truth geometry | New geometry-analyzer agent produces mesh-based reports (trimesh layer slicing + PrusaSlicer G-code analysis). Print reviewer consumes quantitative data instead of inferring geometry from source. |
-| **v4** | Test print planning | New test-print-planner agent identifies critical geometries (fitment interfaces, tight tolerances, near-limit printability) and spawns modelers to produce minimal-material test pieces. Upstream agents flag candidates via `testPrintCandidates` (spec-writer) and Test Print Recommendations (print-reviewer). |
+- **Parametric modeling** — Claude writes OpenSCAD from structured requirements, iterates against dimensional validation up to 6 rounds
+- **Ground-truth printability** — trimesh slices the mesh at every layer height; PrusaSlicer confirms support and bridge behavior from actual G-code
+- **Automated review** — every overhang, bridge, wall thickness, and mating clearance is checked against FDM/PLA limits before the part ships
+- **Test print planning** — critical fitment interfaces get broken out into minimal-material test pieces so you verify fit before committing to a full print
+- **Multi-part assemblies** — interference and fit checks across parts using trimesh + PyVista
 
 ## Designs
 
-| Design | Preview | Architecture | Description | STL |
-|--------|---------|:------------:|-------------|-----|
-| [Humidity-Output Duct Mount](docs/humidity-output.md) | ![](docs/images/humidity-output/humidity-output-iso.png) | v1 | Mounts a 4" flex dryer duct to the same waffle-cutout bin lid. Caulked base plate with Y-branch waffle engagement. Spigot accepts standard flex duct; sealed airtight with EPDM foam tape + releasable zip tie. Ridges auto-position the zip tie over the foam. | [STL](designs/humidity-output/humidity-output.stl) |
-| [Humidity-Output V2](docs/humidity-output-v2.md) | ![](docs/images/humidity-output-v2/humidity-output-v2-iso.png) | v4 | V2.1 rebuild of the humidity duct mount: spigot OD reduced 108→106mm for duct clearance, lead-in taper added, internal fins extended to z=0, foam groove top chamfer eliminates bridge. Includes 2 test prints for critical fitment interfaces. | [STL](designs/humidity-output-v2/output/humidity-output-v2.stl) |
-| [Fan-Tub Adapter v2.0](docs/fan-tub-adapter-v2.md) | ![](docs/images/fan-tub-adapter-base/fan-tub-adapter-base-iso.png) | v1 | Mounts a 119mm waterproof fan into a waffle-cutout HDPE tub lid for mushroom cultivation Martha tents. Two-part tool-free system: base plate caulked permanently to lid, snap-on retention clip with cantilever snap-fit arms and root fillets for fatigue resistance. Zero fasteners. | [Base](designs/fan-tub-adapter-base/fan-tub-adapter-base.stl) · [Clip](designs/fan-tub-adapter-clip/fan-tub-adapter-clip.stl) |
-| [Fan-Tub Adapter v1.0](docs/fan-tub-adapter.md) *(frozen)* | ![](docs/images/fan-tub-adapter/fan-tub-adapter-iso.png) | v1 | Original single-piece bolt-on version of the fan mount. Notable for Y-branch waffle engagement, anti-rotation hex nut counterbores, and thumbscrew lid attachment. Superseded by v2.0. | [STL](designs/fan-tub-adapter/fan-tub-adapter.stl) |
+| Design | Preview | Arch | Description | STL |
+|--------|---------|:----:|-------------|-----|
+| [Humidity-Output V2](docs/humidity-output-v2.md) | ![Humidity duct mount V2 — spigot with lead-in taper and foam seal zone](docs/images/humidity-output-v2/humidity-output-v2-iso.png) | v4 | 4" flex duct mount for HDPE tub lids. Spigot with EPDM foam seal, zip-tie clamping, lead-in taper. 2 test prints for fitment verification. | [STL](designs/humidity-output-v2/output/humidity-output-v2.stl) |
+| [Humidity-Output V1](docs/humidity-output.md) | ![Humidity duct mount V1 — original spigot design](docs/images/humidity-output/humidity-output-iso.png) | v1 | Original duct mount — superseded by V2 (spigot was oversized, no lead-in taper, fins started mid-air). | [STL](designs/humidity-output/output/humidity-output.stl) |
+| [Fan-Tub Adapter v2.0](docs/fan-tub-adapter-v2.md) | ![Fan-tub adapter base plate with snap-fit clip system](docs/images/fan-tub-adapter-base/fan-tub-adapter-base-iso.png) | v1 | 119mm fan mount for Martha tent lids. Two-part snap-fit — base plate caulked to lid, retention clip with cantilever arms. Zero fasteners. | [Base](designs/fan-tub-adapter-base/output/fan-tub-adapter-base.stl) · [Clip](designs/fan-tub-adapter-clip/output/fan-tub-adapter-clip.stl) |
+| [Fan-Tub Adapter v1.0](docs/fan-tub-adapter.md) *(frozen)* | ![Original single-piece fan mount with bolt-on design](docs/images/fan-tub-adapter/fan-tub-adapter-iso.png) | v1 | Original bolt-on fan mount. Y-branch waffle engagement, hex nut counterbores, thumbscrew attachment. Superseded by v2.0. | [STL](designs/fan-tub-adapter/output/fan-tub-adapter.stl) |
 
-> Preview images link directly to committed render files — they update automatically whenever a design is revised and pushed.
+## How It Works
 
-## Setup
+Seven specialized agents split the work — each owns a stage, communicates through structured files, and never sees the full conversation history. The orchestrator (top-level Claude session) manages user dialogue and dispatches agents.
 
-Requires **Node.js 18+**, **OpenSCAD**, **Xvfb** (headless rendering), and optionally **PrusaSlicer** (slicer analysis).
+```mermaid
+graph TD
+    User([User]) --> Orch[Orchestrator]
 
-```bash
-# Install all system dependencies + Python venv (recommended)
-sudo bash setup.sh
+    Orch --> SW[spec-writer]
+    SW -->|requirements.md\nspec.json| M[modeler ×N]
+    M -->|.scad\nmodeling-report.json| GA[geometry-analyzer ×N]
+    GA -->|geometry-report.json\nslicer-report.json| PR[print-reviewer]
+    GA --> FR[fit-reviewer\nif multi-part]
 
-# Or install manually:
-sudo apt-get install -y openscad xvfb prusa-slicer
+    PR -->|review-printability.md| TPP[test-print-planner]
+    FR -.->|review-fitment.json| TPP
+    TPP -->|test-prints.json\nstub design dirs| TM[modeler ×N\ntest pieces]
+    TM --> Ship[shipper]
+    Ship -->|docs page\ncommit + push| Done([GitHub])
 
-# Install Node dependencies
-npm install
+    PR -->|FAIL| M
+    FR -->|FAIL| M
 
-# Run tests
-npm test
+    style SW fill:#1f6feb,color:#fff
+    style M fill:#1f6feb,color:#fff
+    style GA fill:#238636,color:#fff
+    style PR fill:#238636,color:#fff
+    style FR fill:#238636,color:#fff
+    style TPP fill:#9e6a03,color:#fff
+    style TM fill:#9e6a03,color:#fff
+    style Ship fill:#8b949e,color:#fff
 ```
 
-The `setup.sh` script installs OpenSCAD, Xvfb, PrusaSlicer, and sets up a Python virtual environment with trimesh, PyVista, shapely, and manifold3d for mesh analysis.
+<details>
+<summary><b>Agent details</b></summary>
 
-## Usage
+| Agent | What it does | Key outputs |
+|-------|-------------|-------------|
+| **spec-writer** | Turns user intent into structured requirements. Flags tight tolerances and printability risks. Pre-flags test print candidates. | `requirements.md`, `spec.json` |
+| **modeler** | Writes OpenSCAD, iterates against validation until PASS. Produces a feature inventory in print-Z order for the reviewer. | `<name>.scad`, `modeling-report.json` |
+| **geometry-analyzer** | Slices the rendered STL at every layer height (trimesh). Optionally runs PrusaSlicer for G-code-level bridge/support analysis. | `geometry-report.json`, `slicer-report.json` |
+| **print-reviewer** | Checks every feature transition, overhang, bridge, wall thickness, and mating clearance against FDM limits. Classifies bridges as functional or avoidable. Read-only. | `review-printability.md` |
+| **fit-reviewer** | Mesh-based interference and clearance checks for multi-part assemblies. | `review-fitment.json` |
+| **test-print-planner** | Identifies critical geometries — tight fitment, near-limit overhangs, novel features — and specs out minimal-material test pieces. | `test-prints.json`, stub design dirs |
+| **shipper** | Renders views, writes the GitHub design page, updates README, commits, pushes. | `docs/<name>.md`, committed artifacts |
+
+</details>
+
+<details>
+<summary><b>Pipeline scaling by complexity</b></summary>
+
+| Complexity | Criteria | Pipeline |
+|---|---|---|
+| **Simple** | Single part, ≤5 features | `spec-writer` → `modeler` → `shipper` |
+| **Medium** | Single part, >5 features | Full pipeline with geometry analysis, print review, test prints |
+| **Complex** | Multi-part assembly | Parallel modelers + analyzers, fit-reviewer added, parallel test prints |
+
+</details>
+
+### Ground-truth geometry — not source code inference
+
+The old approach — inferring printability from SCAD source — doesn't work. The mesh is the ground truth; the source code is a recipe that may not produce what you expect.
+
+The geometry analyzer slices the actual STL at 0.2mm intervals, computing per-layer cross-sections, overhang faces, bridge spans, and wall thickness. The optional slicer pass runs PrusaSlicer (same engine as OrcaSlicer — Slic3r → PrusaSlicer → BambuStudio → OrcaSlicer lineage) and parses the G-code for support material and bridge moves. The print reviewer consumes this quantitative data, not SCAD arithmetic.
+
+### Test prints — verify before you commit
+
+Mating interfaces with tight clearances get test prints automatically. A 90° arc section of a spigot costs a fraction of the material and prints in minutes — enough to trial-fit against the real duct and know if the OD is right before burning hours on the full part.
+
+## Quick Start
 
 ```bash
-# Full validation pipeline (render + analyze + validate)
-node bin/validate.js designs/<name>
+# One-time setup (installs OpenSCAD, Xvfb, Python venv, PrusaSlicer)
+sudo bash setup.sh
+npm install
 
-# Render only
-node bin/validate.js designs/<name> --render-only
+# Validate an existing design
+node bin/validate.js designs/humidity-output-v2
 
-# Analyze only (existing STL)
-node bin/validate.js designs/<name> --analyze-only
-
-# Geometry analysis (mesh + slicer, requires rendered STL)
-node bin/geometry-analyze.js designs/<name>
-
-# Geometry analysis (mesh only, skip slicer)
-node bin/geometry-analyze.js designs/<name> --skip-slicer
+# Run geometry analysis
+node bin/geometry-analyze.js designs/humidity-output-v2 --skip-slicer
 
 # Check a multi-part assembly
 node bin/check-assembly.js assemblies/<name>.json
 ```
 
-## Adding a New Design
+> [!IMPORTANT]
+> `setup.sh` requires sudo — it installs system packages and creates a Python venv. Run it once per environment.
 
-1. Create `designs/<name>/` with `spec.json` and `<name>.scad`
-2. Include `fdm-pla.scad` and `bambu-x1c.scad`; call `report_dimensions(x, y, z, "label")`
-3. Run `node bin/validate.js designs/<name>` and iterate
-4. Run `node bin/geometry-analyze.js designs/<name>` for printability data
-5. Add a row to the Designs table above with a link to `docs/<name>.md`
+## Project Structure
 
-See existing designs for the pattern.
+```
+designs/<name>/
+├── requirements.md          # What to build (from spec-writer)
+├── spec.json                # Validation targets + tolerances
+├── <name>.scad              # Parametric OpenSCAD source
+├── output/
+│   ├── <name>.stl           # Print-ready mesh
+│   ├── geometry-report.json # Mesh analysis (trimesh)
+│   ├── review-printability.md
+│   └── test-prints.json     # Test print manifest
+└── test-prints/             # Minimal-material test pieces
+    └── <id>/                # Each gets its own modeler run
+
+scad-lib/
+├── fdm-pla.scad             # FDM/PLA tolerance constants
+├── bambu-x1c.scad           # Build volume assertions
+└── common.scad              # fdm_hole(), chamfer_cylinder(), etc.
+```
+
+## FDM/PLA Tolerances
+
+Every design includes `fdm-pla.scad`. These are the constants — derived from real prints on the X1 Carbon.
+
+| Fit Type | Offset | Use Case |
+|----------|--------|----------|
+| Press fit | −0.15 mm | Friction-held joints |
+| Clearance fit | +0.25 mm | Easy insert/remove |
+| Sliding fit | +0.35 mm | Moving parts |
+| Hole compensation | +0.4 mm diameter | Bolt holes, dowel holes |
+| Min wall | 1.2 mm (3 perimeters) | Structural walls |
+| Max overhang | 45° | Unsupported overhangs |
+| Max bridge | 10 mm | Horizontal spans |
+
+## Architecture Versions
+
+| Version | Name | What changed |
+|---------|------|-------------|
+| **v1** | Monolithic | Single CLAUDE.md, inline printability review, no ground-truth geometry |
+| **v2** | Multi-agent | Specialized agents with file-based handoff. Print reviewer reads SCAD source — better, but still inferring |
+| **v3** | Ground-truth geometry | geometry-analyzer produces mesh-based reports. Reviewer consumes quantitative data, not source code |
+| **v4** | Test print planning | test-print-planner identifies critical geometries. Upstream agents flag candidates. Avoidable bridges get flagged, not silently passed |
 
 ## License
 
