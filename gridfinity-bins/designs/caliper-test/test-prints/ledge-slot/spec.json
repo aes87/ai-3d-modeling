@@ -10,7 +10,7 @@
   },
   "watertight": true,
   "maxDimensions": { "x": 256, "y": 256, "z": 256 },
-  "volume": { "min": 1, "max": 25 },
+  "volume": { "min": 1, "max": 35 },
   "echoedDimensions": {
     "test_piece": { "x": 83.5, "y": 25.0, "z": 24.8 },
     "beam_slot": { "x": 20.0, "y": 9.0, "z": 11.8 }

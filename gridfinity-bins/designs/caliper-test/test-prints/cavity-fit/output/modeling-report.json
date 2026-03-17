@@ -1,0 +1,41 @@
+{
+  "designName": "cavity-fit",
+  "validationPass": true,
+  "iterations": 1,
+  "dimensions": {
+    "actual": { "x": 83.5, "y": 25.0, "z": 22.0 },
+    "expected": { "x": 83.5, "y": 25.0, "z": 22.0 },
+    "withinTolerance": true
+  },
+  "features": [
+    {
+      "name": "base_plate",
+      "description": "2mm solid flat base replacing the Gridfinity base grid. Provides a stable print bed surface and closes the bottom of the cavity.",
+      "z_range": [0, 2.0],
+      "outer_extent": 83.5,
+      "inner_extent": null,
+      "scad_line": 67,
+      "transitions": {
+        "below": "bed",
+        "above": "cavity_walls"
+      }
+    },
+    {
+      "name": "cavity_walls",
+      "description": "Rectangular shell forming the 72x20mm display body cavity. Walls are 5.75mm thick on X sides and 2.5mm thick on Y sides. Outer corners have 3.75mm radius, cavity corners have 2.0mm radius. Open at the top for caliper insertion.",
+      "z_range": [2.0, 22.0],
+      "outer_extent": 83.5,
+      "inner_extent": 72.0,
+      "scad_line": 67,
+      "transitions": {
+        "below": "base_plate",
+        "above": "top"
+      }
+    }
+  ],
+  "printOrientation": {
+    "bed_face": "bottom (base plate, Z=0)",
+    "z_direction": "cavity opens upward — caliper inserts from above"
+  },
+  "specDeviations": []
+}
