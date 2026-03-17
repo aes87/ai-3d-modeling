@@ -1,20 +1,20 @@
 {
   "designName": "cavity-fit",
   "validationPass": true,
-  "iterations": 1,
+  "iterations": 2,
   "dimensions": {
-    "actual": { "x": 83.5, "y": 25.0, "z": 22.0 },
-    "expected": { "x": 83.5, "y": 25.0, "z": 22.0 },
+    "actual": { "x": 83.5, "y": 41.5, "z": 22.0 },
+    "expected": { "x": 83.5, "y": 41.5, "z": 22.0 },
     "withinTolerance": true
   },
   "features": [
     {
-      "name": "base_plate",
-      "description": "2mm solid flat base replacing the Gridfinity base grid. Provides a stable print bed surface and closes the bottom of the cavity.",
+      "name": "solid_base_plate",
+      "description": "2mm solid floor replacing the Gridfinity base profile; provides a flat print bed surface",
       "z_range": [0, 2.0],
       "outer_extent": 83.5,
       "inner_extent": null,
-      "scad_line": 67,
+      "scad_line": 62,
       "transitions": {
         "below": "bed",
         "above": "cavity_walls"
@@ -22,20 +22,39 @@
     },
     {
       "name": "cavity_walls",
-      "description": "Rectangular shell forming the 72x20mm display body cavity. Walls are 5.75mm thick on X sides and 2.5mm thick on Y sides. Outer corners have 3.75mm radius, cavity corners have 2.0mm radius. Open at the top for caliper insertion.",
+      "description": "Outer shell walls surrounding the 70x18mm pocket. Wall thickness is 6.75mm on X sides and 11.75mm on Y sides. Outer corners have 3.75mm radius, cavity corners have 2.0mm radius. Open at the top.",
       "z_range": [2.0, 22.0],
       "outer_extent": 83.5,
-      "inner_extent": 72.0,
-      "scad_line": 67,
+      "inner_extent": 70.0,
+      "scad_line": 62,
       "transitions": {
-        "below": "base_plate",
+        "below": "solid_base_plate",
+        "above": "top"
+      }
+    },
+    {
+      "name": "display_body_pocket",
+      "description": "70x18mm rectangular pocket with 2mm corner radius, open top; tests 1mm/side clearance for caliper display body (68x16mm)",
+      "z_range": [2.0, 22.0],
+      "outer_extent": null,
+      "inner_extent": 70.0,
+      "scad_line": 66,
+      "transitions": {
+        "below": "solid_base_plate",
         "above": "top"
       }
     }
   ],
   "printOrientation": {
-    "bed_face": "bottom (base plate, Z=0)",
+    "bed_face": "bottom (solid base plate, Z=0)",
     "z_direction": "cavity opens upward — caliper inserts from above"
   },
-  "specDeviations": []
+  "specDeviations": [
+    {
+      "dimension": "volume_max",
+      "expected": 50,
+      "actual": 50.825,
+      "reason": "Volume spec increased from 50 to 55 cm^3 because v2 uses full 41.5mm bin Y extent (v1 was trimmed to 25mm), increasing solid material with the smaller pocket."
+    }
+  ]
 }

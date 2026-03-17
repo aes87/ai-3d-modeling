@@ -1,7 +1,7 @@
 {
   "name": "caliper-test-test-ledge-slot",
-  "description": "Test print: ledge transition, beam slot fit, and 45° finger relief chamfer quality — 21.8mm cross-section from z=62.2 to z=84.0 plus 3mm base",
-  "dimensions": { "x": 83.5, "y": 25.0, "z": 24.8 },
+  "description": "Test print v2: L-shaped pocket transition zone — beam slot at corner of display cavity, no finger relief. 21.8mm cross-section from z=62.2 to z=84.0 plus 3mm base",
+  "dimensions": { "x": 83.5, "y": 41.5, "z": 24.8 },
   "defaultTolerance": 2.0,
   "tolerances": {
     "x": 0.2,
@@ -10,30 +10,29 @@
   },
   "watertight": true,
   "maxDimensions": { "x": 256, "y": 256, "z": 256 },
-  "volume": { "min": 1, "max": 35 },
+  "volume": { "min": 1, "max": 80 },
   "echoedDimensions": {
-    "test_piece": { "x": 83.5, "y": 25.0, "z": 24.8 },
-    "beam_slot": { "x": 20.0, "y": 9.0, "z": 11.8 }
+    "test_piece": { "x": 83.5, "y": 41.5, "z": 24.8 },
+    "display_cavity_section": { "x": 70.0, "y": 18.0, "z": 9.0 },
+    "beam_slot": { "x": 18.0, "y": 7.0, "z": 12.8 }
   },
   "views": ["front", "iso"],
   "params": {
     "parent_design": "caliper-test",
     "params_file": null,
-    "display_cavity_x": 72.0,
-    "display_cavity_y": 20.0,
-    "beam_slot_x": 20.0,
-    "beam_slot_y": 9.0,
-    "beam_slot_y_offset": 5.5,
-    "beam_slot_z": 11.8,
-    "finger_relief_height": 10.0,
-    "finger_relief_setback": 10.0,
-    "relief_x_capped": 81.1,
-    "relief_y_capped": 39.1,
+    "display_cavity_x": 70.0,
+    "display_cavity_y": 18.0,
+    "beam_slot_x": 18.0,
+    "beam_slot_y": 7.0,
+    "beam_slot_corner": "min-X, min-Y",
+    "beam_slot_z": 12.8,
+    "finger_relief": false,
     "outer_x": 83.5,
+    "outer_y": 41.5,
     "wall": 1.2,
-    "test_y_extent": 25.0,
     "base_plate_z": 3.0,
     "section_z_start": 62.2,
-    "section_z_end": 84.0
+    "section_z_end": 84.0,
+    "ledge_z_parent": 71.2
   }
 }

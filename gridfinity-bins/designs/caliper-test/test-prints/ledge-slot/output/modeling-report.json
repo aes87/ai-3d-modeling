@@ -3,14 +3,14 @@
   "validationPass": true,
   "iterations": 2,
   "dimensions": {
-    "actual": { "x": 83.5, "y": 25.0, "z": 24.8 },
-    "expected": { "x": 83.5, "y": 25.0, "z": 24.8 },
+    "actual": { "x": 83.5, "y": 41.5, "z": 24.8 },
+    "expected": { "x": 83.5, "y": 41.5, "z": 24.8 },
     "withinTolerance": true
   },
   "features": [
     {
       "name": "base_plate",
-      "description": "3mm solid flat base providing stable print foundation and representing bin wall material below the chamfer zone",
+      "description": "3mm solid flat base providing stable print foundation and representing bin wall material below the pocket transition zone",
       "z_range": [0.0, 3.0],
       "outer_extent": 83.5,
       "inner_extent": null,
@@ -22,47 +22,35 @@
     },
     {
       "name": "display_cavity_section",
-      "description": "Constant-width display body cavity cross-section (72x20mm) visible at the base face, representing parent z=62.2. Zero height in test piece since chamfer starts immediately at section_z_start",
-      "z_range": [3.0, 3.0],
+      "description": "9mm cross-section of the 70x18mm display body cavity, representing parent z=62.2 to z=71.2. Rectangular pocket centered in bin XY footprint, open on the bottom face of the test piece",
+      "z_range": [3.0, 12.0],
       "outer_extent": 83.5,
-      "inner_extent": 72.0,
+      "inner_extent": 70.0,
       "scad_line": 116,
       "transitions": {
         "below": "base_plate",
-        "above": "finger_relief_chamfer"
-      }
-    },
-    {
-      "name": "finger_relief_chamfer",
-      "description": "45-degree chamfer widening the pocket opening from display cavity size (72x20mm) to relief size (81.1x39.1mm, capped to inner wall dimensions) over 10mm of vertical height. This is the primary print quality test feature",
-      "z_range": [3.0, 13.0],
-      "outer_extent": 83.5,
-      "inner_extent": 81.1,
-      "scad_line": 122,
-      "transitions": {
-        "below": "display_cavity_section",
         "above": "transition_ledge"
       }
     },
     {
       "name": "transition_ledge",
-      "description": "Horizontal shelf where the wide chamfer opening (81.1x39.1mm) narrows to the beam slot (20x9mm). This is the resting surface for the caliper display body. The ledge material is the solid area between the relief opening perimeter and the beam slot",
-      "z_range": [13.0, 13.0],
+      "description": "L-shaped horizontal ledge at z=12.0 (parent z=71.2) where the 70x18mm display cavity narrows to the 18x7mm beam slot at the min-X, min-Y corner. The ledge is the resting surface for the caliper display body upper rim. Ledge area = (70x18) - (18x7) = 1134 mm2",
+      "z_range": [12.0, 12.0],
       "outer_extent": 83.5,
       "inner_extent": null,
-      "scad_line": 131,
+      "scad_line": 126,
       "transitions": {
-        "below": "finger_relief_chamfer",
-        "above": "beam_slot"
+        "below": "display_cavity_section",
+        "above": "beam_slot_zone"
       }
     },
     {
-      "name": "beam_slot",
-      "description": "Narrow slot (20x9mm) for caliper beam passage, offset +5.5mm in Y from piece center. Extends from transition ledge to the top of the piece (11.8mm tall). Primary fit-test feature",
-      "z_range": [13.0, 24.8],
+      "name": "beam_slot_zone",
+      "description": "18x7mm beam slot at the min-X, min-Y corner of the display cavity footprint, extending 12.8mm from the ledge to the top of the piece. This is the only open area above the ledge; the rest of the display cavity footprint is solid shoulder material",
+      "z_range": [12.0, 24.8],
       "outer_extent": 83.5,
-      "inner_extent": 20.0,
-      "scad_line": 131,
+      "inner_extent": 18.0,
+      "scad_line": 126,
       "transitions": {
         "below": "transition_ledge",
         "above": "top"
@@ -70,15 +58,27 @@
     }
   ],
   "printOrientation": {
-    "bed_face": "3mm base plate (bottom of test piece)",
-    "z_direction": "matches parent bin Z direction (caliper insertion axis)"
+    "bed_face": "3mm base plate (bottom of test piece, z=0)",
+    "z_direction": "matches parent bin Z axis (floor-to-top, caliper insertion axis)"
   },
   "specDeviations": [
     {
+      "dimension": "outer_y",
+      "expected": 41.5,
+      "actual": 41.5,
+      "reason": "v2 uses full bin Y width (41.5mm) instead of v1 trimmed 25mm to properly show the L-shaped corner pocket geometry"
+    },
+    {
+      "dimension": "beam_slot_z",
+      "expected": 12.8,
+      "actual": 12.8,
+      "reason": "Increased from v1 11.8mm because v2 display_cavity_z is 64mm (not 65mm), leaving more beam slot height in the parent"
+    },
+    {
       "dimension": "volume",
-      "expected": "1-25 cm3 (original spec)",
-      "actual": 30.975,
-      "reason": "Original spec volume estimate was too low. The 83.5x25x24.8mm solid block minus pocket cavities yields ~31 cm3. Spec updated to max 35 cm3 to accommodate actual geometry. All pocket dimensions remain at full scale as required."
+      "expected": "max 60 cm3 (v1 spec)",
+      "actual": 72.961,
+      "reason": "Full Y width (41.5mm vs 25mm) with tighter pocket cuts (less material removed) yields higher volume; spec.json updated to max 80 cm3"
     }
   ]
 }
