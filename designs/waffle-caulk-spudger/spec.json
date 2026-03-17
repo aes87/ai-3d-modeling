@@ -1,0 +1,62 @@
+{
+  "name": "waffle-caulk-spudger",
+  "description": "Single-part handheld caulk spreader for HDPE bin lid waffle channels. Convex tip profiles a smooth bead in 9.4 mm wide channels for adapter bonding.",
+  "dimensions": {
+    "x": 145.0,
+    "y": 18.0,
+    "z": 10.0
+  },
+  "defaultTolerance": 0.5,
+  "tolerances": {
+    "tip_width": 0.2
+  },
+  "watertight": true,
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "volume": {
+    "min": 8,
+    "max": 30
+  },
+  "echoedDimensions": {
+    "overall": {
+      "x": 145.0,
+      "y": 18.0,
+      "z": 10.0
+    },
+    "tip": {
+      "x": 25.0,
+      "y": 8.8,
+      "z": 5.4
+    },
+    "handle": {
+      "x": 120.0,
+      "y": 18.0,
+      "z": 10.0
+    }
+  },
+  "views": ["front", "top", "right", "iso"],
+  "params": {
+    "channel_width": 9.4,
+    "channel_depth": 4.6,
+    "waffle_square_size": 63.7,
+    "waffle_corner_radius": 4.0,
+    "tip_width": 8.8,
+    "tip_clearance_per_side": 0.3,
+    "tip_arc_radius": 4.4,
+    "tip_arc_sag": 4.2,
+    "tip_base_height": 1.2,
+    "tip_total_height": 5.4,
+    "tip_length": 25.0,
+    "taper_length": 15.0,
+    "handle_length": 120.0,
+    "handle_width": 18.0,
+    "handle_height": 10.0,
+    "handle_edge_fillet": 3.0,
+    "handle_tail_radius": 9.0,
+    "overall_length": 145.0
+  },
+  "testPrintCandidates": []
+}

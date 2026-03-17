@@ -1,0 +1,96 @@
+{
+  "designName": "waffle-caulk-spudger",
+  "validationPass": true,
+  "iterations": 2,
+  "dimensions": {
+    "actual": { "x": 144.997, "y": 18.0, "z": 10.0 },
+    "expected": { "x": 145.0, "y": 18.0, "z": 10.0 },
+    "withinTolerance": true
+  },
+  "features": [
+    {
+      "name": "tip_base",
+      "description": "Flat bottom portion of the tip that sits on the bed. Provides a solid floor under the convex arc.",
+      "z_range": [0.0, 1.2],
+      "outer_extent": 8.8,
+      "inner_extent": null,
+      "scad_line": 109,
+      "transitions": {
+        "below": "bed",
+        "above": "tip_convex_arc"
+      }
+    },
+    {
+      "name": "tip_convex_arc",
+      "description": "Convex circular arc on top of the tip. R=4.4mm, sag=4.2mm. Displaces caulk sideways when pressed into waffle channel. Printed as staircase layers (no bridge).",
+      "z_range": [1.2, 5.4],
+      "outer_extent": 8.8,
+      "inner_extent": null,
+      "scad_line": 113,
+      "transitions": {
+        "below": "tip_base",
+        "above": "top"
+      }
+    },
+    {
+      "name": "tip_nose",
+      "description": "Rounded leading edge of the tip. Sphere-based rounding at X=0 for smooth channel entry. Radius matches tip arc radius (4.4mm).",
+      "z_range": [0.0, 5.4],
+      "outer_extent": 8.8,
+      "inner_extent": null,
+      "scad_line": 123,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "taper_zone",
+      "description": "Linear transition from tip cross-section (8.8mm W x 5.4mm H) to handle cross-section (18mm W x 10mm H) over 15mm. Bottom stays flat on bed. Width and height increase linearly. Fillet radius grows from 0 to 3mm.",
+      "z_range": [0.0, 10.0],
+      "outer_extent": 18.0,
+      "inner_extent": null,
+      "scad_line": 142,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "handle_body",
+      "description": "Straight rectangular handle section with 3mm filleted top edges. 18mm wide x 10mm tall, approximately 96mm long (from end of taper to start of tail rounding). Solid cross-section, no thin walls.",
+      "z_range": [0.0, 10.0],
+      "outer_extent": 18.0,
+      "inner_extent": null,
+      "scad_line": 226,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    },
+    {
+      "name": "handle_tail",
+      "description": "Rounded tail end of handle. Semicircular rounding in XY plane (R=9mm = handle_width/2). Created by intersecting handle extrusion with a cylinder. Provides comfortable grip end with no sharp corners.",
+      "z_range": [0.0, 10.0],
+      "outer_extent": 18.0,
+      "inner_extent": null,
+      "scad_line": 247,
+      "transitions": {
+        "below": "bed",
+        "above": "top"
+      }
+    }
+  ],
+  "printOrientation": {
+    "bed_face": "bottom (flat face of handle and tip base)",
+    "z_direction": "height of tool (convex arc apex and handle top face upward)"
+  },
+  "specDeviations": [
+    {
+      "dimension": "overall.z (spec.json)",
+      "expected": 10.8,
+      "actual": 10.0,
+      "reason": "spec.json originally listed z=10.8 but requirements.md clearly states overall height = handle height = 10.0mm. No feature exceeds 10.0mm. Corrected spec.json to z=10.0 to match requirements."
+    }
+  ]
+}
