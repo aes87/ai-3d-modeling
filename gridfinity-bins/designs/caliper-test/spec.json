@@ -1,6 +1,6 @@
 {
   "name": "caliper-test",
-  "description": "Gridfinity 2x1 12u bin with contoured pocket for HARTE 6-inch digital caliper, upright storage",
+  "description": "Gridfinity 2x1 12u bin with L-shaped contoured pocket for HARTE 6-inch digital caliper, upright storage. v2: tighter 1mm clearance, no finger relief.",
   "dimensions": { "x": 83.5, "y": 41.5, "z": 88.4 },
   "defaultTolerance": 0.2,
   "tolerances": {
@@ -10,13 +10,13 @@
   },
   "watertight": true,
   "maxDimensions": { "x": 256, "y": 256, "z": 256 },
-  "volume": { "min": 30, "max": 120 },
+  "volume": { "min": 30, "max": 160 },
   "echoedDimensions": {
     "bin_outer": { "x": 83.5, "y": 41.5, "z": 88.4 },
     "bin_body": { "x": 83.5, "y": 41.5, "z": 84.0 },
     "bin_inner": { "x": 81.1, "y": 39.1, "z": 76.8 },
-    "display_cavity": { "x": 72.0, "y": 20.0, "z": 65.0 },
-    "beam_slot": { "x": 20.0, "y": 9.0, "z": 11.8 }
+    "display_cavity": { "x": 70.0, "y": 18.0, "z": 64.0 },
+    "beam_slot": { "x": 18.0, "y": 7.0, "z": 12.8 }
   },
   "views": ["front", "top", "right", "iso", "section-xz", "section-yz"],
   "params": {
@@ -24,38 +24,30 @@
     "grid_y": "1",
     "height_units": "12",
     "wall_thickness": "1.2",
-    "caliper_clearance": "2.0",
+    "caliper_clearance": "1.0",
     "display_body_width": "68",
     "display_body_thickness": "16",
     "display_body_length": "63",
     "beam_width": "16",
     "beam_thickness": "5",
-    "pocket_depth_display": "65",
-    "finger_relief_height": "10",
-    "finger_relief_setback": "10"
+    "pocket_depth_display": "64"
   },
   "testPrintCandidates": [
     {
-      "feature": "display-body-cavity-fit",
-      "reason": "Caliper dimensions measured from grid photos with ±2mm uncertainty. The 2mm clearance per side may be too loose (caliper rocks) or too tight (won't insert) depending on actual measured size. A test block matching the cavity cross-section (72x20mm) lets the user check fit before printing the full 88mm tall bin.",
+      "feature": "l-shaped-pocket-fit",
+      "reason": "L-shaped pocket with 1mm clearance per side is tight. The caliper cross-section must match the pocket contour. Test with a short section including the display cavity to beam slot transition.",
       "category": "fitment",
       "priority": "high"
     },
     {
       "feature": "beam-slot-fit",
-      "reason": "Beam slot is 20x9mm with 2mm clearance per side on a 16x5mm nominal beam. Measurement uncertainty means the slot could be tight. Test with a short test block including both the display cavity and beam slot cross-sections to verify the transition geometry and beam centering.",
+      "reason": "Beam slot is 18x7mm with 1mm clearance per side on a 16x5mm nominal beam. Tighter than v1. Verify the beam slides freely.",
       "category": "fitment",
       "priority": "high"
     },
     {
-      "feature": "finger-relief-chamfer",
-      "reason": "45 degree chamfer on pocket opening sits at the FDM printability limit. Verify the chamfer prints cleanly without drooping and provides adequate finger clearance before committing to the full-height bin.",
-      "category": "printability",
-      "priority": "medium"
-    },
-    {
       "feature": "pocket-height-capture",
-      "reason": "Display body pocket is 65mm deep. If actual display body length exceeds 63mm by more than 2mm (within ±2mm measurement error), the display body will bottom out below the ledge and not rest correctly. A test piece with the ledge geometry verifies the ledge height before full print.",
+      "reason": "Display body pocket is 64mm deep (63mm body + 1mm clearance). If actual display body length exceeds 63mm, it may not seat below the ledge correctly.",
       "category": "sizing",
       "priority": "medium"
     }

@@ -1,114 +1,138 @@
 {
   "designName": "caliper-test",
   "validationPass": true,
-  "iterations": 2,
+  "iterations": 1,
   "dimensions": {
-    "actual": { "x": 83.5, "y": 41.5, "z": 88.41 },
+    "actual": { "x": 83.5, "y": 41.5, "z": 88.4 },
     "expected": { "x": 83.5, "y": 41.5, "z": 88.4 },
     "withinTolerance": true
   },
   "features": [
     {
-      "name": "Gridfinity Base Profile",
-      "description": "Stepped 45-degree chamfer profile (3 segments: 0.8mm chamfer, 1.8mm vertical wall, 2.15mm chamfer) for baseplate interlock. Two base pads at 42mm pitch for 2x1 grid.",
-      "z_range": [0.0, 4.75],
-      "outer_extent": 41.5,
-      "inner_extent": 35.6,
-      "scad_line": 91,
+      "name": "gridfinity_base_grid",
+      "description": "2x1 stepped chamfer base profile for baseplate interlock, with bridge plate connecting the two base units. Profile: 0.8mm chamfer, 1.8mm vertical wall, 2.15mm chamfer.",
+      "z_range": [0, 7.0],
+      "outer_extent": 83.5,
+      "inner_extent": null,
+      "scad_line": 115,
       "transitions": {
         "below": "bed",
-        "above": "Bridge Plate"
+        "above": "bin_walls_and_floor"
       }
     },
     {
-      "name": "Bridge Plate",
-      "description": "Flat plate connecting the two base pads from base profile top to base height. Fills the full 83.5 x 41.5mm outer footprint.",
-      "z_range": [4.75, 7.0],
-      "outer_extent": 83.5,
-      "inner_extent": null,
-      "scad_line": 126,
-      "transitions": {
-        "below": "Gridfinity Base Profile",
-        "above": "Bin Floor"
-      }
-    },
-    {
-      "name": "Bin Floor",
-      "description": "Solid floor between base height and internal floor elevation. Internal cavity starts at Z=7.2 with 2.8mm fillet radius at bottom corners.",
-      "z_range": [7.0, 7.2],
-      "outer_extent": 83.5,
-      "inner_extent": null,
-      "scad_line": 192,
-      "transitions": {
-        "below": "Bridge Plate",
-        "above": "Display Body Cavity"
-      }
-    },
-    {
-      "name": "Display Body Cavity",
-      "description": "Wide rectangular pocket for caliper display body. 72mm (X) x 20mm (Y) x 65mm (Z). Centered in bin XY. 2mm clearance per side around 68x16mm display body. Bottom fillet at floor junction.",
-      "z_range": [7.2, 72.2],
-      "outer_extent": 83.5,
-      "inner_extent": 72.0,
-      "scad_line": 229,
-      "transitions": {
-        "below": "Bin Floor",
-        "above": "Pocket Transition Ledge / Finger Relief"
-      }
-    },
-    {
-      "name": "Pocket Transition Ledge / Finger Relief",
-      "description": "Horizontal ledge where display cavity (72x20mm) narrows to beam slot (20x9mm). Ledge supports caliper weight. Simultaneously, a 45-degree finger relief chamfer widens the pocket from 72x20mm to 81.1x39.1mm (capped to inner cavity dimensions) over 10mm of height. Ledge at Z=72.2.",
-      "z_range": [62.2, 72.2],
+      "name": "bin_walls_and_floor",
+      "description": "1.2mm thick rectangular shell with floor at Z=7.2mm. Internal cavity 81.1x39.1mm with 2.8mm bottom fillet radius.",
+      "z_range": [7.0, 84.0],
       "outer_extent": 83.5,
       "inner_extent": 81.1,
-      "scad_line": 248,
+      "scad_line": 177,
       "transitions": {
-        "below": "Display Body Cavity",
-        "above": "Beam Slot / Open Top Zone"
+        "below": "gridfinity_base_grid",
+        "above": "stacking_lip"
       }
     },
     {
-      "name": "Beam Slot / Open Top Zone",
-      "description": "Narrow slot for caliper beam: 20mm (X) x 9mm (Y) x 11.8mm (Z), offset +5.5mm in Y to center on beam position. Beam slot is surrounded by the wider finger relief opening (81.1x39.1mm) which extends to body top. Combined, these create a wide open area at the top with the beam guide in the center.",
-      "z_range": [72.2, 84.0],
-      "outer_extent": 83.5,
-      "inner_extent": 20.0,
-      "scad_line": 235,
+      "name": "display_body_cavity",
+      "description": "Lower pocket zone: 70x18mm rectangular cavity holding the caliper display body (68x16mm nominal + 1mm clearance/side). Centered in bin XY. 64mm deep from floor (Z=7.2 to Z=71.2).",
+      "z_range": [7.2, 71.2],
+      "outer_extent": null,
+      "inner_extent": 70.0,
+      "scad_line": 231,
       "transitions": {
-        "below": "Pocket Transition Ledge / Finger Relief",
-        "above": "Stacking Lip"
+        "below": "bin_floor",
+        "above": "pocket_transition_ledge"
       }
     },
     {
-      "name": "Stacking Lip",
-      "description": "Standard Gridfinity stacking lip profile (0.7mm catch at 45-deg, 1.8mm vertical, 1.9mm at 45-deg). 4.4mm total height, 2.6mm horizontal depth. Enables bin-on-bin stacking.",
+      "name": "pocket_transition_ledge",
+      "description": "Horizontal L-shaped support surface at Z=71.2mm where the display cavity narrows to the beam slot. The 18x7mm beam slot passes through at the min-X, min-Y corner; the remaining 70x18 minus 18x7 area is solid ledge. Caliper display body rests on this ledge, supported on 3 sides.",
+      "z_range": [71.2, 71.2],
+      "outer_extent": null,
+      "inner_extent": null,
+      "scad_line": 222,
+      "transitions": {
+        "below": "display_body_cavity",
+        "above": "beam_slot"
+      }
+    },
+    {
+      "name": "beam_slot",
+      "description": "Upper pocket zone: 18x7mm rectangular slot for the caliper beam (16x5mm nominal + 1mm clearance/side). Positioned at min-X, min-Y corner of the display cavity footprint. Extends from Z=71.2 through the stacking lip to Z=88.4 for clean opening.",
+      "z_range": [71.2, 88.4],
+      "outer_extent": null,
+      "inner_extent": 18.0,
+      "scad_line": 237,
+      "transitions": {
+        "below": "pocket_transition_ledge",
+        "above": "top"
+      }
+    },
+    {
+      "name": "stacking_lip",
+      "description": "Standard Gridfinity stacking lip profile (4.4mm tall, 2.6mm depth). 0.7mm catch at 45 deg, 1.8mm vertical, 1.9mm at 45 deg. The beam slot cuts through this lip at one corner.",
       "z_range": [84.0, 88.4],
       "outer_extent": 83.5,
       "inner_extent": null,
-      "scad_line": 138,
+      "scad_line": 136,
       "transitions": {
-        "below": "Beam Slot / Open Top Zone",
+        "below": "bin_walls_and_floor",
         "above": "top"
       }
     }
   ],
   "printOrientation": {
-    "bed_face": "bottom (Gridfinity base profile)",
-    "z_direction": "upward from baseplate interlock to stacking lip"
+    "bed_face": "bin base (bottom of Gridfinity base profile)",
+    "z_direction": "upward from base to stacking lip"
   },
   "specDeviations": [
     {
-      "dimension": "finger_relief_y",
-      "expected": 40.0,
-      "actual": 39.1,
-      "reason": "Finger relief Y setback capped to inner_y (39.1mm) to maintain minimum 1.2mm wall thickness on Y sides. The spec called for 10mm setback per side (20 + 20 = 40mm) but that would leave only 0.75mm walls in Y, below the 1.2mm minimum."
+      "dimension": "display_cavity_x",
+      "expected": 72.0,
+      "actual": 70.0,
+      "reason": "v2 reduces clearance from 2mm/side to 1mm/side per user request"
     },
     {
-      "dimension": "finger_relief_x",
-      "expected": 92.0,
-      "actual": 81.1,
-      "reason": "Finger relief X setback capped to inner_x (81.1mm) to maintain minimum 1.2mm wall thickness on X sides. The spec called for 10mm setback per side (72 + 20 = 92mm) which exceeds the outer shell."
+      "dimension": "display_cavity_y",
+      "expected": 20.0,
+      "actual": 18.0,
+      "reason": "v2 reduces clearance from 2mm/side to 1mm/side per user request"
+    },
+    {
+      "dimension": "display_cavity_z",
+      "expected": 65.0,
+      "actual": 64.0,
+      "reason": "v2 uses 1mm bottom clearance (63+1) instead of 2mm (63+2)"
+    },
+    {
+      "dimension": "beam_slot_x",
+      "expected": 20.0,
+      "actual": 18.0,
+      "reason": "v2 reduces clearance from 2mm/side to 1mm/side per user request"
+    },
+    {
+      "dimension": "beam_slot_y",
+      "expected": 9.0,
+      "actual": 7.0,
+      "reason": "v2 reduces clearance from 2mm/side to 1mm/side per user request"
+    },
+    {
+      "dimension": "beam_slot_z",
+      "expected": 11.8,
+      "actual": 12.8,
+      "reason": "Display cavity 1mm shorter (64 vs 65), giving 1mm more beam slot height"
+    },
+    {
+      "dimension": "beam_slot_position",
+      "expected": "centered in XY",
+      "actual": "min-X, min-Y corner of display cavity",
+      "reason": "v2 uses L-shaped pocket with beam slot at corner matching actual caliper cross-section"
+    },
+    {
+      "dimension": "finger_relief",
+      "expected": "10mm chamfer",
+      "actual": "removed",
+      "reason": "v2 removes finger relief per user request; user grabs beam above bin"
     }
   ]
 }

@@ -13,24 +13,24 @@
       "y": 41.5,
       "z": 88.41
     },
-    "volume_mm3": 48929.916,
-    "surface_area_mm2": 47987.514,
+    "volume_mm3": 48931.727,
+    "surface_area_mm2": 47993.896,
     "is_watertight": true,
     "num_layers": 442,
     "num_transitions": 15,
     "overhangs": {
-      "count": 330,
+      "count": 86,
       "max_angle": 90.0,
-      "min_angle": 90.0,
-      "total_area_mm2": 3457.696,
-      "total_mesh_area_mm2": 47987.514,
-      "pct_of_surface": 7.2
+      "min_angle": 45.0,
+      "total_area_mm2": 3603.608,
+      "total_mesh_area_mm2": 47993.896,
+      "pct_of_surface": 7.5
     },
     "bridge_fails": 0,
     "bridge_warnings": 0,
     "thin_walls": 0,
     "overall_pass": false,
-    "total_issues": 330
+    "total_issues": 86
   },
   "overhangs": [
     {
