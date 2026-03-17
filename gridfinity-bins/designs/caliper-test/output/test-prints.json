@@ -1,0 +1,76 @@
+{
+  "parentDesign": "caliper-test",
+  "parentParams": null,
+  "testPrints": [
+    {
+      "id": "cavity-fit",
+      "name": "Display Body Cavity Fit",
+      "category": "fitment",
+      "priority": "high",
+      "reason": "Caliper dimensions were measured from grid photos with ±2mm uncertainty. The 72×20mm cavity (68×16mm nominal display body + 2mm clearance per side) may be too tight or too loose depending on actual caliper size. This test answers: does the display body drop into the cavity cleanly, rock, or bind? If wrong, the full 88mm bin is wrong.",
+      "features": [
+        "Display Body Cavity",
+        "Bin Floor"
+      ],
+      "zRange": [7.2, 27.2],
+      "criticalDimensions": {
+        "cavity_width_x": { "nominal": 72.0, "tolerance": 0.2 },
+        "cavity_depth_y": { "nominal": 20.0, "tolerance": 0.2 }
+      },
+      "matePart": "HARTE 6-inch digital caliper display body (68×16mm nominal)",
+      "simplification": "Extract a 20mm-tall cross-section of the bin starting at the internal floor (z=7.2mm). Drop the Gridfinity base profile entirely. Add a 2mm flat base plate so the piece prints on the bed. Trim the piece to 25mm in Y (full 20mm cavity depth + 1.2mm wall each side + ~1.4mm margin) to eliminate the ~9mm of solid wall behind the pocket in Y. Keep full 83.5mm width in X so the cavity walls are structurally representative. Total piece: 83.5mm X × 25mm Y × 22mm Z (2mm base + 20mm cavity height). The cavity cross-section must be centered in X (matching the parent) and must start immediately above the base plate to simulate the bin floor context.",
+      "verificationMethod": "Insert caliper display body into the cavity. It should slide in with 2mm of visible gap on each side. If it binds in X or Y, the nominal caliper dimension is larger than measured. If it rocks noticeably, consider reducing clearance. Measure cavity opening with calipers: target 72.0±0.2mm (X) and 20.0±0.2mm (Y).",
+      "designDir": "gridfinity-bins/designs/caliper-test/test-prints/cavity-fit"
+    },
+    {
+      "id": "ledge-slot",
+      "name": "Ledge Transition, Beam Slot, and Finger Relief",
+      "category": "fitment",
+      "priority": "high",
+      "reason": "Three questions in one piece: (1) Does the beam slot (20×9mm) accept the caliper beam with the expected clearance? (2) Does the caliper display body rest correctly on the transition ledge at z=72.2mm — i.e., is the 65mm pocket depth correct for the actual display body length? (3) Does the 45° finger relief chamfer print cleanly at the FDM limit? All three critical questions sit in the same 21.8mm zone from z=62.2 to z=84.0.",
+      "features": [
+        "Pocket Transition Ledge / Finger Relief",
+        "Beam Slot / Open Top Zone"
+      ],
+      "zRange": [62.2, 84.0],
+      "criticalDimensions": {
+        "beam_slot_width_x": { "nominal": 20.0, "tolerance": 0.2 },
+        "beam_slot_depth_y": { "nominal": 9.0, "tolerance": 0.2 },
+        "ledge_elevation_z": { "nominal": 72.2, "tolerance": 0.2 },
+        "chamfer_angle": { "nominal": 45.0, "tolerance": 2.0 }
+      },
+      "matePart": "HARTE 6-inch digital caliper beam (16×5mm nominal) and display body upper rim",
+      "simplification": "Extract a 21.8mm-tall cross-section of the bin from z=62.2 to z=84.0. Drop everything below (base grid, bin floor, display cavity). Add a 3mm flat base plate (representing the solid bin wall below the chamfer zone). Trim to 25mm in Y to show the full 9mm beam slot + Y-side ledge geometry + 1.2mm wall each side + margin. Keep full 83.5mm width in X so the beam slot, X-side ledge (26mm per side), and chamfer walls are all present and structurally representative. Total piece: 83.5mm X × 25mm Y × 24.8mm Z (3mm base + 21.8mm section). The beam slot must be offset +5.5mm in Y (matching the parent) so its centering relative to the ledge is correct. The 45° finger relief chamfer from z=62.2 to z=72.2 must be preserved at full scale — this is where the chamfer print quality is evaluated.",
+      "verificationMethod": "Visual: inspect the 45° chamfer faces for drooping, stringing, or layer separation. If clean, printability is confirmed. Fitment: lower caliper beam (with display body simulated by hand or cardboard shim) from above — the beam should pass through the 20×9mm slot with visible clearance. Ledge height: with caliper seated (display body resting on ledge), check that the display body top rim aligns at approximately 0mm above the ledge face — confirming the 65mm pocket depth matches the actual display body length. Measure beam slot with calipers: target 20.0±0.2mm (X) and 9.0±0.2mm (Y).",
+      "designDir": "gridfinity-bins/designs/caliper-test/test-prints/ledge-slot"
+    }
+  ],
+  "sources": {
+    "fromSpecWriter": [
+      "display-body-cavity-fit",
+      "beam-slot-fit",
+      "finger-relief-chamfer",
+      "pocket-height-capture"
+    ],
+    "fromPrintReviewer": [
+      "display-body-cavity-fit",
+      "beam-slot-ledge-transition",
+      "finger-relief-chamfer"
+    ],
+    "fromPlanner": []
+  },
+  "droppedFlags": [
+    {
+      "id": "pocket-height-capture",
+      "source": "fromSpecWriter",
+      "disposition": "merged into ledge-slot",
+      "reason": "The ledge elevation test (does the display body rest at the correct height?) is answered by the same z=62.2–84.0 cross-section that tests the beam slot. No separate piece needed."
+    },
+    {
+      "id": "finger-relief-chamfer",
+      "source": "fromSpecWriter + fromPrintReviewer",
+      "disposition": "merged into ledge-slot",
+      "reason": "The 45° chamfer geometry occupies z=62.2–72.2, fully contained in the ledge-slot test piece. Chamfer print quality is verified by visual inspection of that piece. No separate piece needed."
+    }
+  ]
+}

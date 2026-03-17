@@ -1,0 +1,30 @@
+{
+  "name": "caliper-test-test-cavity-fit",
+  "description": "Test print: display body cavity fit — 20mm-tall cross-section of the 72×20mm pocket to verify caliper display body clearance",
+  "dimensions": { "x": 83.5, "y": 25.0, "z": 22.0 },
+  "defaultTolerance": 2.0,
+  "tolerances": {
+    "x": 0.2,
+    "y": 0.2,
+    "z": 0.5
+  },
+  "watertight": true,
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "volume": { "min": 1, "max": 20 },
+  "echoedDimensions": {
+    "test_piece": { "x": 83.5, "y": 25.0, "z": 22.0 },
+    "cavity_opening": { "x": 72.0, "y": 20.0, "z": 20.0 }
+  },
+  "views": ["front", "iso"],
+  "params": {
+    "parent_design": "caliper-test",
+    "params_file": null,
+    "display_cavity_x": 72.0,
+    "display_cavity_y": 20.0,
+    "outer_x": 83.5,
+    "wall": 1.2,
+    "test_y_extent": 25.0,
+    "base_plate_z": 2.0,
+    "cavity_height": 20.0
+  }
+}

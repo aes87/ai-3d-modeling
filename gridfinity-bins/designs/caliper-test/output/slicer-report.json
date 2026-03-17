@@ -1,0 +1,13 @@
+{
+  "error": "No PrusaSlicer-compatible CLI found",
+  "hint": "Install with: sudo apt-get install prusa-slicer",
+  "searched": [
+    "prusa-slicer",
+    "prusaslicer",
+    "PrusaSlicer",
+    "slic3r",
+    "orca-slicer",
+    "OrcaSlicer"
+  ],
+  "note": "Slicer analysis skipped \u2014 PrusaSlicer not installed in this environment"
+}

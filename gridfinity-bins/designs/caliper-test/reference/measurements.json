@@ -1,0 +1,22 @@
+{
+  "object": "HARTE 6-inch (150mm) digital caliper",
+  "method": "photos on mm cutting mat grid",
+  "confidence": "approximate — grid-based, ±2mm on most dimensions",
+  "orientation_in_bin": "standing upright, display body down, jaws up",
+  "dimensions": {
+    "overall_length": { "value": 235, "unit": "mm", "note": "jaw tip to beam end" },
+    "beam_width": { "value": 16, "unit": "mm", "note": "flat bar, face width" },
+    "beam_thickness": { "value": 5, "unit": "mm", "note": "edge thickness of bar" },
+    "display_body_length": { "value": 63, "unit": "mm", "note": "along beam axis, sliding jaw assembly" },
+    "display_body_width_total": { "value": 68, "unit": "mm", "note": "full width including beam" },
+    "display_body_width_from_beam": { "value": 52, "unit": "mm", "note": "extension beyond beam far edge" },
+    "display_body_thickness": { "value": 16, "unit": "mm", "note": "thickest part of display housing" },
+    "large_jaw_length": { "value": 40, "unit": "mm", "note": "from beam edge to jaw tip" },
+    "depth_rod_protrusion": { "value": 15, "unit": "mm", "note": "from beam end" }
+  },
+  "derived": {
+    "cross_section_at_display": "68mm × 16mm (widest point)",
+    "cross_section_at_beam": "16mm × 5mm",
+    "display_body_position": "at jaw end of beam, flush with fixed jaw face"
+  }
+}

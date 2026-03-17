@@ -1,0 +1,114 @@
+{
+  "designName": "caliper-test",
+  "validationPass": true,
+  "iterations": 2,
+  "dimensions": {
+    "actual": { "x": 83.5, "y": 41.5, "z": 88.41 },
+    "expected": { "x": 83.5, "y": 41.5, "z": 88.4 },
+    "withinTolerance": true
+  },
+  "features": [
+    {
+      "name": "Gridfinity Base Profile",
+      "description": "Stepped 45-degree chamfer profile (3 segments: 0.8mm chamfer, 1.8mm vertical wall, 2.15mm chamfer) for baseplate interlock. Two base pads at 42mm pitch for 2x1 grid.",
+      "z_range": [0.0, 4.75],
+      "outer_extent": 41.5,
+      "inner_extent": 35.6,
+      "scad_line": 91,
+      "transitions": {
+        "below": "bed",
+        "above": "Bridge Plate"
+      }
+    },
+    {
+      "name": "Bridge Plate",
+      "description": "Flat plate connecting the two base pads from base profile top to base height. Fills the full 83.5 x 41.5mm outer footprint.",
+      "z_range": [4.75, 7.0],
+      "outer_extent": 83.5,
+      "inner_extent": null,
+      "scad_line": 126,
+      "transitions": {
+        "below": "Gridfinity Base Profile",
+        "above": "Bin Floor"
+      }
+    },
+    {
+      "name": "Bin Floor",
+      "description": "Solid floor between base height and internal floor elevation. Internal cavity starts at Z=7.2 with 2.8mm fillet radius at bottom corners.",
+      "z_range": [7.0, 7.2],
+      "outer_extent": 83.5,
+      "inner_extent": null,
+      "scad_line": 192,
+      "transitions": {
+        "below": "Bridge Plate",
+        "above": "Display Body Cavity"
+      }
+    },
+    {
+      "name": "Display Body Cavity",
+      "description": "Wide rectangular pocket for caliper display body. 72mm (X) x 20mm (Y) x 65mm (Z). Centered in bin XY. 2mm clearance per side around 68x16mm display body. Bottom fillet at floor junction.",
+      "z_range": [7.2, 72.2],
+      "outer_extent": 83.5,
+      "inner_extent": 72.0,
+      "scad_line": 229,
+      "transitions": {
+        "below": "Bin Floor",
+        "above": "Pocket Transition Ledge / Finger Relief"
+      }
+    },
+    {
+      "name": "Pocket Transition Ledge / Finger Relief",
+      "description": "Horizontal ledge where display cavity (72x20mm) narrows to beam slot (20x9mm). Ledge supports caliper weight. Simultaneously, a 45-degree finger relief chamfer widens the pocket from 72x20mm to 81.1x39.1mm (capped to inner cavity dimensions) over 10mm of height. Ledge at Z=72.2.",
+      "z_range": [62.2, 72.2],
+      "outer_extent": 83.5,
+      "inner_extent": 81.1,
+      "scad_line": 248,
+      "transitions": {
+        "below": "Display Body Cavity",
+        "above": "Beam Slot / Open Top Zone"
+      }
+    },
+    {
+      "name": "Beam Slot / Open Top Zone",
+      "description": "Narrow slot for caliper beam: 20mm (X) x 9mm (Y) x 11.8mm (Z), offset +5.5mm in Y to center on beam position. Beam slot is surrounded by the wider finger relief opening (81.1x39.1mm) which extends to body top. Combined, these create a wide open area at the top with the beam guide in the center.",
+      "z_range": [72.2, 84.0],
+      "outer_extent": 83.5,
+      "inner_extent": 20.0,
+      "scad_line": 235,
+      "transitions": {
+        "below": "Pocket Transition Ledge / Finger Relief",
+        "above": "Stacking Lip"
+      }
+    },
+    {
+      "name": "Stacking Lip",
+      "description": "Standard Gridfinity stacking lip profile (0.7mm catch at 45-deg, 1.8mm vertical, 1.9mm at 45-deg). 4.4mm total height, 2.6mm horizontal depth. Enables bin-on-bin stacking.",
+      "z_range": [84.0, 88.4],
+      "outer_extent": 83.5,
+      "inner_extent": null,
+      "scad_line": 138,
+      "transitions": {
+        "below": "Beam Slot / Open Top Zone",
+        "above": "top"
+      }
+    }
+  ],
+  "printOrientation": {
+    "bed_face": "bottom (Gridfinity base profile)",
+    "z_direction": "upward from baseplate interlock to stacking lip"
+  },
+  "specDeviations": [
+    {
+      "dimension": "finger_relief_y",
+      "expected": 40.0,
+      "actual": 39.1,
+      "reason": "Finger relief Y setback capped to inner_y (39.1mm) to maintain minimum 1.2mm wall thickness on Y sides. The spec called for 10mm setback per side (20 + 20 = 40mm) but that would leave only 0.75mm walls in Y, below the 1.2mm minimum."
+    },
+    {
+      "dimension": "finger_relief_x",
+      "expected": 92.0,
+      "actual": 81.1,
+      "reason": "Finger relief X setback capped to inner_x (81.1mm) to maintain minimum 1.2mm wall thickness on X sides. The spec called for 10mm setback per side (72 + 20 = 92mm) which exceeds the outer shell."
+    }
+  ]
+}
