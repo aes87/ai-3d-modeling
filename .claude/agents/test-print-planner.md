@@ -1,7 +1,7 @@
 ---
 name: test-print-planner
 description: Identify critical geometries that benefit from test prints, produce specs for minimal-material test pieces
-tools: Read, Write, Glob, Grep
+tools: Read, Write, Bash, Glob, Grep
 model: sonnet
 ---
 
@@ -97,7 +97,7 @@ Write this file to the design's output directory:
 
 ### 2. Per-test-print design directories
 
-For each test print, create `designs/<parent>/test-prints/<id>/` containing:
+For each test print, create the directory first (`mkdir -p designs/<parent>/test-prints/<id>/`), then write the following files:
 
 #### `requirements.md`
 
