@@ -17,16 +17,16 @@
       "scad_line": 115,
       "transitions": {
         "below": "bed",
-        "above": "bin_walls_and_floor"
+        "above": "bin_body_solid"
       }
     },
     {
-      "name": "bin_walls_and_floor",
-      "description": "1.2mm thick rectangular shell with floor at Z=7.2mm. Internal cavity 81.1x39.1mm with 2.8mm bottom fillet radius.",
+      "name": "bin_body_solid",
+      "description": "Solid outer block from Z=0 to Z=84mm (with 0.01mm overlap into lip zone for watertight mesh). The pocket is the only interior void — no generic rectangular cavity. Pocket walls are 6.75mm (X sides) and 11.75mm (Y sides) of solid material.",
       "z_range": [7.0, 84.0],
       "outer_extent": 83.5,
-      "inner_extent": 81.1,
-      "scad_line": 177,
+      "inner_extent": null,
+      "scad_line": 179,
       "transitions": {
         "below": "gridfinity_base_grid",
         "above": "stacking_lip"
@@ -38,7 +38,7 @@
       "z_range": [7.2, 71.2],
       "outer_extent": null,
       "inner_extent": 70.0,
-      "scad_line": 231,
+      "scad_line": 215,
       "transitions": {
         "below": "bin_floor",
         "above": "pocket_transition_ledge"
@@ -50,7 +50,7 @@
       "z_range": [71.2, 71.2],
       "outer_extent": null,
       "inner_extent": null,
-      "scad_line": 222,
+      "scad_line": 204,
       "transitions": {
         "below": "display_body_cavity",
         "above": "beam_slot"
@@ -62,7 +62,7 @@
       "z_range": [71.2, 88.4],
       "outer_extent": null,
       "inner_extent": 18.0,
-      "scad_line": 237,
+      "scad_line": 216,
       "transitions": {
         "below": "pocket_transition_ledge",
         "above": "top"
@@ -76,7 +76,7 @@
       "inner_extent": null,
       "scad_line": 136,
       "transitions": {
-        "below": "bin_walls_and_floor",
+        "below": "bin_body_solid",
         "above": "top"
       }
     }
@@ -85,54 +85,5 @@
     "bed_face": "bin base (bottom of Gridfinity base profile)",
     "z_direction": "upward from base to stacking lip"
   },
-  "specDeviations": [
-    {
-      "dimension": "display_cavity_x",
-      "expected": 72.0,
-      "actual": 70.0,
-      "reason": "v2 reduces clearance from 2mm/side to 1mm/side per user request"
-    },
-    {
-      "dimension": "display_cavity_y",
-      "expected": 20.0,
-      "actual": 18.0,
-      "reason": "v2 reduces clearance from 2mm/side to 1mm/side per user request"
-    },
-    {
-      "dimension": "display_cavity_z",
-      "expected": 65.0,
-      "actual": 64.0,
-      "reason": "v2 uses 1mm bottom clearance (63+1) instead of 2mm (63+2)"
-    },
-    {
-      "dimension": "beam_slot_x",
-      "expected": 20.0,
-      "actual": 18.0,
-      "reason": "v2 reduces clearance from 2mm/side to 1mm/side per user request"
-    },
-    {
-      "dimension": "beam_slot_y",
-      "expected": 9.0,
-      "actual": 7.0,
-      "reason": "v2 reduces clearance from 2mm/side to 1mm/side per user request"
-    },
-    {
-      "dimension": "beam_slot_z",
-      "expected": 11.8,
-      "actual": 12.8,
-      "reason": "Display cavity 1mm shorter (64 vs 65), giving 1mm more beam slot height"
-    },
-    {
-      "dimension": "beam_slot_position",
-      "expected": "centered in XY",
-      "actual": "min-X, min-Y corner of display cavity",
-      "reason": "v2 uses L-shaped pocket with beam slot at corner matching actual caliper cross-section"
-    },
-    {
-      "dimension": "finger_relief",
-      "expected": "10mm chamfer",
-      "actual": "removed",
-      "reason": "v2 removes finger relief per user request; user grabs beam above bin"
-    }
-  ]
+  "specDeviations": []
 }

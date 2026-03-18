@@ -172,49 +172,31 @@ module _lip_sweep(sx, sy, r) {
 }
 
 // =============================================================================
-// BIN SHELL — walls + floor + base + lip
+// BIN BODY — solid outer shape (base + block + lip, no interior cavity)
 // =============================================================================
-module bin_shell() {
+// The body is kept solid — the pocket module defines the only interior void.
+// This ensures the pocket walls and transition ledge are properly formed.
+module bin_body() {
     union() {
-        // Base grid
         base_grid();
-
-        // Walls: outer shell minus inner cavity
-        difference() {
-            rounded_rect(outer_x, outer_y, body_height, r_outer);
-
-            // Internal cavity with bottom fillet
-            translate([0, 0, floor_z]) {
-                // Main cavity above fillet
-                translate([0, 0, r_fillet])
-                    rounded_rect(inner_x, inner_y,
-                                 body_height - floor_z - r_fillet + 0.01,
-                                 r_inner);
-                // Fillet transition zone
-                hull() {
-                    translate([0, 0, r_fillet])
-                        rounded_rect(inner_x, inner_y, 0.01, r_inner);
-                    rounded_rect(inner_x - 2*r_fillet, inner_y - 2*r_fillet,
-                                 0.01, max(0.1, r_inner - r_fillet));
-                }
-            }
-        }
-
-        // Stacking lip at top of body
+        // Extend 0.01mm above body_height to overlap with lip (avoids
+        // coincident faces at block-lip boundary → watertight mesh)
+        rounded_rect(outer_x, outer_y, body_height + 0.01, r_outer);
         translate([0, 0, body_height])
             stacking_lip();
     }
 }
 
 // =============================================================================
-// POCKET — L-shaped contoured cavity for caliper
+// POCKET — L-shaped contoured cavity (the only interior void)
 // =============================================================================
-// Cut from the bin shell via difference(). Two vertically stacked zones:
+// Subtracted from the solid bin body. Two vertically stacked zones:
 //
 // 1. Lower zone (floor to floor+64mm): full display body cavity 70x18mm
 // 2. Upper zone (floor+64mm to body top + lip): beam slot only 18x7mm
 //    at the min-X, min-Y corner of the display cavity
 //
+// The transition between zones creates the ledge that supports the caliper.
 // Display cavity is centered in the bin XY footprint.
 // Beam slot is at the min-X, min-Y corner of the display cavity:
 //   X: from -35 to -17    Y: from -9 to -2
@@ -243,7 +225,7 @@ module pocket() {
 // =============================================================================
 
 difference() {
-    bin_shell();
+    bin_body();
     pocket();
 }
 
