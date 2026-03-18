@@ -22,7 +22,7 @@
     },
     {
       "name": "bin_body_solid",
-      "description": "Solid outer block from Z=0 to Z=84mm (with 0.01mm overlap into lip zone for watertight mesh). The pocket is the only interior void — no generic rectangular cavity. Pocket walls are 6.75mm (X sides) and 11.75mm (Y sides) of solid material.",
+      "description": "Solid outer block from Z=0 to Z=84mm. The through-pocket is the only interior void. Pocket walls are 6.75mm (X sides) and 11.75mm (Y sides) of solid material.",
       "z_range": [7.0, 84.0],
       "outer_extent": 83.5,
       "inner_extent": null,
@@ -33,44 +33,20 @@
       }
     },
     {
-      "name": "display_body_cavity",
-      "description": "Lower pocket zone: 70x18mm rectangular cavity holding the caliper display body (68x16mm nominal + 1mm clearance/side). Centered in bin XY. 64mm deep from floor (Z=7.2 to Z=71.2).",
-      "z_range": [7.2, 71.2],
+      "name": "through_pocket",
+      "description": "Single 70x18mm rectangular slot from floor (Z=7.2) through stacking lip (Z=88.4). Caliper drops in display-body-first, rests on floor. Beam extends up and out. No ledge, no lid.",
+      "z_range": [7.2, 88.4],
       "outer_extent": null,
       "inner_extent": 70.0,
-      "scad_line": 215,
+      "scad_line": 197,
       "transitions": {
         "below": "bin_floor",
-        "above": "pocket_transition_ledge"
-      }
-    },
-    {
-      "name": "pocket_transition_ledge",
-      "description": "Horizontal L-shaped support surface at Z=71.2mm where the display cavity narrows to the beam slot. The 18x7mm beam slot passes through at the min-X, min-Y corner; the remaining 70x18 minus 18x7 area is solid ledge. Caliper display body rests on this ledge, supported on 3 sides.",
-      "z_range": [71.2, 71.2],
-      "outer_extent": null,
-      "inner_extent": null,
-      "scad_line": 204,
-      "transitions": {
-        "below": "display_body_cavity",
-        "above": "beam_slot"
-      }
-    },
-    {
-      "name": "beam_slot",
-      "description": "Upper pocket zone: 18x7mm rectangular slot for the caliper beam (16x5mm nominal + 1mm clearance/side). Positioned at min-X, min-Y corner of the display cavity footprint. Extends from Z=71.2 through the stacking lip to Z=88.4 for clean opening.",
-      "z_range": [71.2, 88.4],
-      "outer_extent": null,
-      "inner_extent": 18.0,
-      "scad_line": 216,
-      "transitions": {
-        "below": "pocket_transition_ledge",
         "above": "top"
       }
     },
     {
       "name": "stacking_lip",
-      "description": "Standard Gridfinity stacking lip profile (4.4mm tall, 2.6mm depth). 0.7mm catch at 45 deg, 1.8mm vertical, 1.9mm at 45 deg. The beam slot cuts through this lip at one corner.",
+      "description": "Standard Gridfinity stacking lip profile (4.4mm tall, 2.6mm depth). 0.7mm catch at 45 deg, 1.8mm vertical, 1.9mm at 45 deg. The through-pocket cuts through this lip.",
       "z_range": [84.0, 88.4],
       "outer_extent": 83.5,
       "inner_extent": null,

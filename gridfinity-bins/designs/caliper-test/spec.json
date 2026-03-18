@@ -1,6 +1,6 @@
 {
   "name": "caliper-test",
-  "description": "Gridfinity 2x1 12u bin with L-shaped contoured pocket for HARTE 6-inch digital caliper, upright storage. v2: tighter 1mm clearance, no finger relief.",
+  "description": "Gridfinity 2x1 12u bin with straight through-pocket for HARTE 6-inch digital caliper, upright storage. v3: single 70x18mm slot, no ledge, no lid.",
   "dimensions": { "x": 83.5, "y": 41.5, "z": 88.4 },
   "defaultTolerance": 0.2,
   "tolerances": {
@@ -15,8 +15,7 @@
     "bin_outer": { "x": 83.5, "y": 41.5, "z": 88.4 },
     "bin_body": { "x": 83.5, "y": 41.5, "z": 84.0 },
     "bin_inner": { "x": 81.1, "y": 39.1, "z": 76.8 },
-    "display_cavity": { "x": 70.0, "y": 18.0, "z": 64.0 },
-    "beam_slot": { "x": 18.0, "y": 7.0, "z": 12.8 }
+    "pocket": { "x": 70.0, "y": 18.0, "z": 76.8 }
   },
   "views": ["front", "top", "right", "iso", "section-xz", "section-yz"],
   "params": {
@@ -30,26 +29,14 @@
     "display_body_length": "63",
     "beam_width": "16",
     "beam_thickness": "5",
-    "pocket_depth_display": "64"
+    "pocket_type": "through-slot"
   },
   "testPrintCandidates": [
     {
-      "feature": "l-shaped-pocket-fit",
-      "reason": "L-shaped pocket with 1mm clearance per side is tight. The caliper cross-section must match the pocket contour. Test with a short section including the display cavity to beam slot transition.",
+      "feature": "pocket-fit",
+      "reason": "70x18mm pocket with 1mm clearance per side. Verify display body (68x16mm) drops in and out smoothly.",
       "category": "fitment",
       "priority": "high"
-    },
-    {
-      "feature": "beam-slot-fit",
-      "reason": "Beam slot is 18x7mm with 1mm clearance per side on a 16x5mm nominal beam. Tighter than v1. Verify the beam slides freely.",
-      "category": "fitment",
-      "priority": "high"
-    },
-    {
-      "feature": "pocket-height-capture",
-      "reason": "Display body pocket is 64mm deep (63mm body + 1mm clearance). If actual display body length exceeds 63mm, it may not seat below the ledge correctly.",
-      "category": "sizing",
-      "priority": "medium"
     }
   ]
 }

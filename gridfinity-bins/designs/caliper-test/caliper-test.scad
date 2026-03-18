@@ -1,25 +1,23 @@
 // =============================================================================
 // Caliper-Test v2 — Gridfinity 2x1 12u bin for HARTE 6-inch digital caliper
 // =============================================================================
-// Upright caliper storage with L-shaped contoured pocket.
+// Upright caliper storage with straight through-pocket.
+// Caliper drops in display-body-first, rests on floor, beam extends up.
 //
 // Pocket cross-section (looking down into the bin):
 //
 //   Y (thickness axis)
 //   ^
 //  18 +--------------------------------------------+
-//     |          display body cavity                |
-//     |          (70mm x 18mm)                      |
-//   7 +--------+                                    |
-//     |  beam  |                                    |
-//     |  slot  |                                    |
-//   0 +--------+------------------------------------+
-//     0       18                                   70  -> X (width axis)
+//     |                                            |
+//     |         70 x 18 mm through-slot            |
+//     |         (centered in bin XY)               |
+//     |                                            |
+//   0 +--------------------------------------------+
+//     0                                           70  -> X (width axis)
 //
-// The beam slot sits at the min-X, min-Y corner of the display cavity.
-// Lower zone (floor to floor+64): full 70x18 display cavity
-// Upper zone (floor+64 to body top): only 18x7 beam slot remains open
-// No finger relief — user grabs the beam above the bin.
+// Single rectangular pocket from floor through stacking lip.
+// No ledge, no lid — user grabs the beam above the bin.
 
 include <gridfinity-spec.scad>
 include <bambu-x1c.scad>
@@ -69,9 +67,8 @@ display_cavity_x = display_body_width + 2 * caliper_clearance;      // 70
 display_cavity_y = display_body_thickness + 2 * caliper_clearance;   // 18
 display_cavity_z = display_body_length + caliper_clearance;          // 64
 
-beam_slot_x = beam_width + 2 * caliper_clearance;       // 18
-beam_slot_y = beam_thickness + 2 * caliper_clearance;    // 7
-beam_slot_z = usable_depth - display_cavity_z;           // 12.8
+// Beam slot parameters removed — v3 uses a single through-pocket.
+// Beam fits within the 70×18mm pocket (16×5 nominal beam).
 
 // =============================================================================
 // HELPER: Rounded rectangle centered at origin, bottom at Z=0
@@ -188,36 +185,17 @@ module bin_body() {
 }
 
 // =============================================================================
-// POCKET — L-shaped contoured cavity (the only interior void)
+// POCKET — straight through-slot (the only interior void)
 // =============================================================================
-// Subtracted from the solid bin body. Two vertically stacked zones:
-//
-// 1. Lower zone (floor to floor+64mm): full display body cavity 70x18mm
-// 2. Upper zone (floor+64mm to body top + lip): beam slot only 18x7mm
-//    at the min-X, min-Y corner of the display cavity
-//
-// The transition between zones creates the ledge that supports the caliper.
-// Display cavity is centered in the bin XY footprint.
-// Beam slot is at the min-X, min-Y corner of the display cavity:
-//   X: from -35 to -17    Y: from -9 to -2
+// Single 70×18mm rectangular pocket from floor through stacking lip.
+// Caliper drops in display-body-first, rests on floor. Beam extends up
+// and out for grabbing. No ledge, no lid.
+// Centered in bin XY footprint.
 
 module pocket() {
-    dc_half_x = display_cavity_x / 2;  // 35
-    dc_half_y = display_cavity_y / 2;  // 9
-
-    // Beam slot at min-X, min-Y corner of display cavity
-    bs_min_x = -dc_half_x;             // -35
-    bs_min_y = -dc_half_y;             // -9
-
-    // Lower zone: full display body cavity (70 x 18 x 64)
-    translate([-dc_half_x, -dc_half_y, floor_z - 0.01])
-        cube([display_cavity_x, display_cavity_y, display_cavity_z + 0.01]);
-
-    // Upper zone: beam slot only (18 x 7)
-    // Extends from ledge top through body top and stacking lip to ensure
-    // clean opening with no Z-fighting at the lip boundary
-    translate([bs_min_x, bs_min_y, floor_z + display_cavity_z - 0.01])
-        cube([beam_slot_x, beam_slot_y, beam_slot_z + lip_height + 0.02]);
+    translate([-display_cavity_x/2, -display_cavity_y/2, floor_z - 0.01])
+        cube([display_cavity_x, display_cavity_y,
+              usable_depth + lip_height + 0.02]);
 }
 
 // =============================================================================
@@ -236,5 +214,4 @@ difference() {
 report_dimensions(outer_x, outer_y, total_height, "bin_outer");
 report_dimensions(outer_x, outer_y, body_height, "bin_body");
 report_dimensions(inner_x, inner_y, usable_depth, "bin_inner");
-report_dimensions(display_cavity_x, display_cavity_y, display_cavity_z, "display_cavity");
-report_dimensions(beam_slot_x, beam_slot_y, beam_slot_z, "beam_slot");
+report_dimensions(display_cavity_x, display_cavity_y, usable_depth, "pocket");
