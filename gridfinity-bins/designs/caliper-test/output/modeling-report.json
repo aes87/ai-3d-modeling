@@ -1,7 +1,7 @@
 {
   "designName": "caliper-test",
   "validationPass": true,
-  "iterations": 1,
+  "iterations": 4,
   "dimensions": {
     "actual": { "x": 83.5, "y": 41.5, "z": 88.4 },
     "expected": { "x": 83.5, "y": 41.5, "z": 88.4 },
@@ -10,49 +10,73 @@
   "features": [
     {
       "name": "gridfinity_base_grid",
-      "description": "2x1 stepped chamfer base profile for baseplate interlock, with bridge plate connecting the two base units. Profile: 0.8mm chamfer, 1.8mm vertical wall, 2.15mm chamfer.",
+      "description": "2x1 stepped chamfer base profile for baseplate interlock, with bridge plate connecting the two base units. Uses gf_base_grid() library module.",
       "z_range": [0, 7.0],
       "outer_extent": 83.5,
       "inner_extent": null,
-      "scad_line": 115,
+      "scad_line": 96,
       "transitions": {
         "below": "bed",
-        "above": "bin_body_solid"
+        "above": "pocket_walls"
       }
     },
     {
-      "name": "bin_body_solid",
-      "description": "Solid outer block from Z=0 to Z=84mm. The through-pocket is the only interior void. Pocket walls are 6.75mm (X sides) and 11.75mm (Y sides) of solid material.",
-      "z_range": [7.0, 84.0],
+      "name": "bin_shell",
+      "description": "Thin-walled Gridfinity shell from gf_bin() library. 1.2mm walls (3 perimeters), 3.75mm outer corner radius, 2.55mm inner radius, 2.8mm internal fillet. Interior open from Z=7.0 to body top.",
+      "z_range": [0, 84.0],
       "outer_extent": 83.5,
-      "inner_extent": null,
-      "scad_line": 179,
+      "inner_extent": 81.1,
+      "scad_line": 96,
       "transitions": {
-        "below": "gridfinity_base_grid",
+        "below": "bed",
         "above": "stacking_lip"
       }
     },
     {
+      "name": "pocket_walls",
+      "description": "Solid fill inside lower bin interior (Z=7.0 to Z=71.2). Creates 5.55mm-thick walls (X sides) and 10.55mm-thick walls (Y sides) surrounding the 70×18mm pocket. The visible shelf at Z=71.2 is where the pocket ends and the full bin interior opens up.",
+      "z_range": [7.0, 71.2],
+      "outer_extent": 81.1,
+      "inner_extent": 70.0,
+      "scad_line": 100,
+      "transitions": {
+        "below": "gridfinity_base_grid",
+        "above": "open_interior"
+      }
+    },
+    {
       "name": "through_pocket",
-      "description": "Single 70x18mm rectangular slot from floor (Z=7.2) through stacking lip (Z=88.4). Caliper drops in display-body-first, rests on floor. Beam extends up and out. No ledge, no lid.",
-      "z_range": [7.2, 88.4],
+      "description": "70×18mm rectangular pocket from floor (Z=7.2) to pocket wall top (Z=71.2). 1.5mm corner radii. 1.5mm 45° lead-in chamfer at mouth. Caliper display body (68×16mm) drops in and rests on floor. Centered in bin XY.",
+      "z_range": [7.2, 71.2],
       "outer_extent": null,
       "inner_extent": 70.0,
-      "scad_line": 197,
+      "scad_line": 107,
       "transitions": {
         "below": "bin_floor",
-        "above": "top"
+        "above": "open_interior"
+      }
+    },
+    {
+      "name": "open_interior",
+      "description": "Full bin interior open at 81.1×39.1mm from pocket wall top to body top. Caliper beam (16×5mm) extends through this space. User inserts caliper through this wide opening.",
+      "z_range": [71.2, 84.0],
+      "outer_extent": 83.5,
+      "inner_extent": 81.1,
+      "scad_line": 96,
+      "transitions": {
+        "below": "pocket_walls",
+        "above": "stacking_lip"
       }
     },
     {
       "name": "stacking_lip",
-      "description": "Standard Gridfinity stacking lip profile (4.4mm tall, 2.6mm depth). 0.7mm catch at 45 deg, 1.8mm vertical, 1.9mm at 45 deg. The through-pocket cuts through this lip.",
+      "description": "Standard Gridfinity stacking lip ring (4.4mm tall, 2.6mm depth). Uses gf_stacking_lip_ring() library module. Inner opening 78.3×36.3mm — wider than pocket, does not obstruct caliper.",
       "z_range": [84.0, 88.4],
       "outer_extent": 83.5,
-      "inner_extent": null,
-      "scad_line": 136,
+      "inner_extent": 78.3,
+      "scad_line": 96,
       "transitions": {
-        "below": "bin_body_solid",
+        "below": "open_interior",
         "above": "top"
       }
     }

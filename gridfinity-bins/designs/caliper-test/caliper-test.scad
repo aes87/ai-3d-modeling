@@ -1,25 +1,36 @@
 // =============================================================================
-// Caliper-Test v2 — Gridfinity 2x1 12u bin for HARTE 6-inch digital caliper
+// Caliper-Test v4 — Gridfinity 2x1 12u bin for HARTE 6-inch digital caliper
 // =============================================================================
-// Upright caliper storage with straight through-pocket.
-// Caliper drops in display-body-first, rests on floor, beam extends up.
+// Standard thin-walled Gridfinity shell with internal pocket walls.
+// Lower bin: 70×18mm pocket for display body (5.55mm walls each X side,
+// 10.55mm walls each Y side). Upper bin: open at full interior for insertion.
+// Caliper enters through wide open top, drops into narrower pocket below.
 //
-// Pocket cross-section (looking down into the bin):
+// Side cross-section (looking at Y face):
 //
-//   Y (thickness axis)
-//   ^
-//  18 +--------------------------------------------+
-//     |                                            |
-//     |         70 x 18 mm through-slot            |
-//     |         (centered in bin XY)               |
-//     |                                            |
-//   0 +--------------------------------------------+
-//     0                                           70  -> X (width axis)
+//   Z (mm)
+//  88.4 ┌─────────────────────────┐ ← stacking lip top
+//       │    lip ring (2.6mm)     │
+//  84.0 ├────┐               ┌────┤ ← body top / lip base
+//       │    │               │    │
+//       │    │  open interior│    │   81.1 × 39.1mm
+//       │    │  (thin walls) │    │
+//  71.2 │    ├───┐       ┌───┤    │ ← pocket wall top (shelf)
+//       │    │///│       │///│    │
+//       │    │///│pocket │///│    │   70 × 18mm pocket
+//       │    │///│70×18  │///│    │   with 1.5mm corner radii
+//       │    │///│       │///│    │
+//   7.2 │    │///│ floor │///│    │ ← internal floor
+//   7.0 ├────┴───┴───────┴───┴────┤ ← base height
+//       │     base grid           │
+//   0.0 └─────────────────────────┘ ← bed
 //
-// Single rectangular pocket from floor through stacking lip.
-// No ledge, no lid — user grabs the beam above the bin.
+//   /// = solid pocket wall fill
+//
+// The display body (68×16×63mm) sits in the pocket.  The beam (16×5mm)
+// extends upward through the open interior and out through the lip.
 
-include <gridfinity-spec.scad>
+include <gridfinity.scad>
 include <bambu-x1c.scad>
 
 $fn = 80;
@@ -34,177 +45,94 @@ grid_y = 1;
 height_units = 12;
 
 // Derived outer dimensions
-outer_x = gf_bin_width(grid_x);          // 83.5
-outer_y = gf_bin_width(grid_y);          // 41.5
+outer_x = gf_bin_width(grid_x);             // 83.5
+outer_y = gf_bin_width(grid_y);             // 41.5
 body_height = height_units * GF_HEIGHT_UNIT; // 84.0
-lip_height = GF_STACKING_LIP_HEIGHT;     // 4.4
-total_height = body_height + lip_height;  // 88.4
+total_height = body_height + GF_STACKING_LIP_HEIGHT; // 88.4
 
 // Wall and floor
-wall = GF_WALL_THICKNESS_THICK;          // 1.2
-inner_x = outer_x - 2 * wall;            // 81.1
-inner_y = outer_y - 2 * wall;            // 39.1
-floor_z = GF_INTERNAL_FLOOR_ELEV;        // 7.2
-usable_depth = body_height - floor_z;    // 76.8
+wall = GF_WALL_THICKNESS_THICK;             // 1.2
+inner_x = outer_x - 2 * wall;               // 81.1
+inner_y = outer_y - 2 * wall;               // 39.1
+floor_z = GF_INTERNAL_FLOOR_ELEV;           // 7.2
+usable_depth = body_height - floor_z;        // 76.8
 
 // Corner radii
-r_outer = GF_BASE_TOP_RADIUS;            // 3.75
-r_inner = max(0.1, r_outer - wall);      // 2.55
-r_fillet = GF_INTERNAL_FILLET;            // 2.8
+r_outer = GF_BASE_TOP_RADIUS;               // 3.75
+r_inner = max(0.1, r_outer - wall);          // 2.55
 
 // Caliper dimensions (from measurements.json)
-caliper_clearance = 1.0;  // per side (tighter fit for v2)
+caliper_clearance = 1.0;  // per side
 
-display_body_width = 68;       // X - total including beam
-display_body_thickness = 16;   // Y
-display_body_length = 63;      // Z along beam axis
+display_body_width     = 68;  // X — total including beam
+display_body_thickness = 16;  // Y
+display_body_length    = 63;  // Z along beam axis
 
-beam_width = 16;               // X - face width
-beam_thickness = 5;            // Y - edge thickness
+beam_width     = 16;  // X — face width
+beam_thickness =  5;  // Y — edge thickness
 
 // Pocket dimensions (caliper + clearance)
-display_cavity_x = display_body_width + 2 * caliper_clearance;      // 70
-display_cavity_y = display_body_thickness + 2 * caliper_clearance;   // 18
-display_cavity_z = display_body_length + caliper_clearance;          // 64
+pocket_x = display_body_width + 2 * caliper_clearance;      // 70
+pocket_y = display_body_thickness + 2 * caliper_clearance;   // 18
+pocket_z = display_body_length + caliper_clearance;          // 64
+r_pocket = 1.5;  // pocket corner radius
 
-// Beam slot parameters removed — v3 uses a single through-pocket.
-// Beam fits within the 70×18mm pocket (16×5 nominal beam).
+// Pocket wall geometry
+pocket_wall_top    = floor_z + pocket_z;                       // 71.2
+pocket_wall_fill_h = pocket_wall_top - GF_BASE_HEIGHT + 0.01; // 64.21
 
-// =============================================================================
-// HELPER: Rounded rectangle centered at origin, bottom at Z=0
-// =============================================================================
-module rounded_rect(sx, sy, h, r) {
-    cr = min(r, min(sx, sy) / 2);
-    hull() {
-        for (dx = [-1, 1])
-            for (dy = [-1, 1])
-                translate([dx * (sx/2 - cr), dy * (sy/2 - cr), 0])
-                    cylinder(r=cr, h=h);
-    }
-}
+// Pocket wall thicknesses (reference — solid fill around pocket)
+pocket_wall_x = (inner_x - pocket_x) / 2;  // 5.55
+pocket_wall_y = (inner_y - pocket_y) / 2;   // 10.55
+
+// Lead-in chamfer at pocket mouth
+pocket_chamfer = 1.5;  // 45° bevel easing caliper into pocket
 
 // =============================================================================
-// GRIDFINITY BASE PROFILE — built directly from constants
+// ASSEMBLY
 // =============================================================================
-module base_unit() {
-    pw = GF_BASE_PROFILE_WIDTH;  // 2.95
-    bt = GF_BIN_BASE_TOP;        // 41.5
-    r_top = GF_BASE_TOP_RADIUS;  // 3.75
-
-    for (i = [0 : len(GF_BASE_PROFILE) - 2]) {
-        p0 = GF_BASE_PROFILE[i];
-        p1 = GF_BASE_PROFILE[i + 1];
-
-        s0 = bt - 2 * (pw - p0[0]);
-        s1 = bt - 2 * (pw - p1[0]);
-        r0 = max(0.1, r_top - (pw - p0[0]));
-        r1 = max(0.1, r_top - (pw - p1[0]));
-
-        hull() {
-            translate([0, 0, p0[1]])
-                rounded_rect(s0, s0, 0.01, r0);
-            translate([0, 0, p1[1]])
-                rounded_rect(s1, s1, 0.01, r1);
-        }
-    }
-}
-
-module base_grid() {
-    // Individual base pads
-    for (ix = [0 : grid_x - 1])
-        for (iy = [0 : grid_y - 1])
-            translate([
-                (ix - (grid_x - 1) / 2) * GF_GRID_PITCH,
-                (iy - (grid_y - 1) / 2) * GF_GRID_PITCH,
-                0
-            ])
-            base_unit();
-
-    // Bridge plate connecting pads: from profile top to base height
-    translate([0, 0, GF_BASE_PROFILE_HEIGHT])
-        rounded_rect(outer_x, outer_y,
-                     GF_BASE_HEIGHT - GF_BASE_PROFILE_HEIGHT,
-                     r_outer);
-}
-
-// =============================================================================
-// STACKING LIP — built directly from constants
-// =============================================================================
-module stacking_lip() {
-    pw = GF_STACKING_LIP_DEPTH;  // 2.6
-    lip_inner_x = outer_x - 2 * pw;
-    lip_inner_y = outer_y - 2 * pw;
-    r_lip_inner = max(0.1, r_outer - pw);
-
-    difference() {
-        _lip_sweep(outer_x, outer_y, r_outer);
-
-        translate([0, 0, -0.01])
-            rounded_rect(lip_inner_x, lip_inner_y,
-                         lip_height + 0.02, r_lip_inner);
-    }
-}
-
-module _lip_sweep(sx, sy, r) {
-    pw = GF_STACKING_LIP_DEPTH;  // 2.6
-
-    for (i = [0 : len(GF_STACKING_LIP) - 2]) {
-        p0 = GF_STACKING_LIP[i];
-        p1 = GF_STACKING_LIP[i + 1];
-
-        s0x = sx - 2 * (pw - p0[0]);
-        s0y = sy - 2 * (pw - p0[0]);
-        s1x = sx - 2 * (pw - p1[0]);
-        s1y = sy - 2 * (pw - p1[0]);
-        r0 = max(0.1, r - (pw - p0[0]));
-        r1 = max(0.1, r - (pw - p1[0]));
-
-        hull() {
-            translate([0, 0, p0[1]])
-                rounded_rect(s0x, s0y, 0.01, r0);
-            translate([0, 0, p1[1]])
-                rounded_rect(s1x, s1y, 0.01, r1);
-        }
-    }
-}
-
-// =============================================================================
-// BIN BODY — solid outer shape (base + block + lip, no interior cavity)
-// =============================================================================
-// The body is kept solid — the pocket module defines the only interior void.
-// This ensures the pocket walls and transition ledge are properly formed.
-module bin_body() {
-    union() {
-        base_grid();
-        // Extend 0.01mm above body_height to overlap with lip (avoids
-        // coincident faces at block-lip boundary → watertight mesh)
-        rounded_rect(outer_x, outer_y, body_height + 0.01, r_outer);
-        translate([0, 0, body_height])
-            stacking_lip();
-    }
-}
-
-// =============================================================================
-// POCKET — straight through-slot (the only interior void)
-// =============================================================================
-// Single 70×18mm rectangular pocket from floor through stacking lip.
-// Caliper drops in display-body-first, rests on floor. Beam extends up
-// and out for grabbing. No ledge, no lid.
-// Centered in bin XY footprint.
-
-module pocket() {
-    translate([-display_cavity_x/2, -display_cavity_y/2, floor_z - 0.01])
-        cube([display_cavity_x, display_cavity_y,
-              usable_depth + lip_height + 0.02]);
-}
-
-// =============================================================================
-// FINAL ASSEMBLY
-// =============================================================================
+// 1. gf_bin() creates the standard thin-walled Gridfinity shell.
+// 2. Pocket wall fill adds solid material inside the lower bin interior.
+// 3. Pocket cut carves the 70×18mm pocket through the fill.
+// 4. Chamfer cut bevels the pocket mouth for easy caliper insertion.
+//
+// Above the pocket walls (Z > 71.2), the full 81.1×39.1mm bin interior
+// is open — the caliper's display body enters here and drops into the
+// narrower pocket below.
 
 difference() {
-    bin_body();
-    pocket();
+    union() {
+        // Standard Gridfinity bin shell
+        gf_bin(grid_x, grid_y, height_units, lip=true, wall=wall);
+
+        // Pocket walls: fill lower interior with solid material.
+        // Slightly oversized (+0.02mm) to overlap bin inner walls
+        // and avoid coincident faces at the fill-wall boundary.
+        translate([0, 0, GF_BASE_HEIGHT - 0.01])
+            _gf_rounded_rect(inner_x + 0.02, inner_y + 0.02,
+                             pocket_wall_fill_h, r_inner);
+    }
+
+    // Pocket void and lead-in chamfer
+    union() {
+        // Main pocket: 70×18mm from floor through pocket wall top
+        translate([0, 0, floor_z - 0.01])
+            _gf_rounded_rect(pocket_x, pocket_y,
+                             pocket_z + 0.02, r_pocket);
+
+        // Lead-in chamfer: 45° bevel at pocket mouth
+        translate([0, 0, pocket_wall_top - pocket_chamfer])
+            hull() {
+                _gf_rounded_rect(pocket_x, pocket_y,
+                                 0.01, r_pocket);
+                translate([0, 0, pocket_chamfer + 0.01])
+                    _gf_rounded_rect(
+                        pocket_x + 2 * pocket_chamfer,
+                        pocket_y + 2 * pocket_chamfer,
+                        0.01,
+                        r_pocket + pocket_chamfer);
+            }
+    }
 }
 
 // =============================================================================
@@ -214,4 +142,4 @@ difference() {
 report_dimensions(outer_x, outer_y, total_height, "bin_outer");
 report_dimensions(outer_x, outer_y, body_height, "bin_body");
 report_dimensions(inner_x, inner_y, usable_depth, "bin_inner");
-report_dimensions(display_cavity_x, display_cavity_y, usable_depth, "pocket");
+report_dimensions(pocket_x, pocket_y, pocket_z, "pocket");

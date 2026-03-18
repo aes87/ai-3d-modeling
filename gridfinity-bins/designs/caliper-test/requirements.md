@@ -47,21 +47,19 @@ Base on bed. Standard Gridfinity print orientation. The bin body grows upward fr
 | Large jaw length | 40 mm | measurements.json — beam edge to jaw tip |
 | Depth rod protrusion | 15 mm | measurements.json — from beam end |
 
-### Pocket (caliper + 1 mm clearance each side, v2)
+### Pocket (caliper + 1 mm clearance each side, v4)
 
 | Dimension | Value | Source |
 |---|---|---|
-| Display cavity width (along bin X) | 70 mm | 68 + 2 × 1 mm clearance |
-| Display cavity depth (along bin Y) | 18 mm | 16 + 2 × 1 mm clearance |
-| Display cavity height | 64 mm | 63 + 1 mm clearance above floor |
-| Beam slot width (along bin X) | 18 mm | 16 + 2 × 1 mm clearance |
-| Beam slot depth (along bin Y) | 7 mm | 5 + 2 × 1 mm clearance |
-| Beam slot height | 12.8 mm | internal usable depth 76.8 − display cavity height 64.0 |
-| Beam slot position | min-X, min-Y corner of display cavity | Matches caliper cross-section — beam at corner of display body, not centered |
-| Pocket wall thickness (X sides) | 6.75 mm | (83.5 − 70) / 2 — solid fill, not thin wall |
-| Pocket wall thickness (Y sides) | 11.75 mm | (41.5 − 18) / 2 — solid fill, not thin wall |
-| Ledge width each side (X) | 26 mm | (70 − 18) / 2 |
-| Ledge width each side (Y) | 5.5 mm | (18 − 7) / 2 |
+| Pocket width (along bin X) | 70 mm | 68 + 2 × 1 mm clearance |
+| Pocket depth (along bin Y) | 18 mm | 16 + 2 × 1 mm clearance |
+| Pocket height | 64 mm | 63 + 1 mm clearance above floor |
+| Pocket corner radius | 1.5 mm | aesthetic finish, no clearance impact |
+| Pocket mouth chamfer | 1.5 mm at 45° | lead-in bevel for easy insertion |
+| Pocket wall thickness (X sides) | 5.55 mm | (81.1 − 70) / 2 — interior wall to pocket |
+| Pocket wall thickness (Y sides) | 10.55 mm | (39.1 − 18) / 2 — interior wall to pocket |
+| Pocket wall height | 64.2 mm | Z=7.0 to Z=71.2 (base height to pocket top) |
+| Open interior above pocket | 81.1 × 39.1 mm | full bin interior from Z=71.2 to Z=84.0 |
 
 ## Features
 
@@ -71,11 +69,11 @@ Base on bed. Standard Gridfinity print orientation. The bin body grows upward fr
 - **Critical dimensions**: 2-unit base grid; base profile per GF_BASE_PROFILE (4.75 mm tall stepped chamfer, 2.95 mm horizontal reach); bridge plate at 4.75–7.0 mm elevation; top at Z = 7.0 mm.
 - **Mating interfaces**: Gridfinity baseplate receptacle. Clearance fit — 0.1 mm first-step offset between base profile (0.8 mm) and baseplate pocket (0.7 mm) creates the mating gap. Per-side XY clearance: 0.25 mm.
 
-### Feature 2: Bin Body (solid fill)
+### Feature 2: Bin Shell (thin walls, from gf_bin library)
 
-- **Purpose**: Structural body containing the pocket. The bin body is solid from the outer surface to the pocket walls — the pocket is the only interior void. This ensures the L-shaped pocket contour and transition ledge are properly formed.
-- **Critical dimensions**: 83.5 × 41.5 mm outer XY; 84.0 mm body height; floor at Z = 7.2 mm from bin bottom; pocket walls are 6.75 mm (X sides) and 11.75 mm (Y sides) — solid material, not thin-wall shell.
-- **Mating interfaces**: None — body is self-contained.
+- **Purpose**: Standard Gridfinity thin-walled shell providing exterior structure, interior cavity, and library-standard geometry (base profile, wall thickness, corner radii, internal fillet).
+- **Critical dimensions**: 83.5 × 41.5 mm outer XY; 84.0 mm body height; 1.2 mm wall thickness; 81.1 × 39.1 mm interior; 3.75 mm outer corner radius; 2.8 mm internal fillet.
+- **Mating interfaces**: Base mates with baseplate; stacking lip mates with bins above.
 
 ### Feature 3: Stacking Lip
 
@@ -83,16 +81,21 @@ Base on bed. Standard Gridfinity print orientation. The bin body grows upward fr
 - **Critical dimensions**: 4.4 mm tall; 2.6 mm horizontal depth; profile per GF_STACKING_LIP (0.7 mm catch at 45°, 1.8 mm vertical, 1.9 mm at 45°); 0.6 mm fillet at top outer edge; placed at Z = 84.0 mm (body top).
 - **Mating interfaces**: Upper bin's base profile. Catch step 0.7 mm matches baseplate pocket profile — same geometry, same clearance.
 
-### Feature 4: Through-Pocket (v3)
+### Feature 4: Pocket Walls (v4)
 
-- **Purpose**: Single rectangular slot from floor through stacking lip. Caliper drops in display-body-first and rests on the bin floor. Beam extends upward out of the bin for grabbing. No ledge, no lid.
-- **Critical dimensions**: 70 mm wide (X) × 18 mm deep (Y) × 76.8 mm tall (full usable depth). Centered in the bin's XY. Slot extends through the stacking lip to create a clean open top.
+- **Purpose**: Solid fill inside the lower bin interior creating a walled pocket for the caliper display body. The pocket walls rise from the bin floor to Z = 71.2 mm, where they end and the full bin interior (81.1 × 39.1 mm) opens up. This creates a visible shelf/ledge and a two-zone interior: narrow pocket below, wide open space above.
+- **Critical dimensions**: Pocket walls fill the interior from Z = 7.0 to Z = 71.2 mm. Wall thickness around pocket: 5.55 mm (X sides), 10.55 mm (Y sides). Pocket opening: 70 × 18 mm with 1.5 mm corner radii. 1.5 mm 45° lead-in chamfer at pocket mouth.
+- **Insertion path**: Caliper enters through the stacking lip opening (78.3 × 36.3 mm), passes through the wide open upper interior (81.1 × 39.1 mm), and drops into the narrower 70 × 18 mm pocket below. The chamfered pocket mouth guides insertion.
+
+### Feature 5: Through-Pocket Void (v4)
+
+- **Purpose**: 70 × 18 mm rectangular pocket from floor (Z = 7.2) through the pocket wall top (Z = 71.2). Caliper display body sits in this pocket; beam extends up through the open interior above.
+- **Critical dimensions**: 70 mm wide (X) × 18 mm deep (Y) × 64 mm tall. Centered in bin XY. 1.5 mm corner radius for finished appearance.
 - **Mating interfaces**: Caliper display body (68 × 16 mm nominal, ±2 mm). Clearance fit: +1 mm each side (+2 mm total per axis).
-- **Insertion note**: Display body (68×16mm) fits through the 70×18mm opening from the top. Beam (16×5mm) is well within the pocket cross-section. No orientation constraints on insertion.
 
-### Features 5–7: REMOVED (v3)
+### Features 6–7: REMOVED (v3+)
 
-- **Beam slot**, **pocket transition ledge**, and **finger relief** were removed in v3. The L-shaped pocket design from v2 was not insertable — the display body (68×16mm) could not pass through the 18×7mm beam slot to reach the lower cavity. Replaced with a single through-pocket.
+- **Beam slot**, **pocket transition ledge**, and **finger relief** from v2 were removed. The L-shaped pocket was not insertable. v4 uses pocket walls with an open upper bin instead.
 
 ## Caliper Anatomy Note for Modeler
 
@@ -127,8 +130,8 @@ The jaw length (40 mm from beam edge) is accommodated within the 70 mm pocket wi
 | Base profile chamfers | 45° overhangs | Pass — standard Gridfinity profile, FDM-designed |
 | Stacking lip | 45° overhangs | Pass — standard Gridfinity profile |
 | Display cavity walls | Vertical | Pass |
-| Beam slot walls | Vertical | Pass |
-| Pocket transition ledge | Horizontal surface, fully supported | Pass — solid walls below, no bridge |
+| Pocket walls | Vertical | Pass — 5.55mm (X) and 10.55mm (Y) thick |
+| Pocket wall top shelf | Horizontal surface at Z=71.2 | Pass — fully supported by pocket walls below |
 | Wall thickness (bin walls) | 1.2 mm | Pass — at minimum 3-perimeter threshold |
 | Bin total height | 88.4 mm | Pass — within 256 mm build volume |
 | Bin total width | 83.5 mm | Pass — within 256 mm build volume |

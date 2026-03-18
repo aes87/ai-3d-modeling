@@ -1,6 +1,6 @@
 {
   "name": "caliper-test",
-  "description": "Gridfinity 2x1 12u bin with straight through-pocket for HARTE 6-inch digital caliper, upright storage. v3: single 70x18mm slot, no ledge, no lid.",
+  "description": "Gridfinity 2x1 12u bin with internal pocket walls for HARTE 6-inch digital caliper, upright storage. v4: thin-walled shell (gf_bin) with solid pocket walls in lower interior, open upper section for insertion.",
   "dimensions": { "x": 83.5, "y": 41.5, "z": 88.4 },
   "defaultTolerance": 0.2,
   "tolerances": {
@@ -15,7 +15,7 @@
     "bin_outer": { "x": 83.5, "y": 41.5, "z": 88.4 },
     "bin_body": { "x": 83.5, "y": 41.5, "z": 84.0 },
     "bin_inner": { "x": 81.1, "y": 39.1, "z": 76.8 },
-    "pocket": { "x": 70.0, "y": 18.0, "z": 76.8 }
+    "pocket": { "x": 70.0, "y": 18.0, "z": 64.0 }
   },
   "views": ["front", "top", "right", "iso", "section-xz", "section-yz"],
   "params": {
@@ -29,7 +29,7 @@
     "display_body_length": "63",
     "beam_width": "16",
     "beam_thickness": "5",
-    "pocket_type": "through-slot"
+    "pocket_type": "walled-pocket"
   },
   "testPrintCandidates": [
     {
