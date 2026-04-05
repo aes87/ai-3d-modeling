@@ -2,13 +2,13 @@
 
 Describe a part. Get a printable STL — spec'd, validated, reviewed for printability, and shipped with test prints for critical fitment. No CAD skills required.
 
-This is an AI-native parametric modeling pipeline built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [OpenSCAD](https://openscad.org/). The human owns the design intent — dimensions, constraints, how things mate. The AI handles the CAD work, iterates against a validation pipeline, and doesn't ship until the geometry passes quantitative review.
+This is an AI-native parametric modeling pipeline built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [OpenSCAD](https://openscad.org/) via a [CLI-Anything](https://github.com/HKUDS/CLI-Anything) agent harness. The human owns the design intent — dimensions, constraints, how things mate. The AI handles the CAD work, iterates against a validation pipeline, and doesn't ship until the geometry passes quantitative review.
 
 **Printer:** Bambu Lab X1 Carbon — 256 × 256 × 256 mm, 0.4 mm nozzle, PLA.
 
 ## What It Does
 
-- **Parametric modeling** — Claude writes OpenSCAD from structured requirements, iterates against dimensional validation up to 6 rounds
+- **Parametric modeling** — Claude writes OpenSCAD from structured requirements, renders via [`cli-anything-openscad`](https://github.com/HKUDS/CLI-Anything) (parallel views, JSON output, automatic dimension parsing), iterates against dimensional validation up to 6 rounds
 - **Ground-truth printability** — trimesh slices the mesh at every layer height; PrusaSlicer confirms support and bridge behavior from actual G-code
 - **Automated review** — every overhang, bridge, wall thickness, and mating clearance is checked against FDM/PLA limits before the part ships
 - **Test print planning** — critical fitment interfaces get broken out into minimal-material test pieces so you verify fit before committing to a full print
@@ -130,7 +130,7 @@ Mating interfaces with tight clearances get test prints automatically. A 90° ar
 ## Quick Start
 
 ```bash
-# One-time setup (installs OpenSCAD, Xvfb, Python venv, PrusaSlicer)
+# One-time setup (installs OpenSCAD, Xvfb, cli-anything-openscad, Python venv, PrusaSlicer)
 sudo bash setup.sh
 npm install
 
@@ -190,6 +190,7 @@ Every design includes `fdm-pla.scad`. These are the constants — derived from r
 | **v2** | Multi-agent | Specialized agents with file-based handoff. Print reviewer reads SCAD source — better, but still inferring |
 | **v3** | Ground-truth geometry | geometry-analyzer produces mesh-based reports. Reviewer consumes quantitative data, not source code |
 | **v4** | Test print planning | test-print-planner identifies critical geometries. Upstream agents flag candidates. Avoidable bridges get flagged, not silently passed |
+| **v4.1** | CLI-Anything integration | OpenSCAD rendering via `cli-anything-openscad` Python CLI — parallel views, JSON output with auto-parsed dimensions, thread-safe Xvfb. Replaces direct subprocess management |
 
 ## License
 
