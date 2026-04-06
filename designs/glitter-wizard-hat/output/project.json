@@ -1,0 +1,172 @@
+{
+  "version": "1.0.0",
+  "name": "glitter-wizard-hat",
+  "created": "2026-04-06T02:20:23.005646+00:00",
+  "modified": "2026-04-06T02:20:23.008062+00:00",
+  "source": {
+    "scad_file": "/workspace/projects/3d-printing/designs/glitter-wizard-hat/glitter-wizard-hat.scad",
+    "discovered_params": {
+      "SIZE": {
+        "value": "large",
+        "type": "string",
+        "comment": "\"small\" or \"large\""
+      },
+      "large_height": {
+        "value": 114.3,
+        "type": "number",
+        "comment": ""
+      },
+      "large_base_od": {
+        "value": 52.0,
+        "type": "number",
+        "comment": ""
+      },
+      "large_wall": {
+        "value": 1.5,
+        "type": "number",
+        "comment": ""
+      },
+      "large_tip_r": {
+        "value": 3.5,
+        "type": "number",
+        "comment": ""
+      },
+      "large_lip_depth": {
+        "value": 3.0,
+        "type": "number",
+        "comment": ""
+      },
+      "large_lip_height": {
+        "value": 5.0,
+        "type": "number",
+        "comment": ""
+      },
+      "small_height": {
+        "value": 95.0,
+        "type": "number",
+        "comment": ""
+      },
+      "small_base_od": {
+        "value": 48.0,
+        "type": "number",
+        "comment": ""
+      },
+      "small_wall": {
+        "value": 1.5,
+        "type": "number",
+        "comment": ""
+      },
+      "small_tip_r": {
+        "value": 3.0,
+        "type": "number",
+        "comment": ""
+      },
+      "small_lip_depth": {
+        "value": 3.0,
+        "type": "number",
+        "comment": ""
+      },
+      "small_lip_height": {
+        "value": 5.0,
+        "type": "number",
+        "comment": ""
+      },
+      "height": {
+        "value": "(SIZE == \"large\") ? large_height     : small_height",
+        "type": "expression",
+        "comment": ""
+      },
+      "base_od": {
+        "value": "(SIZE == \"large\") ? large_base_od    : small_base_od",
+        "type": "expression",
+        "comment": ""
+      },
+      "wall": {
+        "value": "(SIZE == \"large\") ? large_wall       : small_wall",
+        "type": "expression",
+        "comment": ""
+      },
+      "tip_r": {
+        "value": "(SIZE == \"large\") ? large_tip_r      : small_tip_r",
+        "type": "expression",
+        "comment": ""
+      },
+      "lip_depth": {
+        "value": "(SIZE == \"large\") ? large_lip_depth  : small_lip_depth",
+        "type": "expression",
+        "comment": ""
+      },
+      "lip_height": {
+        "value": "(SIZE == \"large\") ? large_lip_height : small_lip_height",
+        "type": "expression",
+        "comment": ""
+      },
+      "base_id": {
+        "value": "base_od - 2 * wall",
+        "type": "expression",
+        "comment": ""
+      },
+      "tip_od": {
+        "value": "2 * tip_r + 2 * wall",
+        "type": "expression",
+        "comment": "OD where hemisphere begins"
+      },
+      "cone_h": {
+        "value": "height - tip_r",
+        "type": "expression",
+        "comment": "height of the straight cone body"
+      },
+      "star_d": {
+        "value": 6.0,
+        "type": "number",
+        "comment": "star across-points diameter"
+      },
+      "star_inner": {
+        "value": 0.38,
+        "type": "number",
+        "comment": "inner/outer radius ratio for 5-pointed star"
+      },
+      "star_pts": {
+        "value": 5,
+        "type": "number",
+        "comment": ""
+      },
+      "circle_d": {
+        "value": 3.5,
+        "type": "number",
+        "comment": "circle cutout diameter"
+      },
+      "crescent_h": {
+        "value": 5.0,
+        "type": "number",
+        "comment": "crescent moon height"
+      },
+      "crescent_w": {
+        "value": 3.5,
+        "type": "number",
+        "comment": "crescent moon width"
+      },
+      "n_rows": {
+        "value": 4,
+        "type": "number",
+        "comment": ""
+      }
+    }
+  },
+  "overrides": {},
+  "render_settings": {
+    "camera": null,
+    "imgsize": [
+      800,
+      600
+    ],
+    "colorscheme": "Cornfield",
+    "projection": "ortho",
+    "render_mode": "render"
+  },
+  "library_paths": [
+    "/workspace/projects/3d-printing/scad-lib"
+  ],
+  "spec_file": null,
+  "outputs": []
+}
