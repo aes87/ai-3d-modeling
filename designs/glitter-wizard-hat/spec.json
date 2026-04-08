@@ -1,10 +1,27 @@
 {
   "name": "glitter-wizard-hat",
-  "description": "Replacement wizard hat cap for vintage Glitter Wizard lava lamps. Conical cap with star, circle, and crescent moon cutouts. Two parametric sizes.",
-  "dimensions": {
-    "x": 52,
-    "y": 52,
-    "z": 114.3
+  "description": "Replacement wizard hat cap for vintage Glitter Wizard lava lamps. Conical cap with single row of alternating star and crescent moon cutouts near the base. Two separate models for large and small sizes.",
+  "variants": {
+    "large": {
+      "scad": "glitter-wizard-hat-large.scad",
+      "dimensions": { "x": 52, "y": 52, "z": 114.3 },
+      "echoLabel": "glitterWizardHatLarge",
+      "params": {
+        "height": 114.3, "base_od": 52.0, "wall": 1.5, "tip_r": 1.5,
+        "lip_depth": 3.0, "lip_height": 5.0,
+        "star_d": 6.0, "moon_h": 5.0, "n_cutouts": 12, "cutout_z_pct": 0.10
+      }
+    },
+    "small": {
+      "scad": "glitter-wizard-hat-small.scad",
+      "dimensions": { "x": 48, "y": 48, "z": 95 },
+      "echoLabel": "glitterWizardHatSmall",
+      "params": {
+        "height": 95.0, "base_od": 48.0, "wall": 1.5, "tip_r": 1.5,
+        "lip_depth": 3.0, "lip_height": 5.0,
+        "star_d": 5.5, "moon_h": 4.5, "n_cutouts": 10, "cutout_z_pct": 0.10
+      }
+    }
   },
   "defaultTolerance": 1.0,
   "tolerances": {
@@ -13,55 +30,7 @@
     "cutoutSize": 0.3
   },
   "watertight": true,
-  "maxDimensions": {
-    "x": 256,
-    "y": 256,
-    "z": 256
-  },
-  "volume": {
-    "min": 5,
-    "max": 40
-  },
-  "echoedDimensions": {
-    "glitterWizardHat": {
-      "x": 52,
-      "y": 52,
-      "z": 114.3
-    }
-  },
-  "views": ["front", "top", "right", "iso"],
-  "params": {
-    "size": "large",
-    "small": {
-      "height": 95.0,
-      "base_od": 48.0,
-      "base_id": 45.0,
-      "wall": 1.5,
-      "tip_radius": 3.0,
-      "half_angle_deg": 14.2,
-      "lip_depth": 3.0,
-      "lip_height": 5.0
-    },
-    "large": {
-      "height": 114.3,
-      "base_od": 52.0,
-      "base_id": 49.0,
-      "wall": 1.5,
-      "tip_radius": 3.5,
-      "half_angle_deg": 12.8,
-      "lip_depth": 3.0,
-      "lip_height": 5.0
-    },
-    "cutouts": {
-      "star_diameter": 6.0,
-      "star_inner_ratio": 0.38,
-      "star_points": 5,
-      "circle_diameter": 3.5,
-      "crescent_height": 5.0,
-      "crescent_width": 3.5,
-      "cutout_rows": 4,
-      "items_per_row_base": 10,
-      "row_stagger": true
-    }
-  }
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "volume": { "min": 5, "max": 40 },
+  "views": ["front", "top", "right", "iso"]
 }

@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0",
+  "name": "gwh-small",
+  "created": "2026-04-08T23:26:37.726838+00:00",
+  "modified": "2026-04-08T23:26:37.730382+00:00",
+  "source": {
+    "scad_file": "/workspace/projects/3d-printing/designs/glitter-wizard-hat/glitter-wizard-hat-small.scad",
+    "discovered_params": {
+      "height": {
+        "value": 95.0,
+        "type": "number",
+        "comment": "total height including tip"
+      },
+      "base_od": {
+        "value": 48.0,
+        "type": "number",
+        "comment": "base outer diameter"
+      },
+      "wall": {
+        "value": 1.5,
+        "type": "number",
+        "comment": "wall thickness (3 perimeters)"
+      },
+      "tip_r": {
+        "value": 1.5,
+        "type": "number",
+        "comment": "nearly pointed tip"
+      },
+      "lip_depth": {
+        "value": 3.0,
+        "type": "number",
+        "comment": "retention lip inward step"
+      },
+      "lip_height": {
+        "value": 5.0,
+        "type": "number",
+        "comment": "retention lip height"
+      },
+      "base_id": {
+        "value": "base_od - 2 * wall",
+        "type": "expression",
+        "comment": ""
+      },
+      "tip_od": {
+        "value": "2 * tip_r + 2 * wall",
+        "type": "expression",
+        "comment": "OD at hemisphere transition"
+      },
+      "cone_h": {
+        "value": "height - tip_r",
+        "type": "expression",
+        "comment": "straight cone portion"
+      },
+      "star_d": {
+        "value": 5.5,
+        "type": "number",
+        "comment": "slightly smaller stars"
+      },
+      "star_inner": {
+        "value": 0.38,
+        "type": "number",
+        "comment": ""
+      },
+      "moon_h": {
+        "value": 4.5,
+        "type": "number",
+        "comment": "slightly smaller moons"
+      },
+      "moon_w": {
+        "value": 3.0,
+        "type": "number",
+        "comment": ""
+      },
+      "n_cutouts": {
+        "value": 10,
+        "type": "number",
+        "comment": "fewer shapes on smaller circumference"
+      },
+      "cutout_z_pct": {
+        "value": 0.1,
+        "type": "number",
+        "comment": "row position: 10% from base"
+      }
+    }
+  },
+  "overrides": {},
+  "render_settings": {
+    "camera": null,
+    "imgsize": [
+      800,
+      600
+    ],
+    "colorscheme": "Cornfield",
+    "projection": "ortho",
+    "render_mode": "render"
+  },
+  "library_paths": [
+    "/workspace/projects/3d-printing/scad-lib"
+  ],
+  "spec_file": null,
+  "outputs": []
+}

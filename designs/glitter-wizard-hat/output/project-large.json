@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0",
+  "name": "gwh-large",
+  "created": "2026-04-08T23:26:37.003664+00:00",
+  "modified": "2026-04-08T23:26:37.007007+00:00",
+  "source": {
+    "scad_file": "/workspace/projects/3d-printing/designs/glitter-wizard-hat/glitter-wizard-hat-large.scad",
+    "discovered_params": {
+      "height": {
+        "value": 114.3,
+        "type": "number",
+        "comment": "total height including tip"
+      },
+      "base_od": {
+        "value": 52.0,
+        "type": "number",
+        "comment": "base outer diameter"
+      },
+      "wall": {
+        "value": 1.5,
+        "type": "number",
+        "comment": "wall thickness (3 perimeters)"
+      },
+      "tip_r": {
+        "value": 1.5,
+        "type": "number",
+        "comment": "nearly pointed tip"
+      },
+      "lip_depth": {
+        "value": 3.0,
+        "type": "number",
+        "comment": "retention lip inward step"
+      },
+      "lip_height": {
+        "value": 5.0,
+        "type": "number",
+        "comment": "retention lip height"
+      },
+      "base_id": {
+        "value": "base_od - 2 * wall",
+        "type": "expression",
+        "comment": ""
+      },
+      "tip_od": {
+        "value": "2 * tip_r + 2 * wall",
+        "type": "expression",
+        "comment": "OD at hemisphere transition"
+      },
+      "cone_h": {
+        "value": "height - tip_r",
+        "type": "expression",
+        "comment": "straight cone portion"
+      },
+      "star_d": {
+        "value": 6.0,
+        "type": "number",
+        "comment": "star across-points diameter"
+      },
+      "star_inner": {
+        "value": 0.38,
+        "type": "number",
+        "comment": "inner/outer radius ratio"
+      },
+      "moon_h": {
+        "value": 5.0,
+        "type": "number",
+        "comment": "crescent moon height"
+      },
+      "moon_w": {
+        "value": 3.5,
+        "type": "number",
+        "comment": "crescent moon width"
+      },
+      "n_cutouts": {
+        "value": 12,
+        "type": "number",
+        "comment": "total shapes around circumference"
+      },
+      "cutout_z_pct": {
+        "value": 0.1,
+        "type": "number",
+        "comment": "row position: 10% from base"
+      }
+    }
+  },
+  "overrides": {},
+  "render_settings": {
+    "camera": null,
+    "imgsize": [
+      800,
+      600
+    ],
+    "colorscheme": "Cornfield",
+    "projection": "ortho",
+    "render_mode": "render"
+  },
+  "library_paths": [
+    "/workspace/projects/3d-printing/scad-lib"
+  ],
+  "spec_file": null,
+  "outputs": []
+}
