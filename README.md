@@ -30,67 +30,7 @@ This is an AI-native parametric modeling pipeline built on [Claude Code](https:/
 
 Seven specialized agents split the work — each owns a stage, communicates through structured files, and never sees the full conversation history. The orchestrator (top-level Claude session) manages user dialogue and dispatches agents.
 
-```mermaid
----
-config:
-  theme: dark
-  themeVariables:
-    primaryColor: '#1f6feb'
-    primaryTextColor: '#fff'
-    lineColor: '#8b949e'
-    fontSize: '14px'
----
-flowchart TD
-    subgraph SPEC["  Spec  "]
-        SW(["spec-writer"])
-    end
-
-    subgraph BUILD["  Build  "]
-        M(["modeler"])
-    end
-
-    subgraph ANALYZE["  Analyze  "]
-        direction LR
-        GA(["geometry-analyzer"]) ~~~ FR(["fit-reviewer"])
-    end
-
-    subgraph REVIEW["  Review  "]
-        PR(["print-reviewer"])
-    end
-
-    subgraph TEST["  Test Prints  "]
-        TPP(["test-print-planner"]) --> TM(["modeler"])
-    end
-
-    subgraph SHIP["  Ship  "]
-        S(["shipper"])
-    end
-
-    SW -- "requirements.md + spec.json" --> M
-    M -- ".scad + STL" --> GA
-    GA -- "geometry-report.json" --> PR
-    GA -. "if multi-part" .-> FR
-    FR -. "fitment.json" .-> PR
-    PR -- "review + test recs" --> TPP
-    TM --> S
-    PR -. "FAIL" .-> M
-
-    style SW fill:#1f6feb,color:#fff,stroke:#1f6feb
-    style M fill:#1f6feb,color:#fff,stroke:#1f6feb
-    style GA fill:#238636,color:#fff,stroke:#238636
-    style FR fill:#238636,color:#fff,stroke:#238636
-    style PR fill:#da3633,color:#fff,stroke:#da3633
-    style TPP fill:#9e6a03,color:#fff,stroke:#9e6a03
-    style TM fill:#9e6a03,color:#fff,stroke:#9e6a03
-    style S fill:#8b949e,color:#fff,stroke:#8b949e
-
-    style SPEC fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
-    style BUILD fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
-    style ANALYZE fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
-    style REVIEW fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
-    style TEST fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
-    style SHIP fill:transparent,stroke:#30363d,stroke-width:2px,color:#8b949e
-```
+![AI 3D Modeling Pipeline — spec-writer hands off requirements to the modeler (orchestrator), which runs geometry-analyzer and an optional fit-reviewer for multi-part assemblies. The print-reviewer gates the workflow and loops back to the modeler on failure; on pass, test-print-planner and a test modeler produce fitment pieces, then shipper publishes. Amber edges mark emphasis and feedback; teal marks the conditional multi-part path.](./docs/images/pipeline.png)
 
 <details>
 <summary><b>Agent details</b></summary>
