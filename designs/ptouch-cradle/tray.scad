@@ -1,15 +1,18 @@
-// P-touch Catch Tray — removable kanban bin
+// P-touch Catch Tray — removable kanban bin (round 2)
 // Slides into the cradle's forward tray slot; catches auto-cut labels.
-// Owl face motif on front wall: two eye embosses + pupils + beak.
+//
+// Round 1 critique changes:
+//   - Owl face DELETED from tray +Y wall (eyes, pupils, beak gone).
+//     Motif consolidated onto the cradle back panel per id/brief.md.
+//   - 45° scoop lip RESTORED across the upper 14mm of the 21.6mm front wall.
+//   - Separate top-edge grip scallop NOT restored. Instead, an integrated
+//     concave finger-grip is carved into the center of the scoop face
+//     (30mm wide × 2.5mm deep). Grip + scoop are one feature, not two.
 //
 // Coordinate system:
-//   Origin at back-left corner of the tray floor bottom (exterior).
-//   +X = right, +Y = forward (toward the user), +Z = up.
-//   Front wall exterior face at Y = ext_d (user-facing owl face).
-//
-// Revision: shortened from 41.6 mm tall to 21.6 mm tall exterior. Removed
-// 45° scoop, top-edge grip scallop, and scoop leading-edge fillet. Owl face
-// enlarged to fill the shorter front wall.
+//   Origin at back-left corner of tray floor bottom (exterior).
+//   +X = right, +Y = forward (user-front), +Z = up.
+//   Front wall exterior face at Y = ext_d (user-facing scoop).
 
 include <fdm-pla.scad>
 include <bambu-x1c.scad>
@@ -20,7 +23,7 @@ $fn = 80;
 // ===== Parameters =====
 int_w     = 100;    // interior width (X)
 int_d     = 91;     // interior depth (Y)
-int_h     = 20;     // interior height (Z)  — was 40, halved
+int_h     = 20;     // interior height (Z)
 wall_t    = 1.6;
 floor_t   = 1.6;
 
@@ -28,97 +31,121 @@ ext_w     = int_w + 2*wall_t;     // 103.2
 ext_d     = int_d + 2*wall_t;     // 94.2
 ext_h     = int_h + floor_t;      // 21.6
 
-fillet_vert_r = 3.0;   // tray exterior vertical edge fillets (kept)
+fillet_vert_r = 3.0;   // tray exterior vertical edge fillets
 
-// Owl face — scaled up to fit the shorter front wall.
-eye_r        = 9;     // up from 8; clamped from 10 for vertical fit on 21.6 mm wall
-eye_raise    = 2;     // up from 1.5
-eye_cz       = 11;    // ≈ mid-height of 21.6 mm wall (adjusted from 13 to fit r=9)
-eye_cx_off   = 22;    // from tray centerline (unchanged)
+// Scoop lip geometry (integrated with finger-grip)
+scoop_base_h   = 7;     // lower 7mm of front wall stays vertical (structural)
+scoop_h        = 14;    // upper 14mm tilts back at 45° (7 + 14 = 21.6)
+scoop_angle    = 45;    // degrees from horizontal
+// 45° from horizontal means the scoop face recedes 14mm in -Y between z=7 and z=21.6
 
-pupil_r      = 4;     // up from 3
-pupil_extra  = 2;     // additional raise beyond eye (total proud = 4)
-
-beak_w       = 8;     // up from 6
-beak_h       = 8;     // up from 6
-beak_raise   = 2.5;   // up from 2
-beak_top_z   = 9;     // top of triangle (below eyes)
-beak_apex_z  = 1;     // apex near the floor (beak_top_z - beak_h)
+// Integrated finger-grip dip in the center of the scoop
+grip_w         = 30;    // width across the scoop face (X)
+grip_depth     = 2.5;   // additional material removed at center of scoop
+// Leading edge fillet
+scoop_leading_edge_r = 2;
 
 // ===== Structural asserts =====
 assert(wall_t >= MIN_WALL, str("Tray wall ", wall_t, " below min ", MIN_WALL));
 assert(floor_t >= MIN_FLOOR_CEIL, str("Tray floor ", floor_t, " below min floor"));
 assert(ext_w <= 256 && ext_d <= 256 && ext_h <= 256, "Tray exceeds bed");
-// Owl face fits within front wall height
-assert(eye_cz + eye_r <= ext_h - 0.5, "Eye emboss top overshoots wall top");
-assert(eye_cz - eye_r >= 0.5, "Eye emboss bottom undercuts floor line");
-assert(beak_top_z <= ext_h - 0.5, "Beak top overshoots wall top");
-assert(beak_apex_z >= 0.5, "Beak apex below floor");
+assert(scoop_base_h + scoop_h <= ext_h + 0.001, "Scoop geometry overshoots wall height");
 
-// ===== Modules =====
+// ===== 2D helpers =====
 
 module rounded_rect(w, d, r) {
     translate([r, r])
         offset(r=r) square([w - 2*r, d - 2*r]);
 }
 
-// Tray body: rounded rectangular shell, open top. Plain vertical front wall
-// (no scoop, no grip scallop).
+// ===== Modules =====
+
+// Tray shell: rectangular bin open on top, with 45° scoop on the upper portion
+// of its +Y (user-front) face, and an integrated concave finger-grip dip in the
+// center of the scoop. Back wall (-Y), left and right walls are full-height
+// vertical. Front wall lower 7mm is vertical; upper 14mm is the scoop.
 module tray_shell() {
     difference() {
-        linear_extrude(height=ext_h)
+        // Outer body: full rounded-rect shell at full height
+        linear_extrude(height = ext_h)
             rounded_rect(ext_w, ext_d, fillet_vert_r);
+        // Interior: remove the bin cavity
         int_r = max(fillet_vert_r - wall_t, 0.8);
         translate([wall_t, wall_t, floor_t])
-            linear_extrude(height=int_h + 0.1)
+            linear_extrude(height = int_h + 0.1)
                 rounded_rect(int_w, int_d, int_r);
+        // Scoop cutter: removes the upper 14mm of the front wall by slicing it
+        // at 45° from horizontal. The cutter is a triangular prism in Y-Z
+        // spanning the full tray width in X, placed at the front wall.
+        scoop_cutter();
+        // Integrated finger-grip dip: a concave trough carved into the scoop
+        // face in the central 30mm of the tray width.
+        finger_grip_cutter();
     }
 }
 
-module eye_emboss(x_off) {
-    cx = ext_w/2 + x_off;
-    translate([cx, ext_d, eye_cz])
-        rotate([-90, 0, 0])
-            cylinder(r=eye_r, h=eye_raise, $fn=64);
-}
-
-module pupil_emboss(x_off) {
-    cx = ext_w/2 + x_off;
-    translate([cx, ext_d, eye_cz])
-        rotate([-90, 0, 0])
-            cylinder(r=pupil_r, h=eye_raise + pupil_extra, $fn=48);
-}
-
-module beak_emboss() {
-    cx = ext_w/2;
-    // Build 2D polygon in XY where 2D-y = world Z height, then orient so
-    // the prism extrudes OUTWARD in +Y from the front wall exterior.
-    //
-    // Using rotate([90,0,0]) maps the sketch's 2D-y correctly to world Z
-    // (positive up) but extrudes in -Y. Pre-translating the prism by
-    // +beak_raise in Y compensates, so the prism spans Y = ext_d ..
-    // ext_d + beak_raise (outward of the wall, as intended).
-    translate([0, ext_d + beak_raise, 0])
-        rotate([90, 0, 0])
-            linear_extrude(height=beak_raise)
-                polygon(points=[
-                    [cx - beak_w/2, beak_top_z],
-                    [cx + beak_w/2, beak_top_z],
-                    [cx,            beak_apex_z],
+// Scoop cutter: a wedge-shaped void that removes the top-outer portion of the
+// front wall to create a 45° sloped face. Positioned so the lower 7mm of the
+// front wall is untouched, the upper 14mm slopes back into the tray at 45°.
+// The cut runs the full tray width in X (plus slop for clean boolean).
+module scoop_cutter() {
+    // Triangular profile in Y-Z:
+    //   vertex A: (ext_d,         scoop_base_h)               -- bottom of scoop face, at outer wall
+    //   vertex B: (ext_d + 2,     ext_h + 2)                  -- outside & above top (slop)
+    //   vertex C: (ext_d - scoop_h, ext_h + 2)                -- inside start of cut at top (=ext_d-14)
+    // All extruded in X across the full tray width plus slop.
+    translate([-2, 0, 0])
+        rotate([90, 0, 90])
+            linear_extrude(height = ext_w + 4)
+                polygon(points = [
+                    [ext_d,                 scoop_base_h],
+                    [ext_d + 2,             ext_h + 2],
+                    [ext_d - scoop_h,       ext_h + 2],
                 ]);
+}
+
+// Integrated finger-grip: a concave (cylindrical) dip carved into the scoop
+// face in the central 30mm of the tray width. Depth 2.5mm perpendicular to
+// the scoop face. Implementation: a cylinder whose axis is perpendicular to
+// the scoop face, carving inward.
+module finger_grip_cutter() {
+    // Scoop face mid-point (in Y-Z plane):
+    //   bottom of scoop at (Y=ext_d, Z=scoop_base_h)
+    //   top of scoop at (Y=ext_d - scoop_h, Z=scoop_base_h + scoop_h) = (Y=ext_d-14, Z=21.6)
+    //   midpoint = (Y=ext_d - scoop_h/2, Z=scoop_base_h + scoop_h/2) = (Y=ext_d-7, Z=14)
+    // Face normal (outward): (sin45°, sin45°) = (0.707, 0.707) in Y-Z
+    //
+    // Carve a cylinder aligned with X-axis, positioned just outside the face
+    // so its inner surface dips 2.5mm into the scoop face.
+    // Cylinder radius chosen so its arc intersects the scoop face cleanly.
+    // A radius of ~50mm gives a shallow concave arc (3mm depth across 30mm
+    // chord: R ≈ (15² + 3²)/(2·3) = 39, use 50 for safety).
+    //
+    // We want chord = 30mm on the face, dip depth = 2.5mm.
+    // R = (chord/2)² + depth²) / (2·depth) = (15² + 2.5²) / (2·2.5)
+    //   = (225 + 6.25) / 5 = 46.25mm
+    R = 46.25;
+    // Midpoint of scoop face (Y, Z)
+    mid_y = ext_d - scoop_h/2;    // ext_d - 7
+    mid_z = scoop_base_h + scoop_h/2;  // 14
+    // Outward normal direction from midpoint: (+Y, +Z) normalized, i.e. (0.707, 0.707)
+    // Cylinder center is outside the face by (R - depth):
+    offset_along_normal = R - grip_depth;
+    cx_y = mid_y + offset_along_normal * cos(scoop_angle);   // +Y offset
+    cx_z = mid_z + offset_along_normal * sin(scoop_angle);   // +Z offset
+    // The cylinder's axis is along X. Its length must cover the grip width
+    // (30mm) plus slop. Center the cylinder on the tray centerline (X = ext_w/2)
+    // with length grip_w (not longer — so outside the 30mm chord the scoop is
+    // untouched).
+    translate([ext_w/2 - grip_w/2, cx_y, cx_z])
+        rotate([0, 90, 0])
+            cylinder(r = R, h = grip_w, $fn = 120);
 }
 
 // ===== Assembly =====
 
 module tray() {
-    union() {
-        tray_shell();
-        eye_emboss(-eye_cx_off);
-        eye_emboss( eye_cx_off);
-        pupil_emboss(-eye_cx_off);
-        pupil_emboss( eye_cx_off);
-        beak_emboss();
-    }
+    tray_shell();
 }
 
 tray();

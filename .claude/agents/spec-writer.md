@@ -64,6 +64,7 @@ Validation spec for the pipeline:
   "echoedDimensions": { "<label>": { "x": <mm>, "y": <mm>, "z": <mm> } },
   "views": ["front", "top", "right", "iso", "<custom-angles>"],
   "params": { "<key>": "<value>" },
+  "requiresId": true,
   "testPrintCandidates": [
     {
       "feature": "<feature name>",
@@ -74,6 +75,23 @@ Validation spec for the pipeline:
   ]
 }
 ```
+
+### requiresId flag
+
+Set `requiresId: true` when the design has aesthetic content that deserves a dedicated industrial-design pass before modeling. Triggers for `true`:
+
+- The design has a "face," a motif, or a creature/character reference.
+- The design is visible on a desk / in the home / anywhere a user will look at it regularly.
+- The design needs to harmonize visually with an object it holds (holder, cradle, enclosure, stand).
+- The user explicitly asks for a specific aesthetic, vibe, or visual language.
+
+Triggers for `false`:
+
+- Pure utility parts: brackets, adapters, jigs, internal components, test pieces.
+- Components the user will never see in normal use.
+- Revisions whose scope is strictly functional.
+
+When unsure, ask the user. Default to `true` for any desktop-visible part.
 
 ### Test print candidates
 

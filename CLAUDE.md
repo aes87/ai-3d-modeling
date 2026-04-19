@@ -7,7 +7,6 @@ AI-native 3D modeling pipeline. OpenSCAD parametric models → STL → validatio
 ## Obsidian Vault Integration
 
 Project bridge note: `/workspace/projects/obsidian-vault/vault/projects/3d-printing.md`
-Session logs: `/workspace/projects/obsidian-vault/vault/projects/3d-printing/sessions/` (if present) or linked from the bridge note
 
 **Before starting work:** Check the bridge note for `next-action`, recent log entries, and follow-ups. Notes left between sessions live there, not in this repo.
 
@@ -15,7 +14,9 @@ Session logs: `/workspace/projects/obsidian-vault/vault/projects/3d-printing/ses
 
 This project uses specialized agents for design tasks. See `AGENT-WORKFLOW.md` for the full orchestration guide (agent dispatch rules, complexity tiers, inter-agent communication).
 
-**Quick reference — pipeline stages:** spec-writer → modeler → geometry-analyzer → print-reviewer → test-print-planner → shipper
+**Quick reference — pipeline stages:** spec-writer → [id-designer*] → modeler → geometry-analyzer → print-reviewer → test-print-planner → shipper
+
+*`id-designer` is the pipeline's only conversational agent. Runs when `spec.json` has `requiresId: true` — aesthetic designs with a face, motif, or visible placement. Produces `designs/<name>/id/brief.md` + pinned mockups. Library of shared aesthetic references lives at `designs/_id-library/`. See `.claude/agents/id-designer.md`.
 
 ## Printer: Bambu Lab X1 Carbon
 
@@ -53,6 +54,8 @@ node bin/check-assembly.js assemblies/<name>.json    # Assembly check
 ## Conventions
 
 - Each design lives in `designs/<name>/` with `requirements.md`, `spec.json`, `<name>.scad`
+- Designs with `requiresId: true` also have `designs/<name>/id/` containing `brief.md`, `moodboard/`, `mockups/`, `conversation-log.md`
+- Shared aesthetic library at `designs/_id-library/` (families, references, lessons) — agent reads at start of ID projects, proposes promotions at end
 - OpenSCAD libs in `scad-lib/`: always include `fdm-pla.scad` and `bambu-x1c.scad`
 - Use `report_dimensions()` to echo bbox for validation parsing
 - OpenSCAD rendering via `cli-anything-openscad` CLI (handles Xvfb internally, JSON output, parallel views)

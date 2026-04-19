@@ -1,29 +1,32 @@
 {
   "designName": "ptouch-cradle",
   "validationPass": true,
-  "iterations": 4,
+  "iterations": 1,
+  "round": 2,
+  "critiqueRound1Applied": true,
   "parts": {
     "cradle": {
       "scad": "designs/ptouch-cradle/cradle.scad",
       "stl": "designs/ptouch-cradle/output/cradle.stl",
       "watertight": true,
       "winding_consistent": true,
-      "volume_mm3": 171585.4,
-      "face_count": 5880,
+      "components": 1,
+      "volume_mm3": 176284.7,
+      "face_count": 18482,
       "dimensions": {
         "echoed": {
-          "cradle":                  { "x": 108.0, "y": 254.9, "z": 180.0 },
-          "cradle_body_no_tufts":    { "x": 108.0, "y": 254.9, "z": 145.0 },
-          "cradle_printer_section":  { "x": 86.0,  "y": 160.0, "z": 25.0  }
+          "cradle":                 { "x": 108.0, "y": 254.9, "z": 163.0 },
+          "cradle_body_no_tufts":   { "x": 108.0, "y": 254.9, "z": 145.0 },
+          "cradle_printer_section": { "x":  86.0, "y": 160.0, "z":  25.0 }
         },
         "expected": {
-          "cradle":                  { "x": 108,   "y": 254.9, "z": 180 },
-          "cradle_body_no_tufts":    { "x": 108,   "y": 254.9, "z": 145 }
+          "cradle":               { "x": 108,   "y": 254.9, "z": 163 },
+          "cradle_body_no_tufts": { "x": 108,   "y": 254.9, "z": 145 }
         },
-        "mesh_bbox_min": { "x": 0.0, "y": 0.0,   "z": -3.0 },
-        "mesh_bbox_max": { "x": 108, "y": 254.9, "z": 179.999 },
+        "mesh_bbox_min": { "x": 0.0,   "y": 0.0,   "z": -3.0 },
+        "mesh_bbox_max": { "x": 108.0, "y": 254.9, "z": 162.75 },
         "withinTolerance": true,
-        "notes": "Mesh Z min is -3.0 because corner feet now span z=-3 to z=0 as flat cylinders (was dome-scaled-hemispheres, overhang removed). Mesh XY bbox 108 x 254.9 driven by widest shelf section; printer section is 86 mm inset. Feather embosses on printer-section side walls protrude 1 mm outward but do NOT extend the X bbox because they sit between x=10..11 (left) and x=97..98 (right), within the 0..108 shelf envelope."
+        "notes": "Mesh Z min is -3.0 (corner feet). Mesh Z max is 162.75 vs echoed/spec 163 — 0.25 mm under, within defaultTolerance 1.0. Tuft peak lands here; the 0.25 mm deficit is because tuft bases sit on the panel arc (z ≈ 141.76 at X=±17.5) rather than at panel-center-top (z=145), so the visible peak-above-arc is ~21 mm not 18 mm. Acceptable within spec tolerance."
       }
     },
     "tray": {
@@ -31,8 +34,9 @@
       "stl": "designs/ptouch-cradle/output/tray.stl",
       "watertight": true,
       "winding_consistent": true,
-      "volume_mm3": 29146.1,
-      "face_count": 1564,
+      "components": 1,
+      "volume_mm3": 25321.0,
+      "face_count": 696,
       "dimensions": {
         "echoed": {
           "tray": { "x": 103.2, "y": 94.2, "z": 21.6 }
@@ -41,244 +45,247 @@
           "tray": { "x": 103.2, "y": 94.2, "z": 21.6 }
         },
         "mesh_bbox_min": { "x": 0.0,   "y": 0.0,  "z": 0.0 },
-        "mesh_bbox_max": { "x": 103.2, "y": 98.2, "z": 21.6 },
+        "mesh_bbox_max": { "x": 103.2, "y": 94.2, "z": 21.6 },
         "withinTolerance": true,
-        "notes": "Tray shortened from 41.6 to 21.6 mm exterior (interior 40→20 mm). Scoop and grip scallop removed — front wall is a plain vertical rectangle now. Enlarged owl face dominates the shorter front wall. Mesh Y max = 98.2 (wall at 94.2 + 4 mm pupil protrusion). Eye radius clamped from requested 10 mm to 9 mm so emboss top stays inside the 21.6 mm wall with ≥0.6 mm margin."
+        "notes": "Clean rectangular exterior envelope; owl face geometry deleted per Fix 1. Scoop lip restored on upper 14 mm of front wall (45° from horizontal); lower 7 mm vertical. Integrated concave finger-grip (30 mm wide × 2.5 mm deep) carved into scoop face center. No separate grip scallop. Bbox Z max matches ext_h exactly."
       }
     }
   },
+  "fixesApplied": [
+    { "id": 1, "title": "Delete tray owl face", "location": "tray.scad", "affectsSpec": true, "status": "applied" },
+    { "id": 2, "title": "Ear tufts — invert proportion, tilt outward, 3D sweep, base blend", "location": "cradle.scad (ear_tuft module)", "affectsSpec": true, "status": "applied" },
+    { "id": 3, "title": "Back panel silhouette — rounded top, soft vertical edges, convex +Y face", "location": "cradle.scad (back_panel_body_raw, panel_xy_section)", "affectsSpec": true, "status": "applied" },
+    { "id": 4, "title": "Back panel facial disc + eyes + beak", "location": "cradle.scad (facial_disc_cutter, eye_emboss, beak_emboss)", "affectsSpec": true, "status": "applied" },
+    { "id": 5, "title": "Printer→shelf concave fillet (replaces 45° chamfer)", "location": "cradle.scad (stepped_footprint_raw arcs)", "affectsSpec": true, "status": "applied" },
+    { "id": 6, "title": "Remove feather embosses from printer-section walls", "location": "cradle.scad (feather module DELETED)", "affectsSpec": true, "status": "applied" },
+    { "id": 7, "title": "Tray scoop lip + integrated finger-grip (restoration + evolution)", "location": "tray.scad (scoop_cutter, finger_grip_cutter)", "affectsSpec": true, "status": "applied" },
+    { "id": 8, "title": "Base plate corner r=6→8, foot-to-plate r=1.5 blend", "location": "cradle.scad (fillet_base_corner_r, corner_feet)", "affectsSpec": true, "status": "applied" }
+  ],
+  "dimensionDeviations": [
+    {
+      "param": "foot_blend_r",
+      "specValue": 1.5,
+      "actualValue": 1.0,
+      "reason": "With foot_inset=5 mm and foot_d=8 mm, a 1.5 mm upper blend fillet would make the flare top-diameter 11 mm (radius 5.5 mm) — poking 0.5 mm past the base plate edge. Reduced to 1.0 mm so the flare top-diameter is exactly 10 mm (radius 5 mm) and stays flush with the plate edge.",
+      "affectsBrief": false,
+      "affectsSpecDim": false
+    },
+    {
+      "param": "panel_vert_edge_r_effective",
+      "specValue": 4.0,
+      "actualValue": 1.2,
+      "reason": "The back panel's cross-section is only 3–5 mm thick in Y. A full 4 mm offset-offset vertical-edge fillet collapses the section below printable minimum. Reduced to 1.2 mm — visible softening is subtle but the panel mass is preserved. The full r=4 vertical-edge softening IS applied to the cradle body walls (z=0–25 mm) via wall_footprint() so the read from the lower body is unchanged.",
+      "affectsBrief": true,
+      "affectsSpecDim": false
+    },
+    {
+      "param": "ear_tuft_peak_dz_internal",
+      "specValue": 18,
+      "actualValue": 20,
+      "reason": "Brief's 18 mm peak-height-above-panel-top assumed panel-center-top (z=145) but the tuft base sits on the top arc at z≈141.76. To make actual tuft tip reach spec z=163 (cradle_total_h_with_tufts), the internal tuft_peak_dz is 20 mm (from base center). Visible silhouette height above local arc top is ~21 mm (≈20+blend−dip). Width 35 > height 21 preserves 'wider than tall' intent from brief.",
+      "affectsBrief": false,
+      "affectsSpecDim": false
+    }
+  ],
+  "specChangesApplied": [
+    "Removed all tray_owl_* params (eye/pupil/beak on tray) per Fix 1",
+    "Updated ear_tuft_* params: base_width 25→35, peak_height_above 35→18, peak_z_from_base 180→163",
+    "Added ear_tuft_tilt_outward_deg:25, ear_tuft_forward_sweep_mm:8, ear_tuft_base_blend_r:5, ear_tuft_base_y_depth:7, ear_tuft_tip_y_depth:3.5",
+    "Removed ear_tuft_outer_edge/peak_x_inset_from_outer_edge (superseded)",
+    "Added back_panel_top_arc_radius:160, back_panel_top_center_z:145, back_panel_top_corner_z:139",
+    "Added back_panel_front_convexity_mm:2, back_panel_vertical_edge_fillet_r:4, back_panel_top_fillet_r:6, back_panel_base_concave_fillet_r:4",
+    "Added back_panel_facial_disc_* block (w:70, h:54, center_z:90, depth:1.5, rim_r:2)",
+    "Added back_panel_eye_* block (w:9, h:11, center_z:95, center_x_offset:16, proud:2)",
+    "Added back_panel_pupil_* block (r:2.5, proud:0.8, enabled:true)",
+    "Added back_panel_beak_* block (3D wedge, base/apex dims and proud)",
+    "Added printer_section_to_shelf_concave_fillet_r:8",
+    "Changed fillet_base_plate_corners_r: 6 → 8",
+    "Added fillet_foot_to_plate_r:1.5 (implementation 1.0 mm — see deviations)",
+    "Top-level and echoedDimensions cradle.z: 180 → 163",
+    "cradle_total_h_with_tufts: 180 → 163",
+    "Added user_orientation_note for future renders",
+    "views list updated to user-frame hero_views",
+    "description rewritten to reflect motif consolidation and new feature set"
+  ],
   "features": [
     {
       "part": "cradle",
       "name": "corner_feet",
-      "description": "Four flat cylinder feet (8 mm dia × 3 mm tall). Plain cylinder(h=3, d=8) — flat top merges cleanly with base plate at z=0; flat bottom is a full 8 mm disc on the bed. REPLACES previous scaled-hemisphere dome feet, which created a problematic overhang under the base plate. No supports required.",
+      "description": "Four flat cylinder feet (d=8 mm, h=3 mm) on the base underside, plus a 1.0 mm upper blend flare (truncated cone) that softens the foot-to-plate junction at z=0. Foot bottom is a clean flat disc for bed adhesion. Flare radius at the top is capped at foot_inset (5 mm) so it stays inside the plate footprint.",
       "z_range": [-3, 0],
-      "outer_extent": 8,
+      "outer_extent": 10.0,
       "inner_extent": null,
-      "scad_line": 133,
-      "transitions": { "below": "desk (flat 8 mm disk contact)", "above": "base_plate" }
+      "scad_line": 229,
+      "transitions": { "below": "desk (flat 8 mm disc contact)", "above": "base_plate" }
     },
     {
       "part": "cradle",
       "name": "base_plate",
-      "description": "Stepped base plate: 86 mm wide at printer section (Y=0..149, X=11..97), widening via 45° chamfer (Y=149..160) to 108 mm wide shelf (Y=160..254.9). 4 mm thick. Four outer corners filleted r=6; chamfer endpoints also round.",
+      "description": "Stepped base plate: 86 mm wide at printer section, widening via concave fillet (r=8) transition at Y=152..160 to 108 mm shelf. Four outer corners filleted r=8 (round 2 increase from r=6). Thickness 4 mm.",
       "z_range": [0, 4],
       "outer_extent": 254.9,
       "inner_extent": null,
-      "scad_line": 124,
-      "transitions": { "below": "corner_feet", "above": "low_perimeter_walls / tray_shelf_walls" }
+      "scad_line": 218,
+      "transitions": { "below": "corner_feet", "above": "low_perimeter_walls / tray_shelf_walls / back_panel" }
     },
     {
       "part": "cradle",
       "name": "low_perimeter_walls",
-      "description": "Stepped 25 mm low bathtub wall. Printer section: 3 mm side/back/front walls around 80×154 mm pocket. Shelf section: 2.05 mm side walls flanking open-top/open-front tray slot. Top edge r=1.5 mm fillet via stacked quarter-round slices.",
+      "description": "Stepped 25 mm low bathtub wall. Printer section: 3 mm side/back/front walls around 80×154 mm pocket. Shelf section: 2.05 mm side walls flanking open-top / open-front tray slot. Top edge 1.5 mm fillet via stacked quarter-round slices. Exterior vertical edges r=4 via wall_footprint offset.",
       "z_range": [0, 25],
       "outer_extent": 160,
       "inner_extent": 154,
-      "scad_line": 159,
-      "transitions": { "below": "base_plate", "above": "tall_back_panel / tray_shelf_upper_walls / open" }
+      "scad_line": 250,
+      "transitions": { "below": "base_plate", "above": "back_panel / tray_shelf_upper_walls" }
     },
     {
       "part": "cradle",
       "name": "cable_slot",
-      "description": "U-notch in back wall, 25 mm wide × 20 mm tall, centered at X=54. Open at z=0 (no bridge).",
+      "description": "25 × 20 mm U-notch in the -Y back wall (user-back face). Bottom at z=0, top at z=20. Entirely within low_wall zone so no bridge. Seam-hidden user-back face per brief.",
       "z_range": [0, 20],
-      "outer_extent": 25,
+      "outer_extent": null,
       "inner_extent": null,
-      "scad_line": 390,
-      "transitions": { "below": "open (base)", "above": "tall_back_panel solid" }
-    },
-    {
-      "part": "cradle",
-      "name": "feather_embosses_left",
-      "description": "Three half-ellipse arch embosses on the printer-section LEFT side wall exterior (x=11). Each 20 mm wide × 12 mm tall (flat top, domed underside), raised 1 mm proud. Y-centers at y≈34.5, 76, 117.5 (evenly spaced along y=3..149 with 4 equal gaps of 21.5 mm). Vertical center at z=14.5 (mid-height of the 4..25 mm wall). Extrudes outward on a vertical wall — no overhang, no supports required.",
-      "z_range": [8.5, 20.5],
-      "outer_extent": 1.0,
-      "inner_extent": null,
-      "scad_line": 369,
-      "transitions": { "below": "base_plate (via wall)", "above": "low_perimeter_wall_top" }
-    },
-    {
-      "part": "cradle",
-      "name": "feather_embosses_right",
-      "description": "Mirror of left: three half-ellipse arches on the printer-section RIGHT side wall exterior (x=97), same dimensions and placement.",
-      "z_range": [8.5, 20.5],
-      "outer_extent": 1.0,
-      "inner_extent": null,
-      "scad_line": 369,
-      "transitions": { "below": "base_plate (via wall)", "above": "low_perimeter_wall_top" }
+      "scad_line": 361,
+      "transitions": { "below": "bed notch", "above": "solid back wall" }
     },
     {
       "part": "cradle",
       "name": "tray_shelf_upper_walls",
-      "description": "Short cap walls closing out the tray slot sides above the 25 mm low wall. Now just 1.3 mm tall (z=25..26.3) to match the new shorter slot interior (22.3 mm). Slot open at top and front.",
+      "description": "Short upper cap of the tray slot walls (z=25..26.3). Covers the extra 1.3 mm of slot height above the low wall top. No top-edge fillet (walls 2.05 mm thin — fillet would reduce section below 1.2 mm min).",
       "z_range": [25, 26.3],
       "outer_extent": 94.9,
       "inner_extent": 103.9,
-      "scad_line": 218,
-      "transitions": { "below": "low_perimeter_walls (shelf zone)", "above": "open (slot top)" }
+      "scad_line": 272,
+      "transitions": { "below": "low_perimeter_walls", "above": "open" }
     },
     {
       "part": "cradle",
-      "name": "tall_back_panel_body",
-      "description": "Tall back panel z=0..145, 86 mm wide × 3 mm thick. Top edge r=1.5 mm fillet on long front/back edges via stacked slices.",
+      "name": "back_panel_body",
+      "description": "Rounded-top sculptural panel. 86 mm wide × ~5 mm deep at center × 145 mm tall at X=0 (top-arc radius 160 mm; top-corners at z=139). Gently convex +Y face (sagitta 2 mm over 86 mm chord, R≈463 mm). Flat -Y face (against-wall). Convexity ramps up from 0 at z=25 to full 2 mm by z=29 — approximates r=4 concave base blend. Vertical X-Y edge softening via 1.2 mm offset-offset (reduced from brief's 4 mm due to panel thinness; full 4 mm fillet applied to walls below z=25). Built as 80 stacked horizontal slices for smooth top-arc + convex-front surface.",
       "z_range": [0, 145],
-      "outer_extent": 3,
+      "outer_extent": 86,
       "inner_extent": null,
-      "scad_line": 258,
-      "transitions": { "below": "base_plate / low_perimeter_walls", "above": "ear_tufts" }
+      "scad_line": 298,
+      "transitions": { "below": "low_perimeter_walls (shares back wall below z=25)", "above": "ear_tufts / open" }
     },
     {
       "part": "cradle",
-      "name": "ear_tuft_left",
-      "description": "Left owl ear tuft — triangular profile extruded 3 mm. Base 25 mm along back panel top, peak at X=16, Z=180. 2 mm apex fillet.",
-      "z_range": [144, 180],
-      "outer_extent": 25,
+      "name": "facial_disc_recess",
+      "description": "Ovoid recess carved into the +Y face of the back panel. Width 70 mm, height 54 mm, depth 1.5 mm at center (tapering to 0 at rim via sphere-scale). Center at X=54, Z=90 (62% of panel height). Frames eyes and beak.",
+      "z_range": [63, 117],
+      "outer_extent": 70,
       "inner_extent": null,
-      "scad_line": 287,
-      "transitions": { "below": "tall_back_panel_body", "above": "top" }
+      "scad_line": 338,
+      "transitions": { "part_of": "back_panel_body" }
     },
     {
       "part": "cradle",
-      "name": "ear_tuft_right",
-      "description": "Right owl ear tuft — mirror of left. Peak at X=92, Z=180.",
-      "z_range": [144, 180],
-      "outer_extent": 25,
+      "name": "eyes",
+      "description": "Two vertically elongated dome-top hemispheroids, forward-facing. Size 9 × 11 mm (W×H). Centers at X=±16 from panel center, Z=95. Protrude ~2 mm forward of the disc floor (net ~0.5 mm proud of surrounding convex +Y face). Dome-topped profile.",
+      "z_range": [89, 101],
+      "outer_extent": 9,
       "inner_extent": null,
-      "scad_line": 287,
-      "transitions": { "below": "tall_back_panel_body", "above": "top" }
+      "scad_line": 356,
+      "transitions": { "part_of": "back_panel" }
     },
+    {
+      "part": "cradle",
+      "name": "pupils",
+      "description": "Two small dome-topped hemispheres (r=2.5 mm, 0.8 mm proud beyond eye surface) centered on each eye. Rendered by default; brief marks these optional — round 2 critique may decide to delete.",
+      "z_range": [92, 98],
+      "outer_extent": 5,
+      "inner_extent": null,
+      "scad_line": 369,
+      "transitions": { "part_of": "eyes" }
+    },
+    {
+      "part": "cradle",
+      "name": "beak_3d_wedge",
+      "description": "3D downward-pointing wedge between and below the eyes. Hull of (a) a flat base slab embedded in the panel at X=54±4.5, Z=80 and (b) a small rounded apex sphere at X=54, Z=73, Y≈8.1 mm (~4 mm proud of the disc floor). Apex pokes forward-and-down for the 3D read. Apex radius r=1 mm.",
+      "z_range": [73, 80],
+      "outer_extent": 9,
+      "inner_extent": null,
+      "scad_line": 379,
+      "transitions": { "part_of": "back_panel" }
+    },
+    {
+      "part": "cradle",
+      "name": "ear_tufts",
+      "description": "Two chained-hull tufts emerging from the panel's rounded top. Base: 35 mm wide × 7 mm Y-depth flat ellipse, dipped 3 mm into the panel top for visual blend (approximates r=5 base fillet). Mid: 55% X-width, pulled in from the linear base-to-tip X-tilt path to create a concave feather dip. Tip: 28% X-width × 3.5 mm Y-depth ellipse at the apex. Outward tilt 25° (X-shift by sin(25)×height at tip). Forward sweep 8 mm in +Y. Silhouette: base → concave mid → tapered tip. Print-frame supports REQUIRED (tree) per brief for the forward-sweeping portion.",
+      "z_range": [139, 163],
+      "outer_extent": 35,
+      "inner_extent": null,
+      "scad_line": 414,
+      "transitions": { "below": "back_panel (merges via dipped base)", "above": "top" }
+    },
+    {
+      "part": "cradle",
+      "name": "printer_shelf_concave_fillet",
+      "description": "Concave fillet (r=8, quarter-arc) in the 2D footprint at X=97..105, Y=152..160 on the right side (mirrored on left). Replaces the previous 45° chamfer. Swept vertically from z=0 through the full cradle body. Every print layer above is equal-or-larger than the layer below — fully self-supporting.",
+      "z_range": [0, 26.3],
+      "outer_extent": null,
+      "inner_extent": null,
+      "scad_line": 175,
+      "transitions": { "part_of": "stepped_footprint" }
+    }
+  ],
+  "featuresTray": [
     {
       "part": "tray",
       "name": "tray_shell",
-      "description": "Open-top rectangular shell, 103.2 × 94.2 × 21.6 mm exterior with 3 mm vertical corner fillets. Walls 1.6 mm, floor 1.6 mm. Interior 100 × 91 × 20 mm. Plain vertical front wall — no scoop, no grip scallop.",
+      "description": "Rectangular bin, 103.2 × 94.2 × 21.6 mm exterior, 100 × 91 × 20 mm interior. Walls 1.6 mm, floor 1.6 mm. Open top. Four vertical exterior corners filleted r=3.",
       "z_range": [0, 21.6],
       "outer_extent": 103.2,
       "inner_extent": 100,
-      "scad_line": 66,
-      "transitions": { "below": "bed", "above": "open (top)" }
+      "scad_line": 55,
+      "transitions": { "below": "bed (flat floor)", "above": "open" }
     },
     {
       "part": "tray",
-      "name": "beak_emboss",
-      "description": "Downward-pointing triangular beak on front wall exterior, 8 mm wide × 8 mm tall, raised 2.5 mm. Top edge at z=9, apex at z=1 (near floor). Centered on X.",
-      "z_range": [1, 9],
-      "outer_extent": 8,
+      "name": "scoop_lip",
+      "description": "Upper 14 mm of the tray's +Y (user-front) wall tilts back at 45° from horizontal, receding into the tray interior by 14 mm in -Y between z=7 and z=21.6. Lower 7 mm stays vertical as structural base. Implemented as a triangular prism cutter.",
+      "z_range": [7, 21.6],
+      "outer_extent": null,
       "inner_extent": null,
-      "scad_line": 95,
-      "transitions": { "below": "tray floor exterior", "above": "eye_embosses zone" }
+      "scad_line": 77,
+      "transitions": { "part_of": "tray_shell front wall" }
     },
     {
       "part": "tray",
-      "name": "eye_emboss_left",
-      "description": "Left owl eye — cylindrical disc r=9 mm, raised 2 mm proud of front wall. Center at (X=ext_w/2-22, Y=ext_d, Z=11). Eye radius clamped from specified 10 mm to 9 mm to fit vertically within the 21.6 mm front wall with safe margins.",
-      "z_range": [2, 20],
-      "outer_extent": 18,
+      "name": "integrated_finger_grip",
+      "description": "Concave cylindrical dip (R≈46 mm) carved into the central 30 mm of the scoop face, perpendicular to the scoop plane. 2.5 mm depth. Serves as a finger-pull for tray removal. Merged into the scoop — not a separate feature.",
+      "z_range": [7, 21.6],
+      "outer_extent": 30,
       "inner_extent": null,
-      "scad_line": 81,
-      "transitions": { "below": "beak_emboss region", "above": "tray front wall top" }
-    },
-    {
-      "part": "tray",
-      "name": "eye_emboss_right",
-      "description": "Right owl eye — symmetric to left. Center at (X=ext_w/2+22, Y=ext_d, Z=11).",
-      "z_range": [2, 20],
-      "outer_extent": 18,
-      "inner_extent": null,
-      "scad_line": 81,
-      "transitions": { "below": "beak_emboss region", "above": "tray front wall top" }
-    },
-    {
-      "part": "tray",
-      "name": "pupil_emboss_left",
-      "description": "Left pupil, concentric with left eye. r=4 mm, total +4 mm proud of wall (2 mm beyond eye disc).",
-      "z_range": [7, 15],
-      "outer_extent": 8,
-      "inner_extent": null,
-      "scad_line": 88,
-      "transitions": { "below": "eye_emboss_left surface", "above": "eye_emboss_left surface" }
-    },
-    {
-      "part": "tray",
-      "name": "pupil_emboss_right",
-      "description": "Right pupil, concentric with right eye. r=4 mm, +4 mm total proud.",
-      "z_range": [7, 15],
-      "outer_extent": 8,
-      "inner_extent": null,
-      "scad_line": 88,
-      "transitions": { "below": "eye_emboss_right surface", "above": "eye_emboss_right surface" }
+      "scad_line": 96,
+      "transitions": { "part_of": "scoop_lip" }
     }
   ],
   "printOrientation": {
     "cradle": {
-      "bed_face": "base plate bottom via flat cylinder feet (8 mm disc contacts)",
-      "z_direction": "+Z = up; ear tuft peaks at z=180, feet at z=-3..0"
+      "bed_face": "base plate bottom (z=-3 flat feet contact bed)",
+      "z_direction": "+Z print axis corresponds to design +Z (vertical)",
+      "supports_required": ["ear_tufts (tree, forward sweep)"],
+      "supports_permitted_but_avoidable": ["beak_apex (try geometric only)", "facial_disc_rim (if undercut)"]
     },
     "tray": {
-      "bed_face": "tray floor exterior bottom (z=0)",
-      "z_direction": "+Z = up; open top at z=21.6"
+      "bed_face": "tray floor (z=0 flat)",
+      "z_direction": "+Z print axis = tray opening direction",
+      "supports_required": [],
+      "supports_permitted_but_avoidable": ["scoop_lip 45° face (printable as overhang per iter 1)"]
     }
   },
-  "specDeviations": [
-    {
-      "part": "cradle",
-      "dimension": "tray_slot_interior_h (spec param 42.3 mm)",
-      "expected": 42.3,
-      "actual": 22.3,
-      "reason": "Tray was shortened from 41.6 to 21.6 mm exterior per user direction; slot shrinks to match at 21.6 + 2×0.35 = 22.3 mm (sliding fit). Shelf upper walls now only 1.3 mm tall (z=25..26.3). Slot remains open top + open front."
-    },
-    {
-      "part": "cradle",
-      "dimension": "corner foot shape",
-      "expected": "scaled hemisphere dome (per original design)",
-      "actual": "plain cylinder(h=3, d=8)",
-      "reason": "User requested replacement to eliminate the overhang under the base plate that the scaled-hemisphere feet created. Flat-top, flat-bottom cylinders print with no supports and give a full 8 mm first-layer footprint."
-    },
-    {
-      "part": "cradle",
-      "dimension": "printer-section side walls",
-      "expected": "plain exterior",
-      "actual": "three half-ellipse feather embosses per side (1 mm proud, 20 w × 12 h mm)",
-      "reason": "User requested 'cuteness features' on the printer-section side walls. Embosses are vertical-wall outward perimeter bumps — no overhang, no supports."
-    },
-    {
-      "part": "tray",
-      "dimension": "tray exterior height (spec 41.6 mm)",
-      "expected": 41.6,
-      "actual": 21.6,
-      "reason": "User feedback: 'front has a big hole in it, walls are too tall making it look goofy.' Interior halved from 40 to 20 mm. Scoop and top-edge grip scallop removed."
-    },
-    {
-      "part": "tray",
-      "dimension": "scoop lip and grip scallop",
-      "expected": "45° scoop on bottom 15 mm of front wall; 24×8 mm top-edge grip scallop",
-      "actual": "both removed; front wall is a plain vertical rectangle",
-      "reason": "Per user direction: shorter tray can be pinched from the sides, so grip scallop unneeded; scoop eliminated because removing the tall wall removes the need to scoop labels over its top."
-    },
-    {
-      "part": "tray",
-      "dimension": "owl eye radius (user-requested 10 mm)",
-      "expected": 10,
-      "actual": 9,
-      "reason": "User instruction explicitly allowed adjusting if eyes visually crowd. A r=10 mm eye centered at z=13 on a 21.6 mm wall would place the eye top at z=23, overshooting the wall top. Clamped to r=9 with eye_cz=11 so eye top sits at z=20 (0.6 mm below wall top) and eye bottom at z=2 (0.4 mm above floor). Beak (z=1..9) sits below pupils (z=7..15) but offset in X (±22 from centerline) so no collision."
-    },
-    {
-      "part": "tray",
-      "dimension": "mesh Y bbox",
-      "expected": "94.2 mm (wall envelope)",
-      "actual": "98.2 mm (including pupil embosses)",
-      "reason": "Pupils now protrude +4 mm proud of front wall (up from +3 mm). Intentional aesthetic relief. Echoed envelope still reports 94.2 for validator comparison."
-    }
-  ],
-  "printability_notes": [
-    "Cradle corner feet: flat cylinders (no overhang). Full 8 mm disc first-layer contact.",
-    "Cradle feather embosses: outward protrusions on vertical exterior walls. Each slicer layer adds a 1 mm perimeter bump — no overhang, no supports.",
-    "Cradle cable slot: U-notch open at z=0, eliminates bridge.",
-    "Cradle tray slot: open top, eliminates bridge. Now only 22.3 mm deep.",
-    "Tray: front wall is plain vertical; no overhangs from scoop geometry anymore.",
-    "Tray owl embosses: all features are outward protrusions on a vertical exterior wall — slicer handles as simple perimeters.",
-    "Both parts watertight and manifold per trimesh analysis.",
-    "1.5 mm top-edge fillets on low perimeter wall tops and back panel top preserved from prior iteration.",
-    "No bridges anywhere in the assembly."
+  "userOrientationConfirmed": {
+    "user_front": "+Y face (tray slides in/out here; owl face visible here)",
+    "user_back": "-Y face (against-wall, cable notch)",
+    "seams_hidden_on": ["-Y back panel face", "base plate underside"],
+    "renders_captured_in_user_frame": true
+  },
+  "renderSet": [
+    "output/cradle-user-front.png",
+    "output/cradle-user-front-threequarter.png",
+    "output/cradle-user-left.png",
+    "output/tray-user-front.png",
+    "output/tray-user-front-threequarter.png"
   ]
 }

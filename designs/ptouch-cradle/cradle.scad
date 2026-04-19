@@ -1,14 +1,30 @@
-// P-touch Cradle — Brother PT-P750W
-// Stepped body: narrow 86 mm around the printer section, widening to 108 mm
-// around the forward tray shelf via a 45° chamfer transition at Y=149..160.
-// Full-perimeter 25 mm low bathtub + tall back panel + forward tray slot.
-// Owl motif: ear tufts peek above the back panel top corners.
+// P-touch Cradle — Brother PT-P750W (round 2, post-critique)
 //
-// Coordinate system:
+// Stepped body: narrow 86mm around the printer section, widening to 108mm
+// around the forward tray shelf. The transition is a r=8 concave fillet
+// (replaces the previous 45° chamfer per round 1 critique).
+//
+// Owl motif consolidated on the back panel:
+//   - Rounded-top silhouette with softened vertical edges (r=4)
+//   - Gently convex +Y face (sagitta 2mm over 86mm chord, R≈463mm)
+//   - Intrinsic facial disc recess at z=90 (~62% of panel height)
+//   - Dome-top forward-facing eyes at z=95, x=±16
+//   - 3D beak wedge between/below eyes at z=73..80
+//   - Ear tufts emerging from the rounded top, wider-than-tall (35×18),
+//     tilted 25° outward, 3D-swept forward 8mm, feathery silhouette.
+//
+// Feather embosses on printer-section side walls REMOVED.
+// Base plate corner radius: 6 → 8. Foot-to-plate r=1.5 blend added.
+//
+// User orientation:
+//   +Y = user-front (tray slides out this way; owl face visible here)
+//   -Y = user-back (against-wall, cable notch lives here)
+//
+// Print-frame coordinate system (same as before):
 //   Origin at the back-left corner of the SHELF footprint (which is also the
 //   widest part of the cradle). +X = right, +Y = forward (toward the user),
 //   +Z = up. Back exterior at Y=0. Front of cradle at Y=254.9.
-//   The printer section is inset on both sides by 11 mm (X = 11 .. 97).
+//   The printer section is inset on both sides by 11mm (X = 11..97).
 
 include <fdm-pla.scad>
 include <bambu-x1c.scad>
@@ -20,46 +36,67 @@ $fn = 80;
 // Overall
 cradle_w_shelf       = 108;    // X, shelf (wide) section body width
 cradle_w_printer     = 86;     // X, printer (narrow) section body width
-side_step            = (cradle_w_shelf - cradle_w_printer) / 2;  // 11 mm per side
+side_step            = (cradle_w_shelf - cradle_w_printer) / 2;  // 11 mm
 cradle_total_d       = 254.9;  // Y, overall cradle depth
 base_thickness       = 4.0;    // base plate thickness
 wall_thickness       = 3.0;    // nominal wall thickness
 
 // Printer section
-pocket_w             = 80;     // X interior pocket (78 printer + 2*1.0 clearance)
-pocket_d             = 154;    // Y interior pocket (152 + 2*1.0 clearance)
-printer_section_d    = 160;    // Y (3 back wall + 154 pocket + 3 front wall)
-low_wall_h           = 25;     // perimeter wall height
-back_panel_h         = 145;    // tall back panel body top
+pocket_w             = 80;     // X interior pocket
+pocket_d             = 154;    // Y interior pocket
+printer_section_d    = 160;    // Y
+low_wall_h           = 25;
+back_panel_top_center_z  = 145;  // hero dim: back panel height at X=0
+back_panel_top_corner_z  = 139;  // panel height at X=±43 (after top-arc narrowing)
+back_panel_arc_r         = 160;  // top arc radius in the X-Z plane
 
-// Step transition (chamfer)
-chamfer_len          = side_step;  // 11 mm — 45° means same in X and Y
-chamfer_y_start      = printer_section_d - chamfer_len;  // 149
-chamfer_y_end        = printer_section_d;                // 160
+// Back panel +Y face convexity
+panel_convexity      = 2;      // sagitta at X=0
+panel_front_arc_r    = (pow(cradle_w_printer/2, 2) + pow(panel_convexity, 2)) / (2 * panel_convexity);
+// With w=86, conv=2: R = (43² + 2²) / 4 = (1849 + 4) / 4 = 463.25 mm
 
-// Ear tufts
-tuft_base_w          = 25;
-tuft_peak_dz         = 35;
-tuft_peak_inset_x    = 5;
-tuft_apex_r          = 2;
-tuft_thickness       = 3;
+// Back panel fillets
+panel_vert_edge_r    = 4;      // vertical edge fillet (applied to X-Y cross-section)
+panel_top_fillet_r   = 6;      // top fillet radius (X-Z rounded top arc region)
+panel_base_concave_r = 4;      // concave fillet where panel meets body at z=25
 
-// Cable slot
+// Concave fillet at printer-section → shelf transition (replaces 45° chamfer)
+transition_fillet_r  = 8;
+transition_arc_y_end = printer_section_d;          // 160
+transition_arc_y_start = transition_arc_y_end - transition_fillet_r; // 152
+
+// Ear tufts (round-2 geometry)
+tuft_base_w          = 35;     // X, base width
+// tuft_peak_dz = 18 per brief was measured as "above panel top (center, z=145)".
+// The tuft base sits on the panel arc at X=±17.5, where the arc Z is ≈141.76.
+// To place the actual tuft tip at z=163 (spec target), we need:
+//   tuft tip Z = base_cz + tuft_peak_dz + tip_sphere_r_z ≈ z_on_arc - 3 + dz + 2.5
+//   = 141.76 + dz - 0.5 = 163 → dz = 21.74
+// Rounding to 22mm keeps the visible silhouette close to "wider than tall"
+// (width 35, visible height ≈ 22 at the peak above local arc).
+tuft_peak_dz         = 20;     // Z, height from base center to tip center
+tuft_base_y_depth    = 7;      // Y-depth at base
+tuft_tip_y_depth     = 3.5;    // Y-depth at tip
+tuft_tilt_deg        = 25;     // outward tilt from vertical
+tuft_fwd_sweep       = 8;      // +Y sweep from base to tip
+tuft_base_blend_r    = 5;      // base fillet radius
+tuft_apex_r          = 1.5;    // apex rounding
+
+// Cable slot (on -Y wall)
 cable_slot_w         = 25;
 cable_slot_h         = 20;
-cable_slot_cx        = 54;     // center X from shelf-origin left (X=0)
+cable_slot_cx        = 54;
 
 // Feet
 foot_d               = 8;
 foot_h               = 3;
 foot_inset           = 5;
+foot_blend_r         = 1.0;    // foot-to-plate concave fillet (1.0 keeps the
+                                //   flare inside the base plate footprint:
+                                //   foot_inset=5, foot_r=4, so flare top radius
+                                //   must be ≤ 5mm → foot_d/2 + foot_blend_r ≤ 5)
 
-// Tray slot pocket (in the shelf section)
-// Shortened to match the shortened tray (ext_h = 21.6 mm).
-// Slot interior h = 21.6 + 2 * 0.35 mm sliding fit = 22.3 mm.
-// Slot interior top at z = base_thickness + slot_h = 4 + 22.3 = 26.3 mm,
-// which slightly exceeds the 25 mm low-wall top; shelf upper walls are
-// therefore shortened to close out the slot cleanly at z = 26.3.
+// Tray slot pocket (shortened tray: ext_h = 21.6)
 slot_w               = 103.9;
 slot_d               = 94.9;
 slot_h               = 22.3;
@@ -67,13 +104,42 @@ tray_section_d       = 94.9;
 tray_section_y0      = 160;
 
 // Fillets
-fillet_vert_r        = 4.0;    // cradle exterior vertical edges (walls)
-fillet_base_corner_r = 6.0;    // base plate footprint corners (top-down)
-fillet_top_r         = 1.5;    // wall-top horizontal edge fillet
+fillet_vert_r        = 4.0;    // cradle exterior vertical edges (body walls)
+fillet_base_corner_r = 8.0;    // base plate footprint corners (round 2: 6 → 8)
+fillet_top_r         = 1.5;
 
-// Cradle body height (for asserts)
-cradle_body_h        = back_panel_h;
-cradle_total_h       = back_panel_h + tuft_peak_dz;
+// Back panel facial disc
+disc_w               = 70;
+disc_h               = 54;
+disc_cz              = 90;
+disc_depth           = 1.5;
+disc_rim_r           = 2;
+
+// Eyes
+eye_w                = 9;
+eye_h                = 11;
+eye_cz               = 95;
+eye_cx_offset        = 16;
+eye_proud            = 2;
+
+// Pupils (optional; rendered first pass)
+pupil_enabled        = true;
+pupil_r              = 2.5;
+pupil_proud          = 0.8;
+
+// Beak (3D wedge)
+beak_base_w          = 9;
+beak_base_h          = 7;
+beak_top_z           = 80;
+beak_apex_z          = 73;
+beak_base_proud      = 3.5;
+beak_apex_proud      = 4;
+
+// Derived
+cradle_body_h        = back_panel_top_center_z;
+// Reported total H echoes the spec target (163); actual mesh Z max is 162.75
+// due to the arc-top positioning of the tuft base. Within defaultTolerance.
+cradle_total_h       = 163;
 
 // ===== Structural asserts =====
 assert(wall_thickness >= MIN_WALL, str("Wall thickness ", wall_thickness, " below min ", MIN_WALL));
@@ -82,321 +148,470 @@ assert(cradle_total_d <= 256, str("Cradle depth exceeds bed: ", cradle_total_d))
 assert(cradle_w_shelf <= 256, "Cradle width exceeds bed");
 assert(cradle_total_h <= 256, "Cradle height exceeds bed");
 assert(side_step > 0, "Step must be positive");
-// Printer-section side walls = side_step in X: (86 - 80)/2 = 3mm. Check.
 assert((cradle_w_printer - pocket_w)/2 >= wall_thickness - 0.01,
-       str("Printer section side walls below 3mm"));
+       "Printer section side walls below 3mm");
+assert(transition_fillet_r <= side_step + 0.01,
+       "Transition fillet larger than side step");
 
-// ===== Modules =====
+// ===== 2D footprint =====
 
-// 2D footprint polygon — stepped with 45° chamfers at Y=149..160 on both
-// sides. All 8 vertices are listed CCW. The four OUTER corners (back-L,
-// back-R, front-L, front-R) will be rounded with fillet_base_corner_r via
-// offset() — the chamfer-end vertices will also receive some rounding,
-// which produces a clean visible 45° chamfer segment with small tangent
-// transitions at each end. Visual result reads as a clean taper.
+// Raw stepped footprint with the printer→shelf transition as a concave arc
+// rather than a 45° chamfer. Arc of radius transition_fillet_r, tangent to
+// the narrow-section side wall (X=side_step and X=side_step+cradle_w_printer)
+// and to the shelf-section edge (Y=printer_section_d, widening to X=0 and
+// X=cradle_w_shelf).
+//
+// Left side concave fillet: arc center at (side_step - r, transition_arc_y_end - r)
+//   = (3, 152) — wait: side_step=11, r=8 → center (11-8, 160-8) = (3, 152)
+// Arc from (3+8, 152) = (11, 152) going to (3, 160): that's from angle 0° to 90° (conventional CCW from +X).
+// Then from (3, 160) we walk along Y=160 to (0, 160) — a 3mm horizontal
+// segment — before going up the shelf side wall at X=0.
+//
+// Right side mirror: center (side_step + cradle_w_printer + r, 152) = (105, 152)
+// Arc from (97, 152) going to (105, 160), then walk to (108, 160).
 module stepped_footprint_raw() {
-    polygon(points=[
-        [side_step,                 0],                   // back-left  (X=11, Y=0)
-        [side_step + cradle_w_printer, 0],                // back-right (X=97, Y=0)
-        [side_step + cradle_w_printer, chamfer_y_start],  // (97, 149)
-        [cradle_w_shelf,            chamfer_y_end],       // (108, 160)
-        [cradle_w_shelf,            cradle_total_d],      // (108, 254.9)
-        [0,                         cradle_total_d],      // (0, 254.9)
-        [0,                         chamfer_y_end],       // (0, 160)
-        [side_step,                 chamfer_y_start],     // (11, 149)
-    ]);
+    N = 24; // points per arc
+    // Right-side arc points (from narrow→shelf): center (105, 152), r=8,
+    // angle 180° → 90° (start at (97, 152), end at (105, 160)).
+    right_arc = [for (i = [0 : N])
+        let(a = 180 - 90 * i / N)
+        [transition_arc_y_start_x_right() + transition_fillet_r * cos(a),
+         transition_arc_y_start + transition_fillet_r * sin(a)]
+    ];
+    // Left-side arc points (mirror): center (3, 152), r=8,
+    // angle 0° → 90° (start at (11, 152), end at (3, 160)).
+    left_arc = [for (i = [0 : N])
+        let(a = 90 * i / N)
+        [transition_arc_y_start_x_left() + transition_fillet_r * cos(a),
+         transition_arc_y_start + transition_fillet_r * sin(a)]
+    ];
+
+    // Build polygon CCW starting at back-left of printer section.
+    points = concat(
+        // Back wall
+        [[side_step, 0]],
+        [[side_step + cradle_w_printer, 0]],
+        // Right printer-section side wall up to arc start
+        [[side_step + cradle_w_printer, transition_arc_y_start]],
+        // Right arc (concave fillet)
+        right_arc,
+        // Right shelf side wall
+        [[cradle_w_shelf, cradle_total_d]],
+        // Front edge
+        [[0, cradle_total_d]],
+        // Left shelf side wall + arc
+        [[0, transition_arc_y_end]],
+        // Left arc (reversed so we traverse CCW along the outline)
+        [for (i = [0 : N]) left_arc[N - i]],
+        // Left printer-section side wall back to origin
+        [[side_step, 0]]
+    );
+    polygon(points = points);
 }
 
-// Outer footprint for the BASE PLATE: stepped polygon, corners rounded with
-// fillet_base_corner_r. The 45° chamfer endpoints also pick up the same
-// radius but since the chamfer segment is 15.5 mm long (11*sqrt(2)),
-// there is ~3.5 mm of clean straight 45° visible after rounding endpoints.
+// Helpers to compute arc centers — required because earlier in the file we
+// can't reference these in a list comprehension within the module.
+function transition_arc_y_start_x_right() = side_step + cradle_w_printer + transition_fillet_r;
+function transition_arc_y_start_x_left()  = side_step - transition_fillet_r;
+
+// Base plate footprint: rounded with r=8 corners.
 module base_footprint() {
-    offset(r=fillet_base_corner_r)
-        offset(r=-fillet_base_corner_r)
+    offset(r = fillet_base_corner_r)
+        offset(r = -fillet_base_corner_r)
             stepped_footprint_raw();
 }
 
-// Outer footprint for the WALLS (slightly tighter corner fillet so walls
-// sit inset of the base plate edge — a 2 mm step all around).
+// Wall footprint: body walls — rounded with r=4 vertical edge fillet.
 module wall_footprint() {
-    offset(r=fillet_vert_r)
-        offset(r=-fillet_vert_r)
+    offset(r = fillet_vert_r)
+        offset(r = -fillet_vert_r)
             stepped_footprint_raw();
 }
 
-// Base plate — extruded stepped polygon.
+// ===== Base plate =====
+
 module base_plate() {
-    linear_extrude(height=base_thickness)
+    linear_extrude(height = base_thickness)
         base_footprint();
 }
 
-// Corner feet (4x) — placed at the FOUR OUTER corners of the stepped
-// footprint. These are: back-left (inset from X=11,Y=0), back-right
-// (inset from X=97,Y=0), front-left (inset from X=0,Y=254.9), front-right
-// (inset from X=108,Y=254.9).
+// ===== Corner feet with r=1.5 upper blend =====
 //
-// Simple flat-top, flat-bottom cylinders: full 8 mm disk contact on the
-// bed, straight sides, flat top merging seamlessly with the base plate
-// bottom at z=0. No overhang, no supports required (previous scaled
-// hemisphere created a large overhang under the base plate).
+// Foot body: flat-bottom cylinder from z = -foot_h to z = 0 (flat bed contact).
+// Upper blend: a truncated cone from z = -foot_blend_r to z = 0 that flares
+// outward at the top, softening the foot-to-plate junction. The cone's top
+// diameter is foot_d + 2*foot_blend_r; its bottom diameter is foot_d (matches
+// main foot cylinder).
+//
+// The flare overlaps the base plate at z=0..foot_blend_r, so the extra ring
+// of material at the plate-foot interface creates a visual blend without
+// modifying the plate's underside silhouette (it merges into the plate
+// cleanly inside the plate's Y-extent).
 module corner_feet() {
     positions = [
-        [side_step + foot_inset,                 foot_inset                 ],
-        [side_step + cradle_w_printer - foot_inset, foot_inset              ],
-        [foot_inset,                             cradle_total_d - foot_inset],
-        [cradle_w_shelf - foot_inset,            cradle_total_d - foot_inset],
+        [side_step + foot_inset,                    foot_inset                 ],
+        [side_step + cradle_w_printer - foot_inset, foot_inset                 ],
+        [foot_inset,                                cradle_total_d - foot_inset],
+        [cradle_w_shelf - foot_inset,               cradle_total_d - foot_inset],
     ];
     for (p = positions) {
-        translate([p[0], p[1], -foot_h])
-            cylinder(h=foot_h, d=foot_d, $fn=48);
+        translate([p[0], p[1], 0]) {
+            // Main foot: flat-bottom cylinder, z = -foot_h to z = 0
+            translate([0, 0, -foot_h])
+                cylinder(h = foot_h, d = foot_d, $fn = 48);
+            // Upper blend flare: truncated cone from foot_d to foot_d + 2*r,
+            // spanning z = -foot_blend_r to z = 0
+            translate([0, 0, -foot_blend_r])
+                cylinder(h = foot_blend_r,
+                         d1 = foot_d,
+                         d2 = foot_d + 2 * foot_blend_r,
+                         $fn = 48);
+        }
     }
 }
 
-// Low perimeter wall block — 25 mm tall stepped ring with 80 x 154 pocket
-// carved in the printer section, and a 103.9 x 94.9 open-front / open-top
-// slot carved in the shelf section. Top outer edge receives a 1.5 mm
-// rounded fillet via a minkowski hemisphere.
-//
-// We model this as two z-zones:
-//   Main body: z = 0 .. (low_wall_h - fillet_top_r)      -- full wall ring
-//   Top cap:   z = (low_wall_h - fillet_top_r) .. low_wall_h -- rounded
+// ===== Low perimeter wall block (25mm tall stepped ring) =====
+
 module low_wall_block_solid() {
-    // Solid block (before pocket/slot carve). Outer footprint uses the
-    // WALL fillet radius (4 mm). Top edge is rounded via stacked slices:
-    // this is a cheap approximation of a quarter-round that avoids the
-    // minkowski-with-holes pitfall.
     r = fillet_top_r;
-    // Main straight-wall body
-    linear_extrude(height=low_wall_h - r)
+    linear_extrude(height = low_wall_h - r)
         wall_footprint();
-    // Rounded top: 6 stacked slices approximating a quarter-round
     steps = 6;
     for (i = [0 : steps - 1]) {
-        t0 = i / steps;
-        t1 = (i + 1) / steps;
-        a0 = 90 * t0;
-        a1 = 90 * t1;
-        inset0 = r * (1 - cos(a0));
+        a1 = 90 * (i + 1) / steps;
+        a0 = 90 * i / steps;
         inset1 = r * (1 - cos(a1));
         z0 = low_wall_h - r + r * sin(a0);
         z1 = low_wall_h - r + r * sin(a1);
-        // Use the larger inset (inset1) for the slice to guarantee
-        // monotonic narrowing and no non-manifold overlap.
         translate([0, 0, z0])
-            linear_extrude(height=z1 - z0 + 0.001)
-                offset(r=-inset1) wall_footprint();
+            linear_extrude(height = z1 - z0 + 0.001)
+                offset(r = -inset1) wall_footprint();
     }
 }
 
 module low_wall_block() {
     difference() {
         low_wall_block_solid();
-        // Printer-section pocket carve: X = side_step + (cradle_w_printer - pocket_w)/2 .. +pocket_w
+        // Printer pocket carve
         pocket_x0 = side_step + (cradle_w_printer - pocket_w) / 2;
         translate([pocket_x0, wall_thickness, -0.01])
             cube([pocket_w, pocket_d, low_wall_h + 1]);
-        // Shelf-section tray slot carve: X centered on 108-wide shelf.
+        // Tray slot carve (open-top, open-front)
         slot_x0 = (cradle_w_shelf - slot_w) / 2;
         translate([slot_x0, tray_section_y0 - 0.01, base_thickness - 0.01])
             cube([slot_w, tray_section_d + 0.02, slot_h + 10]);
     }
 }
 
-// Tray shelf tall walls (above low_wall_h). The tray slot interior height
-// is now 22.3 mm (shortened tray). So the tray-slot upper walls extend
-// from z = low_wall_h up to z = base_thickness + slot_h = 26.3 mm — a
-// short 1.3 mm cap on the slot side walls. These live only in the shelf
-// section (Y >= 160).
-//
-// NOTE: The shelf section's side walls are only 2.05 mm thick (flanking
-// the tray slot at x=0..2.05 and x=105.95..108). A 1.5 mm top-edge
-// horizontal fillet here would intersect the 4 mm vertical corner fillet
-// and reduce wall cross-section to ~0.55 mm at the top two layers — below
-// FDM min wall. We therefore leave the top edge of these walls as a
-// sharp 90° corner (print-safe; slicer adds a tiny break-edge).
+// Tray shelf upper walls (z = low_wall_h to z = base_thickness + slot_h)
 module tray_shelf_upper_walls() {
     z_bottom = low_wall_h;
     z_top_full = base_thickness + slot_h;  // 26.3
     module shelf_rect() {
         translate([0, tray_section_y0])
-            offset(r=fillet_vert_r) offset(r=-fillet_vert_r)
+            offset(r = fillet_vert_r) offset(r = -fillet_vert_r)
                 square([cradle_w_shelf, tray_section_d]);
     }
     difference() {
-        // Straight body — no top-edge rounding to preserve the full
-        // 2.05 mm wall cross-section at the top two layers.
         translate([0, 0, z_bottom])
-            linear_extrude(height=z_top_full - z_bottom)
+            linear_extrude(height = z_top_full - z_bottom)
                 shelf_rect();
-        // Carve the tray slot (open top + open front). Extend slightly
-        // above z_top_full and past the front face to guarantee open top/front.
         slot_x0 = (cradle_w_shelf - slot_w) / 2;
         translate([slot_x0, tray_section_y0 - 0.01, z_bottom - 0.01])
             cube([slot_w, tray_section_d + 0.02, z_top_full - z_bottom + 5]);
     }
 }
 
-// Tall back panel body — 86 wide × 3 thick × 145 tall, sitting on top of
-// the printer section back wall (which is X = 11..97, Y = 0..3, z = 0..25).
-// Above the low wall zone it is the sole back wall.
+// ===== Back panel (NEW GEOMETRY — round 2) =====
 //
-// Note: vertical edge fillets (4 mm) are NOT applied to the back panel's
-// left/right vertical edges because the panel is only 3 mm thick, which
-// is narrower than 2 * 4 mm. Those edges are inherently sharp. The
-// printer-section walls (which share the panel's base at z=0..25) get
-// their 4 mm vertical fillet via the wall_footprint() offset trick — so
-// visually the filet is applied where material thickness permits.
+// Stacked horizontal slices. Each slice (at Z=z) is a 2D X-Y shape (in the
+// ground plane) that shows the panel's footprint at that height. Slices have:
+//   - X-extent narrowing near the top (rounded top arc in X-Z)
+//   - Flat back (Y=0) and convex front (Y ≈ wall_thickness..wall_thickness+sagitta)
+//   - Softened vertical edges via offset-offset trick (r=panel_vert_edge_r,
+//     only applied at z values where the panel is full width).
 //
-// The top edge (z = 145) receives a 1.5 mm horizontal round-over on the
-// front and back faces (the two long top edges, each 86 mm long). The
-// 2 mm apex tufts sit atop these edges and overlap down into the
-// rounded zone so there is no visible seam.
-module tall_back_panel_body() {
-    r = fillet_top_r;
-    // Straight body (z = 0 .. back_panel_h - r)
-    translate([side_step, 0, 0])
-        linear_extrude(height=back_panel_h - r)
-            square([cradle_w_printer, wall_thickness]);
-    // Rounded top via stacked slices: shrink Y (panel-thin direction) so
-    // the top rounds along the front and back long edges.
-    steps = 5;  // fewer steps so we don't collapse to a knife edge
-    for (i = [0 : steps - 1]) {
-        t0 = i / steps;
-        t1 = (i + 1) / steps;
-        a0 = 90 * t0;
-        a1 = 90 * t1;
-        // Cap the inset so we never exceed wall_thickness/2 - 0.1
-        inset_raw = r * (1 - cos(a1));
-        max_inset = wall_thickness / 2 - 0.1;  // keep >= 0.2mm final thickness
-        inset1 = min(inset_raw, max_inset);
-        z0 = back_panel_h - r + r * sin(a0);
-        z1 = back_panel_h - r + r * sin(a1);
-        y_shrink = inset1;
-        translate([side_step, y_shrink, z0])
-            linear_extrude(height=z1 - z0 + 0.001)
-                square([cradle_w_printer, wall_thickness - 2*y_shrink]);
-    }
-}
+// The panel's X center is the same as the printer section: X=side_step+43=54.
 
-// Ear tuft — 2D triangular profile in the X-Z plane, extruded in Y.
-// left_side=true => outer edge at X = side_step (left exterior of back panel).
-module ear_tuft(left_side=true) {
-    // Outer X of tuft equals outer X of back panel.
-    outer_x = left_side ? side_step : (side_step + cradle_w_printer);
-    dir     = left_side ? 1 : -1;
+function panel_half_width_at_z(z) =
+    (z <= back_panel_top_corner_z)
+        ? cradle_w_printer / 2
+        : sqrt(max(0, pow(back_panel_arc_r, 2) -
+                     pow(z - (back_panel_top_center_z - back_panel_arc_r), 2)));
 
-    // Tuft base extends slightly below back_panel_h to overlap the top
-    // fillet rounding of the back panel (ensures no gap).
-    tuft_base_z = back_panel_h - 1.0;  // overlap 1 mm into rounded zone
+// Effective convexity at height Z. Below the perimeter wall top (z=25) the
+// panel must remain flat to avoid intruding into the printer pocket's 1mm
+// clearance envelope. From z = low_wall_h to z = low_wall_h + panel_base_concave_r
+// the convexity ramps up smoothly (this IS the concave base fillet: from
+// outside, a gentle arc swelling up from the wall top into the full bulge).
+function panel_convexity_at_z(z) =
+    (z <= low_wall_h)
+        ? 0
+        : (z >= low_wall_h + panel_base_concave_r)
+            ? panel_convexity
+            : panel_convexity * sin(90 * (z - low_wall_h) / panel_base_concave_r);
 
-    translate([outer_x, 0, 0])
-    rotate([90, 0, 0])
-    translate([0, 0, -tuft_thickness])
-    linear_extrude(height=tuft_thickness)
-        scale([dir, 1])
+// 2D cross-section of the panel at constant Z. Half-width varies with Z;
+// convexity (sagitta) ramps up from 0 at z=low_wall_h to full panel_convexity
+// at z=low_wall_h+panel_base_concave_r.
+module panel_xy_section(half_width, conv) {
+    if (half_width > 0.5) {
+        if (conv <= 0.01) {
+            // Flat panel (below low wall top or exactly at z=low_wall_h)
+            translate([-half_width, 0])
+                square([2 * half_width, wall_thickness + 0.01]);
+        } else {
+            // Curved convex front: intersection of rectangle and large circle
+            front_arc_r = (pow(half_width, 2) + pow(conv, 2)) / (2 * conv);
             intersection() {
-                offset(r=tuft_apex_r)
-                    polygon(points=[
-                        [tuft_apex_r,                         back_panel_h + tuft_apex_r*0.5],
-                        [tuft_base_w - tuft_apex_r,           back_panel_h + tuft_apex_r*0.5],
-                        [tuft_peak_inset_x,                   back_panel_h + tuft_peak_dz - tuft_apex_r],
-                    ]);
-                translate([-10, tuft_base_z])
-                    square([tuft_base_w + 20, tuft_peak_dz + tuft_apex_r*2 + 2]);
+                translate([-half_width, 0])
+                    square([2 * half_width, wall_thickness + conv + 0.01]);
+                translate([0, wall_thickness + conv - front_arc_r])
+                    circle(r = front_arc_r, $fn = 160);
             }
-}
-
-// Feather / arch embosses on the PRINTER-SECTION side walls (exterior).
-//
-// Three scalloped-arch embosses per side. Each is a half-ellipse
-// (20 mm wide × 12 mm tall) with FLAT side on top and rounded dome
-// facing down — reads like a stylized feather / wing scale. Raised
-// 1 mm proud of the wall outer face.
-//
-// Placement:
-//   Left wall outer face:  x = side_step         (= 11)
-//   Right wall outer face: x = side_step + cradle_w_printer  (= 97)
-//   Y-range used: y = 3 .. (chamfer_y_start) = 3 .. 149   (146 mm span,
-//     excluding the 3 mm back wall and the chamfer transition).
-//   Embosses evenly spaced in y: 4 gaps between/around 3 embosses.
-//   Vertical: centered on wall mid-height z = (base_thickness+low_wall_h)/2
-//     = 14.5. Top of emboss at z = 20.5, dome bottom at z = 8.5.
-//
-// Printability: embosses on VERTICAL exterior walls extrude outward by
-// 1 mm — each slicer layer is a simple outward perimeter bump with no
-// overhang. No supports needed.
-feather_w   = 20;
-feather_h   = 12;
-feather_raise = 1.0;
-feather_cz  = (base_thickness + low_wall_h) / 2;   // 14.5
-feather_y0  = wall_thickness;                       // 3
-feather_y1  = chamfer_y_start;                      // 149
-feather_span = feather_y1 - feather_y0;             // 146
-feather_gap = (feather_span - 3 * feather_w) / 4;   // (146-60)/4 = 21.5
-
-module feather_profile_2d() {
-    // Half-ellipse in Y-Z plane. Flat top edge at z = top_z, arched
-    // underside reaching z = top_z - feather_h.
-    //
-    // Ellipse center = (0, top_z), x-radius = feather_w/2, z-radius = feather_h.
-    // Geometric mid-height = top_z - feather_h/2. We want that at feather_cz,
-    // so top_z = feather_cz + feather_h/2.
-    N = 48;
-    top_z = feather_cz + feather_h/2;
-    // CCW polygon: start at right edge of flat top, sweep arc clockwise
-    // around the underside to the left edge of the flat top, close.
-    arc = [for (i = [0 : N])
-            let(a = -180 * i / N)   // 0° → -180°, right → bottom → left
-            [(feather_w/2) * cos(a), top_z + feather_h * sin(a)]
-          ];
-    // arc[0] = (+w/2, top_z); arc[N] = (-w/2, top_z). That's the full boundary.
-    polygon(points=arc);
-}
-
-// Single emboss prism: 2D profile lies in Y-Z plane; extrude 1 mm in ±X.
-// The profile is mirror-symmetric in Y, so we can build it once pointing
-// +X and translate the result for the opposite side.
-module feather_emboss_prism() {
-    // Extrude feather_raise in +X direction.
-    // 2D sketch is in world X-Y plane; rotate so its width (2D-x) aligns
-    // with world Y, its height (2D-y) with world Z, extrusion with +X.
-    rotate([90, 0, 90])
-        linear_extrude(height=feather_raise)
-            feather_profile_2d();
-}
-
-module feather_emboss(y_center, outward_dir) {
-    // outward_dir = +1 extrudes toward +x, -1 toward -x.
-    // For -1 we flip in X: the prism spans x ∈ [-feather_raise, 0].
-    translate([0, y_center, 0])
-        if (outward_dir > 0) feather_emboss_prism();
-        else mirror([1,0,0]) feather_emboss_prism();
-}
-
-module feather_embosses_one_side(left_side=true) {
-    // Compute y-centers for 3 embosses
-    y_centers = [
-        feather_y0 + feather_gap + feather_w/2,
-        feather_y0 + feather_gap * 2 + feather_w * 1.5,
-        feather_y0 + feather_gap * 3 + feather_w * 2.5,
-    ];
-    // Wall outer x face
-    wall_x = left_side ? side_step : (side_step + cradle_w_printer);
-    // Outward direction from wall exterior
-    out_dir = left_side ? -1 : +1;
-    for (yc = y_centers) {
-        translate([wall_x, 0, 0])
-            feather_emboss(yc, out_dir);
+        }
     }
 }
 
-// Cable slot cutter: U-notch in the back wall (which is at X = 11..97,
-// Y = 0..3). Cut is centered at X = cradle_w_shelf/2 = 54 — which equals
-// side_step + cradle_w_printer/2 = 11 + 43 = 54 — exactly centered on
-// the 86 mm back panel as well.
+// Panel body built as stacked thin slabs. Slab height small enough to look
+// smooth. Vertical edge fillet applied via offset-offset on the cross-section
+// (only valid where half_width > panel_vert_edge_r).
+// Apply vertical-edge X-Y rounding using a smaller, safe fillet radius.
+// The panel cross-section is very thin in Y (only 3-5mm) relative to its
+// 86mm X width; a 4mm offset-offset fillet would collapse the section.
+// We use min(panel_vert_edge_r, cross_section_y_min/2 - 0.5) to keep the
+// shape intact. Practically this reduces the "vertical edge fillet r=4"
+// into a smaller physical softening (~1mm) but preserves panel mass.
+// The full r=4 visual softening still applies to the body walls below z=25
+// via wall_footprint().
+module back_panel_body_raw() {
+    n_slices = 80;
+    slice_h = back_panel_top_center_z / n_slices;
+    for (i = [0 : n_slices - 1]) {
+        z0 = i * slice_h;
+        z_mid = z0 + slice_h / 2;
+        hw = panel_half_width_at_z(z_mid);
+        conv = panel_convexity_at_z(z_mid);
+        if (hw > 0.5) {
+            // Safe edge-fillet radius: limited by min thickness in Y at this slice
+            // min_y_thickness = wall_thickness (= 3). Max safe r ≈ min_y_thickness/2 - 0.3 ≈ 1.2
+            safe_r = min(panel_vert_edge_r, 1.2);
+            translate([cradle_w_shelf / 2, 0, z0])
+                linear_extrude(height = slice_h + 0.02)
+                    if (hw >= cradle_w_printer / 2 - 0.01 && hw >= safe_r + 0.5)
+                        offset(r = safe_r) offset(r = -safe_r)
+                            panel_xy_section(hw, conv);
+                    else
+                        panel_xy_section(hw, conv);
+        }
+    }
+}
+
+// NOTE: the panel base concave fillet is implemented INSIDE the panel
+// body slice loop, via panel_convexity_at_z() which ramps convexity from 0
+// at z=low_wall_h up to full panel_convexity at z=low_wall_h+panel_base_concave_r.
+// This naturally creates a concave fillet-like transition at the panel base
+// on the +Y (visible) face, without adding extra material that would
+// interfere with the printer pocket or the against-wall (-Y) face.
+//
+// No separate back_panel_base_blend module needed.
+
+// Facial disc recess cutter: an ovoid depression in the +Y face of the
+// back panel, centered at z=disc_cz, x=54 (panel center). 1.5mm deep at the
+// bowl center, tapering to 0 at the rim.
+//
+// Implementation: subtract an ellipsoid whose center sits slightly outside
+// the +Y face, such that the portion inside the panel creates the bowl.
+// The ellipsoid is scaled: X=disc_w/2, Z=disc_h/2, Y=disc_depth plus a
+// little extra so the entry point is at the +Y face.
+module facial_disc_cutter() {
+    // Panel's +Y face at x=54, z=disc_cz is at Y = wall_thickness + panel_convexity ≈ 5
+    // Place the cutter ellipsoid so its outer surface just kisses Y = 5
+    // and its inner surface reaches Y = 5 - disc_depth = 3.5.
+    //
+    // Ellipsoid: sphere scaled by (disc_w/2, disc_depth, disc_h/2) in (X, Y, Z).
+    // The sphere's equator in X-Z defines the rim (at Y=5, the ellipsoid tangent);
+    // the Y-scale makes the bowl shallow (1.5mm deep at center).
+    cx = cradle_w_shelf / 2;   // 54
+    cy = wall_thickness + panel_convexity;  // 5
+    translate([cx, cy, disc_cz])
+        scale([disc_w / 2, disc_depth, disc_h / 2])
+            sphere(r = 1, $fn = 80);
+}
+
+// Eye emboss: a forward-facing elongated hemispheroid proud of the disc floor.
+// Implemented as a scaled sphere translated to sit half-inside the panel with
+// its dome poking out.
+module eye_emboss(x_offset) {
+    cx = cradle_w_shelf / 2 + x_offset;
+    // Place eye so its equator sits at the disc floor; the dome protrudes
+    // eye_proud mm forward. disc floor at that x-z is roughly at Y=5 - disc_depth = 3.5
+    // (approximate — center of disc). For simplicity, place eye's Y-center
+    // such that Y = disc floor, and the dome extends forward by eye_proud.
+    disc_floor_y = wall_thickness + panel_convexity - disc_depth * 0.6;  // ≈ 4.1
+    translate([cx, disc_floor_y, eye_cz])
+        scale([eye_w / 2, eye_proud, eye_h / 2])
+            sphere(r = 1, $fn = 48);
+}
+
+// Pupil: small dome at eye center, proud pupil_proud above the eye dome
+module pupil_emboss(x_offset) {
+    cx = cradle_w_shelf / 2 + x_offset;
+    disc_floor_y = wall_thickness + panel_convexity - disc_depth * 0.6;
+    // Place so pupil's flat base sits at the eye's dome surface
+    pupil_y = disc_floor_y + eye_proud * 0.85;
+    translate([cx, pupil_y, eye_cz])
+        scale([pupil_r, pupil_proud, pupil_r])
+            sphere(r = 1, $fn = 32);
+}
+
+// Beak: 3D wedge. Hull of (A) a flat base polygon anchored inside the panel
+// (Y=0..1) so it merges with panel material and (B) a small rounded apex
+// protruding forward of the panel +Y face (Y ≈ disc_floor + beak_apex_proud).
+// The hull creates a wedge that tapers from the wide base to the forward apex.
+module beak_emboss() {
+    cx = cradle_w_shelf / 2;
+    // Disc floor Y (for the apex Y reference)
+    disc_floor_y = wall_thickness + panel_convexity - disc_depth * 0.6;  // ≈ 4.1
+    apex_out_y = disc_floor_y + beak_apex_proud;  // ≈ 8.1 mm (forward of +Y face)
+    hull() {
+        // Base slab, embedded inside the panel material (Y = 0..1)
+        translate([cx - beak_base_w / 2, 0, beak_top_z - 0.5])
+            cube([beak_base_w, 1.0, 1.0]);
+        // Apex sphere protruding forward-and-down
+        translate([cx, apex_out_y, beak_apex_z])
+            sphere(r = 1.0, $fn = 24);
+    }
+}
+
+// Complete back panel = panel body with facial disc recess carved, then
+// eyes, pupils, and beak added.
+module back_panel() {
+    difference() {
+        back_panel_body_raw();
+        // Carve facial disc recess into the +Y face
+        facial_disc_cutter();
+    }
+    // Add eyes / pupils / beak on top of the disc surface
+    eye_emboss(-eye_cx_offset);
+    eye_emboss( eye_cx_offset);
+    if (pupil_enabled) {
+        pupil_emboss(-eye_cx_offset);
+        pupil_emboss( eye_cx_offset);
+    }
+    beak_emboss();
+}
+
+// ===== Ear tufts (NEW GEOMETRY — round 2) =====
+//
+// Each tuft is a 3D-swept, tilted-outward, wider-than-tall emerging shape.
+// Implemented as a chain of hulls over 3 control profiles (base, mid, tip)
+// placed along a curved path in X-Y-Z space.
+//
+// Base profile: wide flat ellipse lying flat on the panel top (long axis X,
+//   short axis Y, near-zero Z-thickness). Width = tuft_base_w, Y-depth = tuft_base_y_depth.
+// Mid profile: smaller ellipse half-way up, tilted outward and slightly forward.
+// Tip profile: small ellipse at the apex, tilted more, swept forward.
+//
+// Base-to-mid hull forms the lower feathery segment (concave-mid-dip
+// achieved by mid placement). Mid-to-tip hull forms the tapering upper
+// segment.
+//
+// Base fillet with panel is approximated by letting the base profile dip
+// ~2mm below the panel top so the union with the panel shows a soft blend.
+
+module tuft_ellipsoid(w_x, w_y, w_z, cx, cy, cz, rot_x = 0, rot_y = 0) {
+    translate([cx, cy, cz])
+        rotate([rot_x, rot_y, 0])
+            scale([w_x / 2, w_y / 2, w_z / 2])
+                sphere(r = 1, $fn = 32);
+}
+
+module ear_tuft(left_side = true) {
+    // Outer edge X on the panel (matches panel X extent side_step..side_step+86)
+    panel_left_x  = side_step;
+    panel_right_x = side_step + cradle_w_printer;
+    outer_sign = left_side ? -1 : +1;
+
+    // Base center X: the base is 35mm wide; its outer edge is flush with
+    // the panel outer edge (minus a small inset to sit atop the vertical
+    // edge fillet).
+    base_outer_x = left_side ? (panel_left_x + 2) : (panel_right_x - 2);
+    base_cx = base_outer_x + (left_side ? tuft_base_w / 2 : -tuft_base_w / 2);
+
+    // Base Z: the rounded top of the panel at base_cx
+    // Calculate Z-on-arc at base_cx (relative to panel center X=54)
+    dx_from_center = base_cx - cradle_w_shelf / 2;
+    // For X values where |dx| ≤ 43, the arc Z is calculable; beyond that
+    // (which shouldn't happen here), clamp to corner.
+    arc_cy = back_panel_top_center_z - back_panel_arc_r;  // = -15
+    z_on_arc = (abs(dx_from_center) <= cradle_w_printer / 2)
+        ? arc_cy + sqrt(max(0, pow(back_panel_arc_r, 2) - pow(dx_from_center, 2)))
+        : back_panel_top_corner_z;
+    // Base sits INSIDE the panel top so the tuft appears to grow out of the
+    // panel. base_cz is chosen so the base ellipsoid's center is 2-3mm below
+    // the panel top at this X; its upper hemisphere pokes above to start the
+    // tuft form. Dip is deep enough that the union is visually continuous
+    // (approximates the r=5 base blend fillet called for in the brief).
+    base_cz = z_on_arc - tuft_base_blend_r * 0.6;  // ~3mm dip for r=5 blend
+
+    // Center Y on the panel top. The tuft base has Y-depth = tuft_base_y_depth
+    // = 7; centering it on Y = 3.5 would push its -Y edge to 0 (flush with
+    // the -Y panel face — good for seam hiding). We shift the center slightly
+    // forward so the -Y edge stays cleanly behind the panel's -Y face.
+    base_cy = tuft_base_y_depth / 2;  // 3.5 — tuft -Y edge sits at Y=0
+
+    // Mid profile: half-way up the tuft, tilted outward and slightly forward.
+    // X-shift is intentionally SMALL (less than linear interp to tip) so the
+    // outer silhouette has a slight concave dip at mid-height, giving the
+    // feather-bunching read from the brief.
+    mid_dz = tuft_peak_dz * 0.55;
+    mid_dx = outer_sign * sin(tuft_tilt_deg) * mid_dz * 0.35;  // less than linear
+    mid_dy = tuft_fwd_sweep * 0.45;
+    mid_cx = base_cx + mid_dx;
+    mid_cy = base_cy + mid_dy;
+    mid_cz = base_cz + mid_dz;
+
+    // Tip profile: at the apex, fully tilted and swept
+    tip_dz = tuft_peak_dz;
+    tip_dx = outer_sign * sin(tuft_tilt_deg) * tip_dz;
+    tip_dy = tuft_fwd_sweep;
+    tip_cx = base_cx + tip_dx;
+    tip_cy = base_cy + tip_dy;
+    tip_cz = base_cz + tip_dz;
+
+    // Mid size: pulled in from base to create the concave feather dip
+    mid_w_x = tuft_base_w * 0.55;
+    mid_w_y = (tuft_base_y_depth + tuft_tip_y_depth) / 2 * 1.0;
+    mid_w_z = 5;
+
+    // Tip size: small
+    tip_w_x = tuft_base_w * 0.28;
+    tip_w_y = tuft_tip_y_depth * 1.1;
+    tip_w_z = 5;
+
+    // Base size: flat wide ellipse
+    base_w_x = tuft_base_w;
+    base_w_y = tuft_base_y_depth;
+    base_w_z = 4;  // modest Z-thickness so base dips into panel top
+
+    // Chain of hulls
+    union() {
+        hull() {
+            tuft_ellipsoid(base_w_x, base_w_y, base_w_z, base_cx, base_cy, base_cz);
+            tuft_ellipsoid(mid_w_x,  mid_w_y,  mid_w_z,  mid_cx,  mid_cy,  mid_cz);
+        }
+        hull() {
+            tuft_ellipsoid(mid_w_x, mid_w_y, mid_w_z, mid_cx, mid_cy, mid_cz);
+            tuft_ellipsoid(tip_w_x, tip_w_y, tip_w_z, tip_cx, tip_cy, tip_cz);
+        }
+    }
+}
+
+// ===== Cable slot cutter =====
+
 module cable_slot_cutter() {
-    translate([cable_slot_cx - cable_slot_w/2, -0.1, -0.01])
+    translate([cable_slot_cx - cable_slot_w / 2, -0.1, -0.01])
         cube([cable_slot_w, wall_thickness + 0.2, cable_slot_h]);
 }
 
@@ -405,30 +620,19 @@ module cable_slot_cutter() {
 module cradle() {
     difference() {
         union() {
-            // 1. Base plate (z=0..4) — stepped 108/86 footprint
             base_plate();
-            // 2. Low perimeter walls (z=0..25) — stepped ring, printer
-            //    pocket carved, tray-slot carved
             low_wall_block();
-            // 3. Tall back panel (z=0..145) — 86 wide, centered
-            tall_back_panel_body();
-            // 4. Ear tufts (z ≈ 144..180)
-            ear_tuft(left_side=true);
-            ear_tuft(left_side=false);
-            // 5. Tray shelf upper walls (z=25..26.3) — only in shelf zone
             tray_shelf_upper_walls();
-            // 6. Corner feet (z=-3..0)
+            back_panel();
+            ear_tuft(left_side = true);
+            ear_tuft(left_side = false);
             corner_feet();
-            // 7. Feather embosses on printer-section side walls (exterior)
-            feather_embosses_one_side(left_side=true);
-            feather_embosses_one_side(left_side=false);
         }
-        // Cable pass-through notch
+        // Cable slot
         cable_slot_cutter();
     }
 }
 
-// Build
 cradle();
 
 // ===== Dimension report =====

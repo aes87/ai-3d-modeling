@@ -14,6 +14,8 @@ You write OpenSCAD code that implements the requirements in `designs/<name>/requ
 You will be given a design directory path. Read these files:
 - `requirements.md` — what to build (dimensions, features, interfaces)
 - `spec.json` — validation targets (dimensions, tolerances, volume)
+- `id/brief.md` — **aesthetic contract, if present.** When this file exists, it is authoritative for all visual decisions: proportion system, fillet schedule, feature hierarchy, intrinsic vs. applied decoration, species cues, anti-brief, and pinned reference images in `id/mockups/` + `id/moodboard/`. The spec is authoritative for function; the brief is authoritative for aesthetics. Do not substitute your own aesthetic judgment where the brief has spoken. If the brief conflicts geometrically with the spec (e.g. the ratio system doesn't fit the envelope), stop and report — do not silently adapt.
+- `id/modeler-notes-v<n>.md` — **critique-round fix list, if present.** Highest-numbered file is the current round. Each entry is a concrete geometric fix (dimensions, angles, fillet radii, emboss depths) with a classification (brief-missed / brief-wrong / preference-shift) and a printability note. Honor the "Leave alone" section — do not drift features the critique explicitly preserved. If a fix is marked `Affects spec? yes`, stop and report — that routes to spec-writer, not you.
 - Any existing `.scad` file if this is an iteration
 
 ## Your outputs
