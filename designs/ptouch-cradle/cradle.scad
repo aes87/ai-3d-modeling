@@ -55,9 +55,14 @@ foot_h               = 3;
 foot_inset           = 5;
 
 // Tray slot pocket (in the shelf section)
+// Shortened to match the shortened tray (ext_h = 21.6 mm).
+// Slot interior h = 21.6 + 2 * 0.35 mm sliding fit = 22.3 mm.
+// Slot interior top at z = base_thickness + slot_h = 4 + 22.3 = 26.3 mm,
+// which slightly exceeds the 25 mm low-wall top; shelf upper walls are
+// therefore shortened to close out the slot cleanly at z = 26.3.
 slot_w               = 103.9;
 slot_d               = 94.9;
-slot_h               = 42.3;
+slot_h               = 22.3;
 tray_section_d       = 94.9;
 tray_section_y0      = 160;
 
@@ -130,6 +135,11 @@ module base_plate() {
 // footprint. These are: back-left (inset from X=11,Y=0), back-right
 // (inset from X=97,Y=0), front-left (inset from X=0,Y=254.9), front-right
 // (inset from X=108,Y=254.9).
+//
+// Simple flat-top, flat-bottom cylinders: full 8 mm disk contact on the
+// bed, straight sides, flat top merging seamlessly with the base plate
+// bottom at z=0. No overhang, no supports required (previous scaled
+// hemisphere created a large overhang under the base plate).
 module corner_feet() {
     positions = [
         [side_step + foot_inset,                 foot_inset                 ],
@@ -139,12 +149,7 @@ module corner_feet() {
     ];
     for (p = positions) {
         translate([p[0], p[1], -foot_h])
-            intersection() {
-                scale([1, 1, foot_h / (foot_d/2)])
-                    sphere(d=foot_d);
-                translate([-foot_d, -foot_d, 0])
-                    cube([2*foot_d, 2*foot_d, foot_h + 0.01]);
-            }
+            cylinder(h=foot_h, d=foot_d, $fn=48);
     }
 }
 
@@ -199,22 +204,20 @@ module low_wall_block() {
 }
 
 // Tray shelf tall walls (above low_wall_h). The tray slot interior height
-// is 42.3 mm measured from the shelf floor (z=base_thickness=4). So the
-// tray-slot upper walls extend from z=low_wall_h up to z = base_thickness +
-// slot_h = 46.3 mm. These live only in the shelf section (Y >= 160).
+// is now 22.3 mm (shortened tray). So the tray-slot upper walls extend
+// from z = low_wall_h up to z = base_thickness + slot_h = 26.3 mm — a
+// short 1.3 mm cap on the slot side walls. These live only in the shelf
+// section (Y >= 160).
 //
 // NOTE: The shelf section's side walls are only 2.05 mm thick (flanking
 // the tray slot at x=0..2.05 and x=105.95..108). A 1.5 mm top-edge
 // horizontal fillet here would intersect the 4 mm vertical corner fillet
 // and reduce wall cross-section to ~0.55 mm at the top two layers — below
 // FDM min wall. We therefore leave the top edge of these walls as a
-// sharp 90° corner (print-safe; slicer adds a tiny break-edge). The
-// 1.5 mm top fillet IS still applied on the low perimeter walls (z=25,
-// ≥3 mm thick) and the tall back panel top (z=145, 3 mm thick — fillet
-// clamped there already).
+// sharp 90° corner (print-safe; slicer adds a tiny break-edge).
 module tray_shelf_upper_walls() {
     z_bottom = low_wall_h;
-    z_top_full = base_thickness + slot_h;  // 46.3
+    z_top_full = base_thickness + slot_h;  // 26.3
     module shelf_rect() {
         translate([0, tray_section_y0])
             offset(r=fillet_vert_r) offset(r=-fillet_vert_r)
@@ -304,6 +307,90 @@ module ear_tuft(left_side=true) {
             }
 }
 
+// Feather / arch embosses on the PRINTER-SECTION side walls (exterior).
+//
+// Three scalloped-arch embosses per side. Each is a half-ellipse
+// (20 mm wide × 12 mm tall) with FLAT side on top and rounded dome
+// facing down — reads like a stylized feather / wing scale. Raised
+// 1 mm proud of the wall outer face.
+//
+// Placement:
+//   Left wall outer face:  x = side_step         (= 11)
+//   Right wall outer face: x = side_step + cradle_w_printer  (= 97)
+//   Y-range used: y = 3 .. (chamfer_y_start) = 3 .. 149   (146 mm span,
+//     excluding the 3 mm back wall and the chamfer transition).
+//   Embosses evenly spaced in y: 4 gaps between/around 3 embosses.
+//   Vertical: centered on wall mid-height z = (base_thickness+low_wall_h)/2
+//     = 14.5. Top of emboss at z = 20.5, dome bottom at z = 8.5.
+//
+// Printability: embosses on VERTICAL exterior walls extrude outward by
+// 1 mm — each slicer layer is a simple outward perimeter bump with no
+// overhang. No supports needed.
+feather_w   = 20;
+feather_h   = 12;
+feather_raise = 1.0;
+feather_cz  = (base_thickness + low_wall_h) / 2;   // 14.5
+feather_y0  = wall_thickness;                       // 3
+feather_y1  = chamfer_y_start;                      // 149
+feather_span = feather_y1 - feather_y0;             // 146
+feather_gap = (feather_span - 3 * feather_w) / 4;   // (146-60)/4 = 21.5
+
+module feather_profile_2d() {
+    // Half-ellipse in Y-Z plane. Flat top edge at z = top_z, arched
+    // underside reaching z = top_z - feather_h.
+    //
+    // Ellipse center = (0, top_z), x-radius = feather_w/2, z-radius = feather_h.
+    // Geometric mid-height = top_z - feather_h/2. We want that at feather_cz,
+    // so top_z = feather_cz + feather_h/2.
+    N = 48;
+    top_z = feather_cz + feather_h/2;
+    // CCW polygon: start at right edge of flat top, sweep arc clockwise
+    // around the underside to the left edge of the flat top, close.
+    arc = [for (i = [0 : N])
+            let(a = -180 * i / N)   // 0° → -180°, right → bottom → left
+            [(feather_w/2) * cos(a), top_z + feather_h * sin(a)]
+          ];
+    // arc[0] = (+w/2, top_z); arc[N] = (-w/2, top_z). That's the full boundary.
+    polygon(points=arc);
+}
+
+// Single emboss prism: 2D profile lies in Y-Z plane; extrude 1 mm in ±X.
+// The profile is mirror-symmetric in Y, so we can build it once pointing
+// +X and translate the result for the opposite side.
+module feather_emboss_prism() {
+    // Extrude feather_raise in +X direction.
+    // 2D sketch is in world X-Y plane; rotate so its width (2D-x) aligns
+    // with world Y, its height (2D-y) with world Z, extrusion with +X.
+    rotate([90, 0, 90])
+        linear_extrude(height=feather_raise)
+            feather_profile_2d();
+}
+
+module feather_emboss(y_center, outward_dir) {
+    // outward_dir = +1 extrudes toward +x, -1 toward -x.
+    // For -1 we flip in X: the prism spans x ∈ [-feather_raise, 0].
+    translate([0, y_center, 0])
+        if (outward_dir > 0) feather_emboss_prism();
+        else mirror([1,0,0]) feather_emboss_prism();
+}
+
+module feather_embosses_one_side(left_side=true) {
+    // Compute y-centers for 3 embosses
+    y_centers = [
+        feather_y0 + feather_gap + feather_w/2,
+        feather_y0 + feather_gap * 2 + feather_w * 1.5,
+        feather_y0 + feather_gap * 3 + feather_w * 2.5,
+    ];
+    // Wall outer x face
+    wall_x = left_side ? side_step : (side_step + cradle_w_printer);
+    // Outward direction from wall exterior
+    out_dir = left_side ? -1 : +1;
+    for (yc = y_centers) {
+        translate([wall_x, 0, 0])
+            feather_emboss(yc, out_dir);
+    }
+}
+
 // Cable slot cutter: U-notch in the back wall (which is at X = 11..97,
 // Y = 0..3). Cut is centered at X = cradle_w_shelf/2 = 54 — which equals
 // side_step + cradle_w_printer/2 = 11 + 43 = 54 — exactly centered on
@@ -328,10 +415,13 @@ module cradle() {
             // 4. Ear tufts (z ≈ 144..180)
             ear_tuft(left_side=true);
             ear_tuft(left_side=false);
-            // 5. Tray shelf upper walls (z=25..46.3) — only in shelf zone
+            // 5. Tray shelf upper walls (z=25..26.3) — only in shelf zone
             tray_shelf_upper_walls();
             // 6. Corner feet (z=-3..0)
             corner_feet();
+            // 7. Feather embosses on printer-section side walls (exterior)
+            feather_embosses_one_side(left_side=true);
+            feather_embosses_one_side(left_side=false);
         }
         // Cable pass-through notch
         cable_slot_cutter();
