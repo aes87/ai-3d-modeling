@@ -1,0 +1,6 @@
+{
+  "error": "No PrusaSlicer-compatible CLI found",
+  "hint": "Install with: sudo apt-get install prusa-slicer",
+  "searched": ["prusa-slicer", "prusaslicer", "PrusaSlicer", "slic3r", "orca-slicer", "OrcaSlicer"],
+  "stl_analyzed": "designs/ptouch-cradle/output/tray.stl"
+}

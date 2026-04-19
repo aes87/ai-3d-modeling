@@ -1,0 +1,254 @@
+{
+  "designName": "ptouch-cradle",
+  "validationPass": true,
+  "iterations": 3,
+  "parts": {
+    "cradle": {
+      "scad": "designs/ptouch-cradle/cradle.scad",
+      "stl": "designs/ptouch-cradle/output/cradle.stl",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 177787,
+      "face_count": 17360,
+      "dimensions": {
+        "echoed": {
+          "cradle":                  { "x": 108.0, "y": 254.9, "z": 180.0 },
+          "cradle_body_no_tufts":    { "x": 108.0, "y": 254.9, "z": 145.0 },
+          "cradle_printer_section":  { "x": 86.0,  "y": 160.0, "z": 25.0  }
+        },
+        "expected": {
+          "cradle":                  { "x": 108,   "y": 254.9, "z": 180 },
+          "cradle_body_no_tufts":    { "x": 108,   "y": 254.9, "z": 145 }
+        },
+        "mesh_bbox_min": { "x": 0.0, "y": 0.0,   "z": -3.0 },
+        "mesh_bbox_max": { "x": 108, "y": 254.9, "z": 179.999 },
+        "withinTolerance": true,
+        "notes": "Mesh Z min is -3.0 because corner feet extend BELOW z=0 (foot_h=3). Mesh XY bbox is 108 x 254.9 because the widest shelf section spans 108mm and the full depth is 254.9mm; the printer section is a 86mm-wide inset (X=11..97) from Y=0..149 then tapers via a 45-degree chamfer to the full 108mm width at Y=160. Echoed envelopes match spec exactly."
+      }
+    },
+    "tray": {
+      "scad": "designs/ptouch-cradle/tray.scad",
+      "stl": "designs/ptouch-cradle/output/tray.stl",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 36239,
+      "face_count": 1702,
+      "dimensions": {
+        "echoed": {
+          "tray": { "x": 103.2, "y": 94.2, "z": 41.6 }
+        },
+        "expected": {
+          "tray": { "x": 103.2, "y": 94.2, "z": 41.6 }
+        },
+        "mesh_bbox_min": { "x": 0.0,   "y": 0.0,  "z": 0.0 },
+        "mesh_bbox_max": { "x": 103.2, "y": 97.2, "z": 41.6 },
+        "withinTolerance": true,
+        "notes": "Mesh Y max is 97.2 because pupil embosses protrude 3mm proud of the front wall exterior (Y=94.2). Echoed wall envelope (94.2mm) matches spec; pupils are intentional aesthetic relief."
+      }
+    }
+  },
+  "features": [
+    {
+      "part": "cradle",
+      "name": "corner_feet",
+      "description": "Four 8mm-diameter, 3mm-tall dome feet inset 5mm from each outer corner of the stepped footprint (back-left & back-right at the narrow printer section, front-left & front-right at the wide shelf section). Feet extend below z=0 to elevate the cradle off the desk.",
+      "z_range": [-3, 0],
+      "outer_extent": 8,
+      "inner_extent": null,
+      "scad_line": 134,
+      "transitions": { "below": "desk", "above": "base_plate" }
+    },
+    {
+      "part": "cradle",
+      "name": "base_plate",
+      "description": "Stepped base plate: 86mm wide at the printer section (Y=0..149, X=11..97), widening via a 45-degree chamfer (Y=149..160) to 108mm wide at the shelf section (Y=160..254.9). 4mm thick. Four OUTER corners rounded with 6mm fillets; chamfer endpoints also pick up 6mm rounding which leaves a clean ~3.5mm straight 45-degree segment at each step.",
+      "z_range": [0, 4],
+      "outer_extent": 254.9,
+      "inner_extent": null,
+      "scad_line": 107,
+      "transitions": { "below": "corner_feet", "above": "low_perimeter_walls / tray_shelf_walls" }
+    },
+    {
+      "part": "cradle",
+      "name": "low_perimeter_walls",
+      "description": "Stepped 25mm-tall low bathtub wall following the base plate outline. Printer section: 3mm side walls (X=11..14 and X=94..97), 3mm back wall (Y=0..3) and 3mm front wall (Y=157..160). Interior pocket 80x154mm at X=14..94, Y=3..157. Shelf section: 2.05mm side walls (X=0..2.05 and X=105.95..108), open top tray slot. 45-degree chamfer on the outside of the step from X=11 at Y=149 to X=0 at Y=160 (and mirror on the right side). Top edge receives a 1.5mm horizontal fillet via stacked quarter-round slices.",
+      "z_range": [0, 25],
+      "outer_extent": 160,
+      "inner_extent": 154,
+      "scad_line": 152,
+      "transitions": { "below": "base_plate", "above": "tall_back_panel (back) / tray_shelf_upper_walls (shelf) / open (elsewhere)" }
+    },
+    {
+      "part": "cradle",
+      "name": "cable_slot",
+      "description": "U-notch cut through the back wall of the printer section, 25mm wide x 20mm tall, centered at X=54 (= shelf midline, also = printer-section midline since both are centered), open at z=0 (no bridge). Fully within the 0-25mm low perimeter wall zone; back panel above z=20 is solid.",
+      "z_range": [0, 20],
+      "outer_extent": 25,
+      "inner_extent": null,
+      "scad_line": 242,
+      "transitions": { "below": "open (base)", "above": "tall_back_panel (solid above z=20)" }
+    },
+    {
+      "part": "cradle",
+      "name": "tray_shelf_upper_walls",
+      "description": "Tall tray-slot walls, 108mm wide x 94.9mm deep (shelf footprint), rising from z=25 to z=46.3 (= base_thickness + slot_h). Slot interior 103.9 x 94.9 x 42.3mm carved through, open top and open front. 2.05mm side walls. 4mm vertical fillet on shelf's four exterior vertical corners. Top outer edge is LEFT SHARP (no 1.5mm top-edge fillet) to preserve full 2.05mm wall cross-section at the top two layers — a 1.5mm top roll-over would intersect the 4mm vertical corner fillet and cut wall cross-section to ~0.55mm (below FDM min wall). Slicer will add a tiny natural break-edge.",
+      "z_range": [25, 46.3],
+      "outer_extent": 94.9,
+      "inner_extent": 103.9,
+      "scad_line": 192,
+      "transitions": { "below": "low_perimeter_walls (shelf zone)", "above": "open (slot top)" }
+    },
+    {
+      "part": "cradle",
+      "name": "tall_back_panel_body",
+      "description": "Tall back panel rising from z=0 to z=145mm, 86mm wide (X=11..97) x 3mm thick (Y=0..3). Matches the width of the printer section — centered. Top edge (z=145) receives a 1.5mm fillet on the front and back long edges via stacked quarter-round slices (inset clamped so wall thickness never goes below 0.2mm).",
+      "z_range": [0, 145],
+      "outer_extent": 3,
+      "inner_extent": null,
+      "scad_line": 222,
+      "transitions": { "below": "base_plate / low_perimeter_walls", "above": "ear_tufts" }
+    },
+    {
+      "part": "cradle",
+      "name": "ear_tuft_left",
+      "description": "Left owl ear tuft. Triangular 2D profile extruded 3mm (inherits back wall thickness). 25mm base along the back panel top (z=144..146 overlap ensures clean union with the rounded top), 35mm tall, peak at X=16, Y=0..3, Z=180. 2mm apex fillet.",
+      "z_range": [144, 180],
+      "outer_extent": 25,
+      "inner_extent": null,
+      "scad_line": 260,
+      "transitions": { "below": "tall_back_panel_body", "above": "top" }
+    },
+    {
+      "part": "cradle",
+      "name": "ear_tuft_right",
+      "description": "Right owl ear tuft. Symmetric mirror of left tuft; outer edge at X=97, peak at X=92, Z=180.",
+      "z_range": [144, 180],
+      "outer_extent": 25,
+      "inner_extent": null,
+      "scad_line": 260,
+      "transitions": { "below": "tall_back_panel_body", "above": "top" }
+    },
+    {
+      "part": "tray",
+      "name": "tray_shell",
+      "description": "Open-top rectangular shell, 103.2 x 94.2 x 41.6mm exterior with 3mm vertical corner fillets. Walls 1.6mm, floor 1.6mm. Interior 100 x 91 x 40mm.",
+      "z_range": [0, 41.6],
+      "outer_extent": 103.2,
+      "inner_extent": 100,
+      "scad_line": 60,
+      "transitions": { "below": "bed", "above": "open (top)" }
+    },
+    {
+      "part": "tray",
+      "name": "scoop_lip",
+      "description": "45-degree angled cut on the bottom 15mm of the front wall exterior with a 2mm rounded leading-edge fillet at the floor-bottom / scoop-face meeting line. The fillet arc is tangent to both Z=0 (floor bottom) and the 45-degree scoop face, centered at (Y=ext_d-scoop_h+r*(1-sqrt(2)), Z=r) ≈ (78.37, 2.0), produced directly via the cutter's 2D polygon which includes a quarter-circle arc between the two tangent points. Flagged: 45-degree angle is exactly at the FDM overhang threshold.",
+      "z_range": [0, 15],
+      "outer_extent": 15,
+      "inner_extent": null,
+      "scad_line": 78,
+      "transitions": { "below": "bed", "above": "tray_shell front wall (vertical above z=15)" }
+    },
+    {
+      "part": "tray",
+      "name": "beak_emboss",
+      "description": "Downward-pointing triangular beak, 6x6mm, raised 2mm proud of front wall. Top at z=22, apex at z=16 (just above scoop lip).",
+      "z_range": [16, 22],
+      "outer_extent": 6,
+      "inner_extent": null,
+      "scad_line": 159,
+      "transitions": { "below": "scoop_lip", "above": "eye_embosses" }
+    },
+    {
+      "part": "tray",
+      "name": "eye_emboss_left",
+      "description": "Left owl eye emboss. Cylindrical disc r=8mm, +1.5mm proud of front wall, center at (X=ext_w/2-22, Y=ext_d, Z=28).",
+      "z_range": [20, 36],
+      "outer_extent": 16,
+      "inner_extent": null,
+      "scad_line": 141,
+      "transitions": { "below": "beak_emboss", "above": "tray_shell front wall top" }
+    },
+    {
+      "part": "tray",
+      "name": "eye_emboss_right",
+      "description": "Right owl eye emboss. Symmetric to left; center at (X=ext_w/2+22, Y=ext_d, Z=28).",
+      "z_range": [20, 36],
+      "outer_extent": 16,
+      "inner_extent": null,
+      "scad_line": 141,
+      "transitions": { "below": "beak_emboss", "above": "tray_shell front wall top" }
+    },
+    {
+      "part": "tray",
+      "name": "pupil_emboss_left",
+      "description": "Left pupil, concentric with left eye. r=3mm, +3mm total proud of wall (+1.5mm above eye disc).",
+      "z_range": [25, 31],
+      "outer_extent": 6,
+      "inner_extent": null,
+      "scad_line": 148,
+      "transitions": { "below": "eye_emboss_left surface", "above": "eye_emboss_left surface" }
+    },
+    {
+      "part": "tray",
+      "name": "pupil_emboss_right",
+      "description": "Right pupil, concentric with right eye. r=3mm, +3mm total proud of wall.",
+      "z_range": [25, 31],
+      "outer_extent": 6,
+      "inner_extent": null,
+      "scad_line": 148,
+      "transitions": { "below": "eye_emboss_right surface", "above": "eye_emboss_right surface" }
+    },
+    {
+      "part": "tray",
+      "name": "grip_scallop",
+      "description": "Semicircular scallop cut into the top edge of the front wall, 24mm wide x 8mm deep, centered on X. Open to the top (no bridge).",
+      "z_range": [33.6, 41.6],
+      "outer_extent": 24,
+      "inner_extent": null,
+      "scad_line": 129,
+      "transitions": { "below": "eye_embosses", "above": "open (top)" }
+    }
+  ],
+  "printOrientation": {
+    "cradle": {
+      "bed_face": "base plate bottom (dome feet contact the bed)",
+      "z_direction": "+Z = up; ear tuft peaks at top, feet at bottom"
+    },
+    "tray": {
+      "bed_face": "tray floor exterior bottom (z=0)",
+      "z_direction": "+Z = up; open top at z=41.6"
+    }
+  },
+  "specDeviations": [
+    {
+      "part": "cradle",
+      "dimension": "printer-section body width",
+      "expected": "Spec params list cradle_body_w=108. Revised design uses a stepped body: 86mm at the printer section and 108mm at the shelf section.",
+      "actual": "86mm at printer section (X=11..97), 108mm at shelf section (X=0..108), 45-degree chamfer transition at Y=149..160.",
+      "reason": "User feedback (explicit): 14mm side walls from a constant-108mm body were too chunky. Stepped body gives true 3mm side walls at the printer section while preserving 2.05mm slot walls at the 108mm shelf. Echoed envelopes (cradle.x=108, cradle.y=254.9) still match spec since the mesh bbox X=108 is driven by the widest shelf section. Plastic volume reduced from 231.7cm^3 to 177.7cm^3 (-23%)."
+    },
+    {
+      "part": "cradle",
+      "dimension": "back panel vertical edge fillet (4mm)",
+      "expected": "4mm vertical fillet on back panel's back-left and back-right exterior edges",
+      "actual": "sharp vertical edges on back panel (no fillet)",
+      "reason": "The back panel is 3mm thick (Y=0..3). A 4mm-radius fillet requires 4mm of material in both the X and Y directions to form; it is geometrically impossible on a 3mm-thin panel (would eat more than the panel thickness). The 4mm vertical fillet IS applied to the printer-section side walls and shelf-section exterior corners where material thickness permits. The back panel's left/right edges are at X=11 and X=97 where they meet the printer-section side walls (themselves filleted); above z=25 the back panel stands alone with sharp left/right edges. Visual impact minimal given the panel thickness (edge is only 3mm long in Y)."
+    },
+    {
+      "part": "tray",
+      "dimension": "mesh Y bbox",
+      "expected": "94.2 mm (wall envelope)",
+      "actual": "97.2 mm (including pupil embosses)",
+      "reason": "Pupil embosses protrude +3mm proud of front wall as intended per spec. The echoed tray:y=94.2 reports wall envelope for validator comparison; mesh bbox includes intentional relief."
+    }
+  ],
+  "printability_notes": [
+    "Cradle cable slot: U-notch open at z=0, eliminates bridge (per spec).",
+    "Cradle tray slot: open top, eliminates ~104mm bridge (per spec).",
+    "Tray scoop face: exactly 45-degree from horizontal (FDM threshold); flagged for slicer review. Now has a 2mm rounded leading-edge fillet at the floor-meets-scoop-face corner (added this iteration per user feedback).",
+    "Cradle corner feet: 8mm dome, 3mm tall — shallow dome, self-supporting at 45-degree tangent.",
+    "Both parts watertight and manifold per trimesh analysis.",
+    "1.5mm top-edge fillets applied to low perimeter wall tops (all four sides of the printer section and shelf section at z=25) and to the back panel top body edge at z=145 (between tuft bases). Implemented via stacked quarter-round slices (6 steps for walls, 5 steps for back panel with thickness clamp). The tray-shelf upper walls (z=25..46.3, x=0..2.05 and x=105.95..108) are deliberately LEFT SHARP at their z=46.3 top edge because the 2.05mm wall thickness cannot accommodate a 1.5mm top fillet adjacent to the 4mm vertical corner fillet without dropping cross-section below FDM min wall. Full 2.05mm wall thickness is preserved at the top two layers.",
+    "45-degree step chamfer between 86mm printer section and 108mm shelf section is fully vertical (straight extrusion in Z); no print-direction overhang concerns."
+  ]
+}
