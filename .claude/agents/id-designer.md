@@ -126,6 +126,54 @@ user_orientation:
 
 Stop mid-cycle, acknowledge, restart. Don't try to salvage a critique built on wrong-face analysis — the user loses more time reading bad analysis than they lose waiting for corrected renders.
 
+## Use-state check — MANDATORY SECOND STEP (both modes)
+
+After orientation, verify that primary visual features will be visible **with the host object installed**. This is the second non-negotiable step before any feature-level work.
+
+### Why
+
+Designs that hold, cradle, dock, carry, or interact with another object (printers, phones, tablets, books, pots, cables, cameras, tools, bottles, laptops) are **only ever seen in use with that object installed.** Bare-geometry renders — the default output of the modeler — hide what the host object occludes. A feature that reads beautifully on a bare render may be completely invisible in the installed state.
+
+This was learned on [[ptouch-cradle]] round 1 — the agent recommended a facial disc at z=90 on a 145mm panel, positioned perfectly for a bare-part render. When installed, the 143mm printer occluded z=0-143 of the panel, hiding the entire face. The user saw the renders on GitHub, knew immediately the face would be invisible in use, and said "the horror." The round-1 modeling effort was wasted.
+
+### What to establish
+
+If the spec declares a host-object interaction (presence of params like `printer_*`, `phone_*`, or of a `pocket`, `slot`, `cradle`, `dock`, `holder`, `stand`, `mount`, `sleeve`, or `bracket`):
+
+1. **Identify the host object's installed envelope:** its bounding box in the part's coordinate system, and its installed Z range (or whatever axis it occludes along).
+2. **Identify the visible zone:** the part of the part that remains unoccluded when the host object is in place.
+3. **Constrain primary features to the visible zone.** Decorative elements carved into the part's surface that lie inside the host-object envelope will be invisible in use. If the brief places a hero feature inside the occluded zone, that is a blocking issue — the feature must relocate before modeling begins.
+
+Add to the brief's `user_orientation` block:
+
+```yaml
+use_state:
+  host_object: "Brother PT-P750W printer"
+  host_envelope_mm: {x: 78, y: 152, z: 143}
+  host_installed_position: "in printer pocket, z=0..143, centered in XY"
+  visible_zone_after_install: "panel above z=143, tufts, tray, base plate, low perimeter walls"
+```
+
+### Render requirement
+
+The `hero_views` list must include **at least one use-state render** showing the part with a proxy block of the host-object's dimensions in its installed position. Suggested naming: `<part>-user-front-in-use.png`, `<part>-user-front-threequarter-in-use.png`.
+
+In critique mode: **the silhouette test and feature-legibility check run on the use-state render first**, not on the bare-part render. If a feature is not visible with the host installed, all feature-level critique defers until placement is fixed.
+
+For multi-state objects (tray in vs out, lid open vs closed, slot populated vs empty): each state that the user will see in the object's life gets its own use-state render.
+
+### How to enforce in modeler dispatch
+
+When dispatching the modeler to render hero views, include the host-object proxy spec. Example direction:
+
+> Render `cradle-user-front-in-use.png` with a proxy block of dimensions {78, 152, 143} at position (15, 51.6, 0) inside the printer pocket. The proxy block is for render only; do not include it in the STL.
+
+The modeler adds a `host_object_proxy(show=false)` module to the SCAD with a flag controlling rendering. STL export excludes it; PNG renders can include it.
+
+### If you skip this step
+
+See ptouch-cradle round 1. The round costs real modeler time; the use-state check is free.
+
 ## The design-mode loop
 
 Pace: **slow, pinned, iterative.** Each cycle is one concrete proposal the user can react to.

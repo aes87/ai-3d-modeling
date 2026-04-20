@@ -195,3 +195,33 @@ See `id/modeler-notes-v1.md` for the concrete fix list, dimensions, and scope.
 - Part-to-part sliding fit (0.35mm per-side clearance).
 
 **Modeler fix list:** see `id/modeler-notes-v1.md`.
+
+### 2026-04-20 — round 1 post-mortem (brief declared stale)
+
+**Trigger:** Round 1 geometry built and rendered per `modeler-notes-v1.md`. User reviewed renders on GitHub commit `5772f81`. Reaction: **"The horror."** User identified a blocking issue the agent missed: the facial disc at z=90 is **behind the printer** when installed. Printer is 143mm tall; panel is 145mm tall; only ~2mm of panel is visible above the printer. The face that round 1 carved, critiqued, and shipped-as-STL is invisible in actual use.
+
+**Root cause:** all round-1 hero renders were bare-geometry (no printer proxy in the pocket). The agent never rendered or critiqued the use-state, so the occlusion was invisible to the critique. Design would have printed correctly and shipped an invisible face.
+
+**Changes (direction only — specific numbers pending):**
+
+- Facial features (disc, eyes, beak) relocate from z=90 to the visible strip above the printer at z=143+.
+- Back panel height 145mm → ~200-210mm (adds ~57-67mm of visible panel above the 143mm printer top).
+- Composition metaphor: "owl head perched above printer body" — the printer stays visible as part of the object's silhouette; the owl head lives above it, not behind a facade.
+- Face anatomy upgraded to **R2 real-owl reference**: heart-shaped facial disc (barn-owl, not circular mascot), recessed eye sockets (sunk, not proud domes), asymmetric hooked beak, no pupils (or re-evaluate scale). Scaled to the new ~57mm vertical face zone.
+- Ear tufts rebuilt from scratch: splayed feather clumps, round-tipped, wider-than-tall, outward lean only (no forward curl), 2-3 offset feather profiles hulled per tuft instead of a single swept mass. The round-1 curled-wizard-hat geometry is discarded.
+- `hero_views` must now include a use-state render (`cradle-user-front-in-use.png`) with a proxy block of printer dimensions {78, 152, 143} in the installed position. Silhouette test and feature legibility check run on the use-state render first.
+
+**Unchanged (carries forward to v2):**
+
+- Motif consolidation: owl on back panel / tufts, tray as clean utility — still right.
+- Tray scoop lip + integrated finger-grip (Fix 7) — still right.
+- Printer→shelf concave fillet (Fix 5) — still right.
+- Feather embosses removed (Fix 6) — still right.
+- Softened vertical edges, base plate corner softening, foot-to-plate blend — still right.
+- User orientation block and two-part architecture — still right.
+
+**Status:** brief stale as written (facial-disc placement broken). Direction above is proposed pending user confirmation. `modeler-notes-v2.md` not yet written. v1 artifacts preserved as historical record (do not build against them).
+
+**Codified lesson:** `_id-library/lessons.md` — "Render the use-state, not just the part." Cycle 0 of `.claude/agents/id-designer.md` extended with a mandatory use-state check.
+
+**Modeler fix list:** pending — see forthcoming `id/modeler-notes-v2.md` once direction is locked.

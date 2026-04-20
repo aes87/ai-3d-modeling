@@ -74,3 +74,32 @@ Direct-Bash `cli-anything-openscad` calls produced 6 user-frame renders. Critiqu
 - `id/modeler-notes-v1.md` — 8-fix list with concrete dimensions, spec-param diffs, printability notes, classifications, uncertain flags.
 
 **Status:** critique round 1 closed. Handoff to modeler pending user green-light on consolidation.
+
+### Turn 6 — round 1 geometry lands, the horror moment (blindspot discovered)
+
+**Agent dispatched modeler** with `id/brief.md` + `id/modeler-notes-v1.md`. Modeler returned first-pass PASS: 8/8 fixes landed, watertight on both parts, dimensions within tolerance, render set in user-frame produced. Three small dimensional adjustments explained (foot_blend_r 1.5 → 1.0 for flare-flushness, panel vertical edge r 4 → 1.2 for cross-section survival, ear_tuft internal dz 18 → 20 to land spec tip z=163).
+
+**Agent ran critique-mode read on the new renders.** Led with a strong "big win" framing: the owl lands, face legible, panel silhouette became a body, motif consolidated. Flagged secondary issues — tufts curl forward too aggressively (wizard-hat/soft-serve read, 8mm forward sweep too dramatic), face features feel small inside the disc, panel base seam visible, convexity visually subtle. Proposed three paths: ship, round-2 tufts only, round-2 full polish. Recommended round-2 tufts only.
+
+**User reviewed the renders on GitHub (commit `5772f81`).** Reaction: **"The horror."**
+
+**Agent backpedaled** — acknowledged overselling the win, ran a harsher second read: tufts read as curled wizard-hat points, face features float in an over-sized green disc, pupils read as random specks, combined effect is uncanny-doll rather than quietly-playful-soft. Offered three resets: R1 abstract the owl (drop the literal face), R2 real owl anatomy (heart-shaped disc, recessed sockets, real beak, rebuilt tufts), R3 burn it down and restart design-mode.
+
+**User caught the structural failure the agent had completely missed:**
+
+> "The face is behind the printer so that's stupid. Won't be visible with printer in there. So do more R2 with this sort of thinking."
+
+**The blindspot:** the back panel rises to 145mm. The printer sits in its pocket and is 143mm tall. In actual use, **only 2mm of panel is visible above the printer** — the entire facial zone (disc centered at z=90, covering z=55-125) is hidden behind the printer. Every round-1 render was bare-geometry (no printer in the pocket), so the use-state invisibility never registered in the renders the agent critiqued. The agent designed, critiqued, and recommended a face that the user would literally never see in the finished object.
+
+**This is a more important failure than the tuft geometry.** It would have shipped. The face would exist in the STL, would print correctly, would pass every geometry check — and would be invisible when the printer was installed. A lesson about rendering use-state, not just part-state, goes to `_id-library/lessons.md` and codifies into id-designer's Cycle 0.
+
+**Direction correction (proposed, pending user confirmation):**
+
+- Panel height 145mm → ~200-210mm (+57-67mm above the printer top at z=143).
+- Face relocates to the visible strip above the printer: z=143 to z=200. Face zone is ~57mm vertical × 86mm wide — plenty of room for proper scale.
+- Composition becomes "owl head perched above the printer body." Printer is not hidden behind a facade — it's part of the owl's silhouette (the "body").
+- Face anatomy per R2: heart-shaped facial disc (real barn-owl, not a circle), recessed eye sockets (sunk in, not proud domes), asymmetric hooked beak. Scaled to the new face zone.
+- Tufts rebuilt from scratch per R2: splayed feather clumps, round-tipped, wider-than-tall, outward lean only (no forward curl), 2-3 offset profiles hulled per tuft instead of a single swept mass.
+- Everything else from round 1 survives: tray as clean utility with scoop + integrated finger-grip, printer→shelf concave fillet, no feather embosses, softened vertical edges, base plate corner softening, convex panel face (less load-bearing now).
+
+**Status:** round 1 design declared broken. Brief flagged for revision. Modeler-notes-v2 pending user green-light on the revised direction above. Agent paused before writing v2 artifacts.
