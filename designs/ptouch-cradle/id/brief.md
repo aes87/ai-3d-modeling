@@ -14,28 +14,49 @@ user_orientation:
   user_right: "+X face"
   user_top:   "+Z face"
   use_context: "sits on a desk, user-back is typically against a wall, user approaches from +Y"
-  hero_face:  "user-front (back panel owl face + tufts above printer silhouette)"
+  hero_face:  "user-front (panel face above printer + tufts)"
   against_surface: "user-back (-Y) with cable notch"
+use_state:
+  host_object: "Brother PT-P750W printer"
+  host_envelope_mm: {x: 78, y: 152, z: 143}
+  host_installed_position: "in printer pocket: x_center=15+39=54 from left exterior, y from pocket back; z=0..143"
+  visible_zone_after_install: "back panel above z=143 (face zone), tufts above panel top, tray, base plate, low perimeter walls"
+  composition_metaphor: "owl head perched above printer body — printer is not hidden behind a facade; it's part of the owl's silhouette as the body"
 hero_views:
+  - name: cradle-user-front-in-use
+    rationale: "PRIMARY hero — silhouette test runs against this view; owl head visible above installed printer"
+    requires_proxy: true
+  - name: cradle-user-front-threequarter-in-use
+    rationale: "marketing shot with printer installed — face anatomy + tuft splay + tray legible together"
+    requires_proxy: true
   - name: cradle-user-front
-    rationale: "silhouette test + the view where the owl lands (panel face visible above printer)"
+    rationale: "bare-part record (modeling validation)"
+    requires_proxy: false
   - name: cradle-user-front-threequarter
-    rationale: "marketing shot — shows owl face + tuft 3D sweep + shelf + chamfer transition"
+    rationale: "bare-part record (modeling validation)"
+    requires_proxy: false
   - name: cradle-user-left
-    rationale: "side profile — confirms vertical softening on back panel and chamfer-as-fillet"
+    rationale: "side profile, confirms vertical softening + face-zone above printer position"
+    requires_proxy: false
   - name: tray-user-front
-    rationale: "tray scoop lip read — clean utility face, no decoration"
+    rationale: "tray scoop + integrated finger-grip — clean utility face"
+    requires_proxy: false
   - name: tray-user-front-threequarter
     rationale: "tray proportion + integrated finger-grip visibility"
+    requires_proxy: false
 hero_dimension:
   name: back_panel_height
-  value_mm: 145
-  rationale: "back panel is the primary visual object; every other dim should feel like a share of it"
+  value_mm: 205
+  rationale: "panel height set so that ~62mm sits visible above the 143mm printer — the face zone. Hero dim is the panel because it carries the owl read; everything else should feel like a share of it."
 proportions:
-  head_to_body_on_panel: "~1:1 — tufts + face zone occupy ~50% of panel height; lower panel is body"
-  eye_axis_height: "0.62 of back panel height"
-  tuft_aspect: "w:h = 2:1 (wider than tall)"
-  tuft_tilt: "25-30° outward from vertical"
+  face_zone: "z=143..205 — the visible-above-printer strip where all face anatomy lives"
+  face_zone_aspect: "62mm tall × 86mm wide (panel width) — wider-than-tall, suits a barn-owl facial disc"
+  face_disc_to_face_zone: "~85% width × ~85% height — disc fills most of the visible panel without cramping"
+  eye_axis_height_within_face_zone: "0.62 of face zone height — eyes high in the disc per real owl anatomy"
+  beak_axis_height_within_face_zone: "0.27 of face zone height — beak below the eyes, tucked toward the bottom V"
+  tuft_aspect: "w:h = 2:1 (wider than tall, per round-1 lesson)"
+  tuft_tilt: "25-30° outward from vertical, NO forward curl (round-1 forward-sweep failed)"
+  tuft_construction: "splayed feather clumps — 3 hulled feather profiles per tuft, NOT a single swept mass"
   tray_to_cradle_body: "clean utility subordinate to the panel; no decorative parity"
 fillet_schedule:
   micro: 1.0     # break-edges only — all exposed outer edges get at least this
@@ -115,11 +136,19 @@ Two rules govern every surface on this object:
 
 ### Back-panel owl face (primary)
 
-The panel is the largest visible surface on the object and sits at desk eye-level above the printer. That makes it the only viable canvas for the owl read — the tray's 21.6mm front wall was never going to carry a face that mattered.
+The panel rises 205mm. The printer is 143mm. That leaves a **62mm visible strip above the printer** — the face zone — where the owl's head lives. This is the only canvas where the face is visible in actual use; round 1's centered-disc-at-z=90 was invisible behind the printer and is the round-1 failure case.
 
-The face must be **intrinsic** — carved into the panel's +Y face as a shallow ovoid facial disc (like real owl anatomy), not stamped on a flat wall. Eyes sit inside the disc as slightly vertically elongated ellipses, forward-facing, with a dome-top profile rather than sharp cylindrical edges. Beak is a 3D wedge between/below the eyes, with the apex poking outward — not a flat triangle extrusion. Pupils (if present) are small and dome-topped, not the current bug-eye 4mm cylinders.
+The face is built per **R2 real-owl reference**, not the round-1 cartoon-mascot construction:
 
-**Must NOT look like:** a face stamped on a flat rectangle. A cartoon face. A pair of googly eyes. Text or a logo. A decal.
+- **Heart-shaped (rounded-shield) facial disc.** Wider at top (~70mm wide near z=200), narrowing toward a soft V at the bottom around the beak (~40mm wide near z=148). NOT a circular disc. Real barn-owl facial disc is the move; the v1 round disc + small features read as cartoon.
+- **Recessed eye sockets, NOT proud domes.** Eyes are sunk INTO the disc by ~1.5mm. Real owl eyes are deeply set in the facial disc; shadow does the work, not protrusion. Vertically elongated ellipses, ~16×20mm, occupying a substantial fraction of the disc width.
+- **No pupils.** Barn-owl eyes read as uniform dark recesses; pupils-as-buttons are what made round 1 cartoon. Skip them.
+- **Asymmetric hooked beak.** Narrow at top, wider at bottom, tip pointing down with a slight forward hook. Asymmetric, not centered-symmetric triangle. Larger than v1 — ~10×12mm, ~4mm proud.
+- **Disc carved into the convex panel face.** Disc depth 1.5mm at center tapering to flat at perimeter. Rim soft (r=2mm).
+
+**Must NOT look like:** v1's mascot face (small features in big circular disc). A cartoon owl. A pair of googly eyes. Two dots and a triangle.
+
+**Must be visible** with the printer installed. The use-state render is the primary hero view; if the face doesn't read in `cradle-user-front-in-use.png`, the round failed.
 
 ### Back-panel silhouette (primary)
 
@@ -129,11 +158,22 @@ The panel currently reads as "rectangle stood on edge" from every angle. The fix
 
 ### Ear tufts (secondary)
 
-Current: 2D triangle extrusion, h=35 w=25, vertical, sharp apex. Textbook cat-ear geometry.
+Round 1 failed: forward-curling sweep produced wizard-hat / soft-serve / curled-horn geometry. **The sweep is gone.**
 
-Target: w > h (proposal w=35 h=18, inverted proportion). Tilt 25-30° outward. 3D sweep — not a flat extrusion; the tuft curves forward-to-back along a subtle arc, with the profile shifting so the tip pokes forward of the base. Feathery silhouette — the outer edge is a 2-3 segment curve with a concave dip mid-length. Base blend: r=5mm fillet where the tuft meets the rounded panel top, so the tuft *emerges* from the panel rather than sitting stapled on.
+Round 2 construction — splayed feather clumps:
 
-**Must NOT look like:** cat ears, bat ears, devil horns, triangular flags.
+- Each tuft = 3 separate feather-shaped protrusions hulled together. NOT a single swept mass.
+- Feather profiles per tuft (proposal):
+  - Inner feather: ~8w × 14h, tilted 10° outward, round tip.
+  - Middle feather: ~10w × 16h, tilted 20° outward, round tip.
+  - Outer feather: ~8w × 12h, tilted 30° outward, round tip.
+- Total tuft footprint at base: ~30mm wide.
+- Total tuft height above panel top: ~16mm (peaks at z≈221).
+- **Outward lean only — no forward (+Y) curl, no forward sweep.** Tufts splay sideways to ±X, period.
+- Round-tipped, not pointed. Feather tips are blunt.
+- Base blend: r=4mm fillet into the rounded panel top.
+
+**Must NOT look like:** wizard-hat points, curled horns, soft-serve swirls, cat ears, bat ears, devil horns, triangular flags.
 
 ### Printer-section → shelf transition (secondary)
 
@@ -225,3 +265,31 @@ See `id/modeler-notes-v1.md` for the concrete fix list, dimensions, and scope.
 **Codified lesson:** `_id-library/lessons.md` — "Render the use-state, not just the part." Cycle 0 of `.claude/agents/id-designer.md` extended with a mandatory use-state check.
 
 **Modeler fix list:** pending — see forthcoming `id/modeler-notes-v2.md` once direction is locked.
+
+### 2026-04-25 — round 2 (direction locked, brief spec block updated)
+
+**Trigger:** User confirmed the post-mortem direction. Brief's main spec block updated to v2 values; Form-language prose, anti-brief, decoration_policy, supports_permitted, and unchanged-for-v2 sections kept from round 1 since they remain right.
+
+**Spec-block changes (this brief above):**
+
+- `hero_dimension`: back_panel_height 145 → **205** mm.
+- `proportions`: rebuilt around the new face zone (z=143-205). Eye axis 0.62 of face zone (not 0.62 of full panel). Tuft aspect kept 2:1; tuft tilt outward only — forward curl explicitly forbidden; tuft construction = 3 hulled feather profiles per tuft (not a single swept mass).
+- `use_state` block added: host_object Brother PT-P750W, host_envelope_mm {78, 152, 143}, host_installed_position, visible_zone_after_install, composition metaphor.
+- `hero_views`: two new in-use renders (`cradle-user-front-in-use`, `cradle-user-front-threequarter-in-use`) with `requires_proxy: true` flag. Bare-part renders kept as record. Silhouette test now runs on the use-state render.
+
+**Form-language section additions:**
+
+- Owl face section rewritten: heart-shaped (rounded-shield) disc, recessed eye sockets (NOT proud domes), no pupils, asymmetric hooked beak, larger features.
+- Tuft section rewritten: splayed feather clumps (3 hulled profiles per tuft), outward lean only, NO forward curl, round tips.
+
+**Unchanged from round 1 (still right):**
+
+- Motif consolidation (owl on panel, tray as utility).
+- Tray scoop lip + integrated finger-grip (Fix 7).
+- Printer→shelf concave fillet (Fix 5).
+- Feather embosses removed (Fix 6).
+- Softened panel vertical edges, base plate corner softening, foot-to-plate blend (Fix 8).
+- Convex +Y panel face (less load-bearing now that face is in upper zone, but still part of unified curvature).
+- Two-part architecture, stepped body, full-perimeter low base, printer pocket dims, cable notch, tray interior, tray sliding fit, foot count.
+
+**Modeler fix list:** see `id/modeler-notes-v2.md`.
