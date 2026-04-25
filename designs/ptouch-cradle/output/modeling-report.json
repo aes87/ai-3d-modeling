@@ -1,174 +1,221 @@
 {
   "designName": "ptouch-cradle",
   "validationPass": true,
-  "iterations": 2,
+  "iterations": 1,
   "round": 3,
-  "critiqueRound2Applied": true,
+  "critiqueRound3Applied": true,
+  "headline": "Owl direction abandoned. v3 minimalism: low symmetric bathtub, two-tier fillet schedule, no decoration. Cradle volume drops from ~207 cm³ (v2) to ~131 cm³ (v3).",
   "parts": {
     "cradle": {
       "scad": "designs/ptouch-cradle/cradle.scad",
       "stl": "designs/ptouch-cradle/output/cradle.stl",
       "watertight": true,
-      "winding_consistent": true,
-      "components": 1,
-      "volume_mm3": 206782,
-      "face_count": 20430,
+      "volume_mm3": 131178,
+      "volume_cm3": 131.18,
+      "face_count": 9176,
       "dimensions": {
         "echoed": {
-          "cradle":                 { "x": 108.0, "y": 254.9, "z": 221.0 },
-          "cradle_body_no_tufts":   { "x": 108.0, "y": 254.9, "z": 205.0 },
-          "cradle_printer_section": { "x":  86.0, "y": 160.0, "z":  25.0 }
+          "cradle":                 { "x": 108.0, "y": 254.9, "z": 28.0 },
+          "cradle_printer_section": { "x":  86.0, "y": 160.0, "z": 25.0 }
         },
         "expected": {
-          "cradle":               { "x": 108,   "y": 254.9, "z": 221 },
-          "cradle_body_no_tufts": { "x": 108,   "y": 254.9, "z": 205 }
+          "cradle": { "x": 108, "y": 254.9, "z": 28 }
         },
-        "mesh_bbox_min": { "x": 0.0,   "y": 0.0,   "z": -3.0 },
-        "mesh_bbox_max": { "x": 108.0, "y": 254.9, "z": 221.466 },
-        "mesh_bbox_dims": { "x": 108.00, "y": 254.90, "z": 224.47 },
+        "mesh_bbox_min":  { "x":   0.0, "y":   0.0, "z": -3.0 },
+        "mesh_bbox_max":  { "x": 108.0, "y": 254.9, "z": 25.001 },
+        "mesh_bbox_dims": { "x": 108.0, "y": 254.9, "z":  28.001 },
         "withinTolerance": true,
-        "notes": "Mesh Z range is 224.47 (-3.0 feet to 221.47 tuft peak). Spec target z=221 is the panel-top + tuft height; the 3.47mm difference is the corner-foot extension below the build-plate datum (z=-3) — within the spec's z tolerance of 4.5. Echo dimensions match exactly."
+        "notes": "Mesh Z-span = 28.001 (-3 feet to +25 wall top). Echoed cradle.z = 28 matches mesh bbox z-span (the report includes the foot extension below the build-plate datum). All four perimeter walls are 25 mm uniform — no tall element exists anywhere."
       }
     },
     "tray": {
       "scad": "designs/ptouch-cradle/tray.scad",
       "stl": "designs/ptouch-cradle/output/tray.stl",
       "watertight": true,
-      "winding_consistent": true,
-      "components": 1,
       "volume_mm3": 25321,
+      "volume_cm3": 25.32,
       "face_count": 696,
       "dimensions": {
-        "echoed": { "tray": { "x": 103.2, "y": 94.2, "z": 21.6 } },
+        "echoed":  { "tray": { "x": 103.2, "y": 94.2, "z": 21.6 } },
         "expected": { "tray": { "x": 103.2, "y": 94.2, "z": 21.6 } },
         "mesh_bbox_min": { "x": 0.0, "y": 0.0, "z": 0.0 },
         "mesh_bbox_max": { "x": 103.2, "y": 94.2, "z": 21.6 },
         "withinTolerance": true,
-        "notes": "Tray is unchanged from round 1 (per modeler-notes-v2: 'Items carried forward unchanged from round 1' — Fix 1 round-1 face deletion + Fix 7 round-1 scoop+grip kept exactly)."
+        "notes": "Tray is unchanged from round 2 (Fix 7 of modeler-notes-v3 — leave alone). Verified clean (no leftover face geometry from round 1)."
       }
     }
   },
   "totals": {
-    "volume_cm3": 232.1,
-    "max_z_cradle_mm": 221.466,
+    "volume_cm3": 156.5,
+    "max_z_cradle_mm": 28.001,
     "build_volume_max_z_mm": 256,
-    "build_volume_margin_z_mm": 34.5
+    "build_volume_margin_z_mm": 227.999,
+    "build_volume_margin_y_mm": 1.1,
+    "round_2_volume_cm3": 232.1,
+    "volume_drop_cm3": 75.6,
+    "volume_drop_pct": 32.6
   },
   "specDeviations": [
     {
-      "dimension": "spec.tolerances.z",
-      "expected_round_1": 1.0,
-      "actual_set": 4.5,
-      "reason": "Cradle bbox z dim (max - min) is 224.47mm because the corner feet extend 3mm below the build-plate datum (z=-3). Echo dimension cradle.z (panel + tuft peak) matches 221.0 exactly. Setting tolerance.z to 4.5 lets the bbox check pass while preserving 0.5mm slack for tuft mesh rounding."
+      "dimension": "foot_inset",
+      "expected_round_2": 5,
+      "actual_set": 12,
+      "reason": "v3 increases foot_inset from 5 mm to 12 mm to (a) accommodate the foot-to-plate r=1.5 upper blend without overshooting the base plate footprint (with r=10 base-plate corner fillets, the r=1.5 blend cone diameter of 11 mm needs to clear the corner radius), and (b) keep the foot under the base plate body (not crowning the rounded corner). Round 2 had foot_blend_r=1.0 + foot_inset=5, which barely fit; with v3's r=1.5 blend, inset must grow."
     },
     {
-      "dimension": "tuft_inner_h, tuft_middle_h, tuft_outer_h",
-      "spec_target": "14, 16, 12 mm (per modeler-notes-v2 Fix 5)",
-      "actual_set": "18, 22, 16 mm",
-      "reason": "Per-feather heights are pre-tilt extents in the local Z axis. After tilt rotation by 10/20/30 degrees, the projected vertical peak rise is h*cos(tilt) - base_dip. To hit the brief's 16mm-above-panel-top target with a 20° middle tilt, the middle feather needs h ≈ 21.6mm (solving 21.6*cos(20°) - 2 = 18.3mm above tuft base, matching the panel-top dip at tuft x=±25). Other feathers scaled proportionally. Mesh peak lands at z=221.47, matching spec.echo.cradle.z=221 exactly."
+      "dimension": "transition_fillet_r",
+      "expected_round_2": 8,
+      "actual_set": 10,
+      "reason": "Per Fix 5 of modeler-notes-v3: bumped from r=8 to r=10 to consolidate hero radii. r=10 fits within the 11 mm side-step (verified by assert)."
     },
     {
-      "dimension": "tuft_yd (Y-depths)",
-      "spec_target": "5, 6, 4 mm (per modeler-notes-v2 Fix 5)",
-      "actual_set": "4, 5, 3.5 mm",
-      "reason": "Tuft Y-depth reduced slightly so the feather Y-extent fits cleanly inside [0.5, panel_thickness-0.5] without touching the seam-hidden -Y face. Total tuft footprint at base still ~30mm wide as specified."
+      "dimension": "fillet_base_plate_corners_r",
+      "expected_round_2": 8,
+      "actual_set": 10,
+      "reason": "Per Fix 6 of modeler-notes-v3: bumped from r=8 to r=10 to consolidate as the hero radius. Applied to all 4 base plate corners, top and bottom of plate."
     },
     {
-      "dimension": "back_panel_arc_r",
-      "spec_target": "160 mm (carried from round 1 spec)",
-      "actual_set": "135.57 mm",
-      "reason": "Round-1 arc radius 160mm was sized for a 145mm panel with a ~7mm dip from center to corner. With the 205mm panel and the brief's documented 7mm dip target, the arc radius must shrink to 135.57mm to preserve the same dip geometry. Spec param `back_panel_top_arc_radius` was kept at 160 in spec.json as a documentation note; SCAD value reflects the corrected geometry."
+      "dimension": "fillet_cradle_corner_vertical_r",
+      "expected_round_2": 4,
+      "actual_set": 10,
+      "reason": "Per Fix 4 of modeler-notes-v3: cradle exterior vertical corner fillets bump from r=4 to r=10 hero. Applied via wall_footprint() = base_footprint() — same outer offset, so the wall and base share the same exterior outline (continuous solid)."
+    },
+    {
+      "dimension": "fillet_top_edges_r",
+      "expected_round_2": 1.5,
+      "actual_set": 3.0,
+      "reason": "Per Fix 3 of modeler-notes-v3: top-edge fillet bumped from r=1.5 to r=3 utility, applied via the quarter-arc stack in low_wall_block_solid(). The brief's two-tier schedule sets r=3 as the named utility radius."
+    },
+    {
+      "dimension": "foot_blend_r",
+      "expected_round_2": 1.0,
+      "actual_set": 1.5,
+      "reason": "Per Fix 3 of modeler-notes-v3: foot-to-plate upper blend r=1.5 is the documented function-driven exception (foot bottom stays flat for FDM first-layer adhesion)."
     }
   ],
-  "fixesAppliedV2": {
-    "fix1_panel_height_145_to_205": {
+  "fixesAppliedV3": {
+    "fix1_back_panel_collapsed_to_25mm_low_wall": {
       "applied": true,
-      "scad_param": "back_panel_top_center_z = 205, back_panel_top_corner_z = 198",
-      "spec_change": "tall_back_panel_height: 145 → 205, top_center_z: 145 → 205, top_corner_z: 139 → 198"
-    },
-    "fix2_heart_shaped_facial_disc": {
-      "applied": true,
-      "scad_module": "face_disc_silhouette_2d (line 400) + facial_disc_cutter (line 434)",
-      "implementation": "Hull of 5 circles (top arc, mid arc, two lower side arcs, bottom V tip) extruded into Y and intersected with a Y-axis ellipsoid lens to produce a 1.5mm-deep concave bowl with a soft heart silhouette. Disc spans z=148..200, top_w=70, bottom_w=40."
-    },
-    "fix3_recessed_eye_sockets": {
-      "applied": true,
-      "scad_module": "eye_socket_cutter (line 465)",
-      "implementation": "Ellipsoid cutters at x=±16, z=180, scaled (16/2, 1.5, 20/2). Subtracted from panel + disc, leaving recessed eyes 1.5mm INTO the disc floor (3mm net into panel face). NO proud domes. NO pupils.",
-      "notes": "Eyes appear as deep dark recesses in renders — barn-owl-style shadow-as-eye."
-    },
-    "fix4_asymmetric_hooked_beak": {
-      "applied": true,
-      "scad_module": "beak_emboss (line 493)",
-      "implementation": "Hull of 5 spheres: 2 narrow top points embedded inside the panel (Y=3.5, deeper than disc carve to keep beak connected after disc subtraction), 2 wider band points 1.5mm proud, 1 tip at +Y=10mm forward, +1mm x-lean for asymmetry. Hook bulge sphere positioned just above and forward of tip."
-    },
-    "fix5_tufts_splayed_feather_clumps": {
-      "applied": true,
-      "scad_module": "tuft_feather (line 565), ear_tuft (line 621)",
-      "implementation": "Each tuft = hull of 3 ellipsoid feather profiles tilted OUTWARD only (10°, 20°, 30°). NO Y-direction tilt. NO forward sweep. NO curl. Round-tipped (sphere caps). Bases dip 2mm into the panel rounded-top arc for a soft base blend.",
-      "notes": "Round-1 forward-sweep / curled-horn geometry is GONE. Tuft tilt is purely about the world-Y axis (X-Z plane lean) — verified per outer_sign convention."
-    },
-    "fix6_host_object_proxy": {
-      "applied": true,
-      "scad_module": "host_object_proxy (line 674)",
-      "implementation": "Module renders a 78×152×143 cube at the printer's installed position (X=15, Y=4, Z=4 — derived from pocket interior + 1mm clearance + base thickness). Gated by render_with_host parameter (default false). STL exports keep render_with_host=false; use-state PNG renders override via -D render_with_host=true.",
-      "notes": "Used color([0.55,0.55,0.55]) instead of % modifier because OpenSCAD's --render mode omits %-marked geometry from output. The if(show){...} gate guarantees STL export EXCLUDES the proxy as long as render_with_host=false (the default)."
-    },
-    "fix7_render_set_with_use_state_heroes": {
-      "applied": true,
-      "renders": [
-        "output/cradle-user-front-in-use.png (PRIMARY HERO — silhouette test render)",
-        "output/cradle-user-front-threequarter-in-use.png (marketing hero)",
-        "output/cradle-user-front.png (bare-part record)",
-        "output/cradle-user-front-threequarter.png (bare-part record)",
-        "output/cradle-user-left.png (side profile)",
-        "output/tray-user-front.png",
-        "output/tray-user-front-threequarter.png"
+      "scad_module": "low_wall_block (line ~210)",
+      "deletions": [
+        "back_panel_top_center_z, back_panel_top_corner_z, back_panel_arc_r — gone",
+        "panel_convexity, panel_front_arc_r — gone",
+        "panel_vert_edge_r, panel_top_fillet_r, panel_base_concave_r — gone",
+        "back_panel_body_raw, back_panel modules — gone",
+        "panel_xy_section, panel_half_width_at_z, panel_convexity_at_z — gone"
       ],
-      "notes": "All renders produced via direct openscad invocation with --viewall --autocenter (cli-anything-openscad's render preset and timeout had issues for this design's complexity and aspect ratio). Cameras use explicit 6-tuple eye+rotation; filenames are user-frame regardless of preset workaround. Use-state heroes use -D render_with_host=true."
+      "result": "The -Y wall is now a 25 mm low wall identical to the +Y, +X, -X walls. All four perimeter walls are 25 mm uniform. The cable notch (z=0..20) leaves a 5 mm bridge above (z=20..25, 25 mm wide, well within FDM bridging tolerance). Wall thickness 3 mm uniform on all 4 perimeter walls."
     },
-    "fix8_convex_panel_sagitta_bumped_2_to_3": {
+    "fix2_all_owl_face_tuft_geometry_deleted": {
       "applied": true,
-      "scad_param": "panel_convexity = 3",
-      "spec_change": "back_panel_front_convexity_mm: 2 → 3"
+      "deletions_modules": [
+        "facial_disc_cutter — gone",
+        "face_disc_silhouette_2d — gone",
+        "eye_socket_cutter — gone",
+        "beak_emboss — gone",
+        "tuft_feather, ear_tuft, panel_top_z_at_x — gone"
+      ],
+      "deletions_params_estimated": 26,
+      "result": "Zero face / eye / beak / tuft / disc / panel geometry exists in v3."
+    },
+    "fix3_fillet_schedule_consolidated_to_two_tiers": {
+      "applied": true,
+      "tiers": {
+        "utility_r3": [
+          "Top edges of all 4 perimeter walls (rolled via quarter-arc stack)",
+          "All break-edges (any wall→wall and wall→plate transition not in the hero list)",
+          "Tray exterior vertical corner edges (already r=3 in tray.scad — unchanged)"
+        ],
+        "hero_r10": [
+          "Cradle exterior corner vertical edges (4 corners, full wall height) — delivered via offset(r=10) offset(r=-10) on the stepped footprint",
+          "Base plate corners (top and bottom, all 4 corners) — same hero offset on the base footprint",
+          "Printer-section → shelf concave transition fillet on both ±X sides (bumped 8 → 10)"
+        ],
+        "exception_r1_5": [
+          "Foot-to-plate upper blend (foot bottom stays flat for FDM first-layer adhesion)"
+        ],
+        "exception_r2": [
+          "Tray scoop lip leading edge (kept from round 2; documented in spec.json)"
+        ]
+      },
+      "no_chamfers": "verified — no chamfer_cylinder usage; no 45° bevels; concave fillet at printer→shelf is a circular arc, not a chamfer.",
+      "no_mid_tier_radii": "verified — only r=3, r=10, r=1.5, r=2 anywhere in the cradle + tray (and r=2 is intentional documented exception)."
+    },
+    "fix4_cradle_exterior_corner_r10": {
+      "applied": true,
+      "scad_module": "wall_footprint() and base_footprint() share offset(r=10) offset(r=-10) of stepped_footprint_raw()",
+      "result": "All 4 cradle exterior corners (where ±X walls meet ±Y walls) are r=10 vertical fillets running the full 25 mm wall height. At the top, where the hero r=10 vertical fillet meets the utility r=3 horizontal top fillet, the offset-of-offset stack approximates a sphere-blend triple-corner naturally (no separate triple-corner construction needed)."
+    },
+    "fix5_printer_to_shelf_concave_fillet_r10": {
+      "applied": true,
+      "scad_param": "transition_fillet_r = 10",
+      "geometry": "Concave quarter-arcs on both ±X sides at the printer→shelf step. Tangent points: vertical-tangent on printer side wall at (x_printer_wall, printer_section_d - r); horizontal-tangent on the y=printer_section_d step line at (x_printer_wall + r, printer_section_d). r=10 fits within the 11 mm side_step (verified by assert).",
+      "fitment_note": "side_step (11) - r (10) = 1 mm sliver between arc end and shelf wall — absorbed by the hero corner fillet on the shelf wall."
+    },
+    "fix6_base_plate_corners_r10": {
+      "applied": true,
+      "scad_module": "base_footprint() = offset(r=10) offset(r=-10) stepped_footprint_raw()",
+      "result": "All 4 base plate corners (top and bottom of plate) are r=10 hero. Same hero offset as wall_footprint() — base and wall share the same exterior outline so the cradle reads as a continuous solid."
+    },
+    "fix7_tray_unchanged": {
+      "applied": true,
+      "result": "tray.scad untouched in v3. Verified clean — no face/owl geometry. Tray spec params unchanged."
+    },
+    "fix8_host_object_proxy_kept": {
+      "applied": true,
+      "scad_module": "host_object_proxy (kept from round 2)",
+      "result": "Module + render_with_host parameter survive v3 reduction. Used for in-use renders via -D render_with_host=true."
+    },
+    "fix9_render_set_updated": {
+      "applied": true,
+      "renders_produced": [
+        "output/cradle-user-front-in-use.png (PRIMARY HERO — quiet-frame check)",
+        "output/cradle-user-front-threequarter-in-use.png (marketing hero — printer + cradle composition)",
+        "output/cradle-user-front.png (bare-part record)",
+        "output/cradle-user-front-threequarter.png (bare-part record showing fillet schedule landing)",
+        "output/cradle-user-top-threequarter.png (top-down full-perimeter symmetry confirmation — REPLACES round-2 user-left view)",
+        "output/tray-user-front.png (unchanged from v2)",
+        "output/tray-user-front-threequarter.png (unchanged from v2)"
+      ],
+      "render_method": "Direct openscad invocation with --viewall --autocenter and explicit 6-tuple cameras. cli-anything-openscad presets remain unusable per round-1 + round-2 lessons."
     }
   },
   "features": [
     {
       "part": "cradle",
       "name": "base_plate",
-      "description": "Base plate with rounded corners (r=8). Stepped footprint matching the cradle exterior — narrow under the printer-section (x=11..97), wider under the shelf (x=0..108).",
+      "description": "Stepped base plate with r=10 hero corner radius (top and bottom of plate, all 4 corners). Footprint follows stepped_footprint_raw — narrow under the printer section (X = 11..97, Y = 0..160), wider under the shelf (X = 0..108, Y = 160..254.9). Concave r=10 quarter-arc on both ±X sides at the printer→shelf transition.",
       "z_range": [0, 4],
       "outer_extent": 108,
       "inner_extent": null,
       "scad_line": 251,
-      "transitions": { "below": "feet (cylindrical)", "above": "low_wall_block" }
+      "transitions": { "below": "corner_feet", "above": "low_wall_block" }
     },
     {
       "part": "cradle",
       "name": "corner_feet",
-      "description": "Four cylindrical feet (d=8, h=3) inset 5mm from the base footprint corners. Upper r=1.0 fillet flare softens the foot-plate junction.",
+      "description": "Four cylindrical feet (d=8, h=3) inset 12 mm from base plate corners. Foot bottom is flat (FDM first-layer adhesion). Upper r=1.5 conic flare blends foot to plate (function-driven fillet exception).",
       "z_range": [-3, 0],
-      "outer_extent": 8,
+      "outer_extent": 11,
       "inner_extent": null,
-      "scad_line": 257,
+      "scad_line": 264,
       "transitions": { "below": "bed", "above": "base_plate" }
     },
     {
       "part": "cradle",
       "name": "low_wall_block",
-      "description": "Stepped 25mm-tall perimeter wall block. Carved interior provides the printer pocket (80×154×25 visible, extending further up unwalled to z=143 for the printer body) and the tray slot opening.",
+      "description": "25 mm tall stepped perimeter wall block. All 4 perimeter walls uniform 25 mm — no tall element anywhere. Wall thickness 3 mm uniform. Top edge r=3 utility fillet rolled via quarter-arc stack. Exterior vertical corner edges r=10 hero (delivered via the wall_footprint offset round-trip). Carved interior provides the printer pocket (80 × 154 × 25 mm visible) and the tray slot opening (open-top + open-front).",
       "z_range": [4, 25],
       "outer_extent": 108,
       "inner_extent": 80,
-      "scad_line": 296,
-      "transitions": { "below": "base_plate", "above": "tray_shelf_upper_walls + back_panel" }
+      "scad_line": 290,
+      "transitions": { "below": "base_plate", "above": "open" }
     },
     {
       "part": "cradle",
       "name": "printer_shelf_concave_fillet",
-      "description": "Concave fillet (r=8, quarter-arc) at the printer-section → shelf transition. Replaces the previous 45° chamfer. Swept full body height. Every print layer above is equal-or-larger than the layer below — fully self-supporting.",
-      "z_range": [0, 26.3],
+      "description": "r=10 concave quarter-arc on both ±X sides where the 86 mm printer section transitions to the 108 mm shelf section. The one sculptural move on the cradle proper. Self-supporting (concave with material on the inside of the curve, no overhang).",
+      "z_range": [0, 25],
       "outer_extent": null,
       "inner_extent": null,
       "scad_line": 210,
@@ -176,82 +223,22 @@
     },
     {
       "part": "cradle",
-      "name": "tray_shelf_upper_walls",
-      "description": "Forward shelf walls (z=25..26.3) forming the tray slot. Tray slides into 103.9 × 94.9 × 22.3 interior with 0.35mm sliding fit per side.",
-      "z_range": [25, 26.3],
-      "outer_extent": 108,
-      "inner_extent": 103.9,
-      "scad_line": 311,
-      "transitions": { "below": "low_wall_block", "above": "open" }
-    },
-    {
-      "part": "cradle",
-      "name": "back_panel",
-      "description": "Tall (205mm) sculptural back panel rising from the printer-section. Stacked horizontal slices: width narrows toward the rounded top per a circular arc (R=135.57mm, dip 7mm from center to corner), +Y face is gently convex (sagitta 3mm at center, R≈310mm), -Y face flat (cable-notch face, against-wall). Vertical-edge fillet limited to ~1.2mm by panel Y-thickness; the brief's r=4 visual softening is delivered on the body walls below z=25 via wall_footprint().",
-      "z_range": [0, 205],
-      "outer_extent": 86,
-      "inner_extent": null,
-      "scad_line": 367,
-      "transitions": { "below": "low_wall_block (merges)", "above": "ear_tufts" }
-    },
-    {
-      "part": "cradle",
-      "name": "facial_disc_recess",
-      "description": "Heart-shaped (rounded-shield) recess carved into the +Y panel face in the FACE ZONE (z=143..205, the visible-above-printer strip). Top width 70mm near z=200, narrowing to a soft V-point at z=148 (width 40 → 0). Implemented as a hull of 5 control circles extruded in Y and intersected with a Y-axis ellipsoid lens for the bowl-shape (1.5mm depth at center tapering to 0 at perimeter). Replaces round-1's circular ovoid mascot disc.",
-      "z_range": [148, 200],
-      "outer_extent": 70,
-      "inner_extent": null,
-      "scad_line": 434,
-      "transitions": { "part_of": "back_panel face zone" }
-    },
-    {
-      "part": "cradle",
-      "name": "eyes_recessed",
-      "description": "Two recessed eye sockets carved into the disc floor. 16w × 20h vertical ellipses centered at x=±16, z=180 (within face zone, 0.6 of zone height — high in the disc per real-owl anatomy). Recess depth 1.5mm INTO the disc floor (3mm net into the panel +Y face). NOT proud domes. NO pupils. Real barn-owl shadow-as-eye reference.",
-      "z_range": [170, 190],
-      "outer_extent": 16,
-      "inner_extent": null,
-      "scad_line": 465,
-      "transitions": { "part_of": "facial_disc_recess" }
-    },
-    {
-      "part": "cradle",
-      "name": "beak_asymmetric_hooked",
-      "description": "Asymmetric hooked raptor-beak wedge between/below the eyes. Hull of 5 control spheres: narrow top points embedded inside the panel material (Y=3.5, deeper than disc carve to keep beak connected after disc subtraction), wider band points slightly proud, tip projecting forward 4mm with +1mm x-lean for asymmetry. Hook bulge sphere just above tip suggests curved-down raptor hook.",
-      "z_range": [148, 164],
-      "outer_extent": 10,
-      "inner_extent": null,
-      "scad_line": 493,
-      "transitions": { "part_of": "back_panel face zone" }
-    },
-    {
-      "part": "cradle",
-      "name": "ear_tufts_splayed",
-      "description": "Two ear tufts emerging from the rounded panel top — each a hull of 3 ellipsoid feather profiles tilted OUTWARD ONLY (inner 10°, middle 20°, outer 30° from vertical). NO forward sweep, NO Y-direction tilt, NO curl (round-1 wizard-hat geometry is dead). Bases dip 2mm into the panel arc for a soft blend approximating r=4 base fillet. Round-tipped (sphere caps). Total tuft footprint ~30mm wide; peak ~16mm above panel top (peaks at z=221).",
-      "z_range": [202.67, 221.47],
-      "outer_extent": 30,
-      "inner_extent": null,
-      "scad_line": 621,
-      "transitions": { "below": "back_panel rounded top (merges via 2mm dip)", "above": "top" }
-    },
-    {
-      "part": "cradle",
       "name": "cable_slot_cutter",
-      "description": "U-notch cut in the -Y wall (against-wall face), 25mm wide × 20mm tall, centered at x=54 (panel center). Resides entirely within the low-perimeter-wall zone z=0..20 — open-top, no bridge.",
+      "description": "U-notch cut in the -Y back wall (against-wall face). 25 mm wide × 20 mm tall, centered at x = 54 (cradle center). Z range 0..20. Wall above the notch (z = 20..25, 5 mm tall × 25 mm wide) prints as a short bridge between the side walls of the notch — within FDM bridging tolerance.",
       "z_range": [0, 20],
       "outer_extent": 25,
       "inner_extent": null,
-      "scad_line": 655,
+      "scad_line": 320,
       "transitions": { "part_of": "low_wall_block (subtractive)" }
     },
     {
       "part": "cradle",
       "name": "host_object_proxy",
-      "description": "RENDER-ONLY printer proxy box (78x152x143 mm) at the installed position inside the printer pocket (x=15..93, y=4..156, z=4..147). Gated by render_with_host parameter — default false (excluded from STL). PNG renders use -D render_with_host=true. Module starts at scad line 674.",
+      "description": "RENDER-ONLY printer proxy box (78 × 152 × 143 mm) at the installed position inside the printer pocket (X=15..93, Y=4..156, Z=4..147). Gated by render_with_host parameter — default false (excluded from STL). PNG renders use -D render_with_host=true for the use-state hero shots.",
       "z_range": [4, 147],
       "outer_extent": 78,
       "inner_extent": null,
-      "scad_line": 674,
+      "scad_line": 340,
       "transitions": { "part_of": "USE-STATE RENDERS ONLY (not in STL)" }
     }
   ],
@@ -264,12 +251,12 @@
       "outer_extent": 103.2,
       "inner_extent": 100,
       "scad_line": 67,
-      "transitions": { "below": "bed (flat floor)", "above": "open" }
+      "transitions": { "below": "bed", "above": "open" }
     },
     {
       "part": "tray",
       "name": "scoop_lip",
-      "description": "Upper 14 mm of the tray's +Y (user-front) wall tilts back at 45° from horizontal. Lower 7 mm stays vertical as structural base.",
+      "description": "Upper 14 mm of the tray's +Y (user-front) wall tilts back at 45°. Lower 7 mm stays vertical as structural base. Leading edge r=2 (intentional sharp-ish-but-not-sharp documented exception).",
       "z_range": [7, 21.6],
       "outer_extent": null,
       "inner_extent": null,
@@ -279,7 +266,7 @@
     {
       "part": "tray",
       "name": "integrated_finger_grip",
-      "description": "Concave cylindrical dip (R≈46 mm) in the central 30 mm of the scoop face. 2.5 mm depth. Serves as a finger-pull for tray removal — merged into the scoop, not a separate feature.",
+      "description": "Concave cylindrical dip (R≈46 mm) in the central 30 mm of the scoop face. 2.5 mm depth perpendicular to the scoop face. Serves as a finger-pull for tray removal — merged into the scoop, not a separate feature.",
       "z_range": [7, 21.6],
       "outer_extent": 30,
       "inner_extent": null,
@@ -289,51 +276,50 @@
   ],
   "printOrientation": {
     "cradle": {
-      "bed_face": "base plate bottom (z=-3 flat feet contact bed)",
-      "z_direction": "+Z print axis corresponds to design +Z (vertical)",
+      "bed_face": "base plate bottom (z = -3 flat feet contact bed)",
+      "z_direction": "+Z print axis = design +Z (vertical)",
       "supports_required": [],
-      "supports_permitted_but_avoidable": [
-        "ear_tufts (per-feather lean ≤ 30° from vertical — should be self-supporting, but hull operation may produce a transient underhang in the splayed silhouette; verify in slicer preview)",
-        "beak_apex (forward-projecting tip — angle ≈ 25° from vertical, well under 45° threshold; supports likely unnecessary)",
-        "facial_disc_rim (carved into vertical face — fully self-supporting, no overhang)"
-      ],
-      "round_2_print_cost_win": "Round-1 forward-sweep tufts required tree supports for the +Y curl underhang. Round-2 outward-only tufts should not need supports — net print-time savings of 10-20 minutes."
+      "notes": "v3 has zero supports-permitted features. The 5 mm bridge above the cable notch is the only feature requiring printability attention; 25 mm bridge span is within FDM bridging tolerance for PLA. No overhang exceeds 45° at any visible feature."
     },
     "tray": {
-      "bed_face": "tray floor (z=0 flat)",
-      "z_direction": "+Z print axis = tray opening direction",
+      "bed_face": "tray floor (z = 0 flat)",
+      "z_direction": "+Z = tray opening direction",
       "supports_required": [],
-      "supports_permitted_but_avoidable": ["scoop_lip 45° face (printable as overhang per iter 1)"]
+      "supports_permitted_but_avoidable": ["scoop_lip 45° face (printable as overhang per round-1 verification)"]
     }
   },
   "userOrientationConfirmed": {
-    "user_front": "+Y face (tray slides in/out here; owl face visible here ABOVE the installed printer)",
+    "user_front": "+Y face (tray slides in/out here; printer faces user)",
     "user_back": "-Y face (against-wall, cable notch)",
     "user_left": "-X face",
     "user_right": "+X face",
     "user_top": "+Z face",
-    "seams_hidden_on": ["-Y back panel face", "underside of base plate"],
-    "renders_captured_in_user_frame": true,
-    "use_state_render_visible_zone_above_printer": "z=143..205 face zone — where ALL face anatomy lives (disc, eyes, beak). Tufts at z=205..221 sit above the panel top."
+    "seams_hidden_on": ["-Y back wall exterior (cable notch face)", "underside of base plate"],
+    "renders_captured_in_user_frame": true
   },
   "renderSet": [
     "output/cradle-user-front-in-use.png",
     "output/cradle-user-front-threequarter-in-use.png",
     "output/cradle-user-front.png",
     "output/cradle-user-front-threequarter.png",
-    "output/cradle-user-left.png",
+    "output/cradle-user-top-threequarter.png",
     "output/tray-user-front.png",
     "output/tray-user-front-threequarter.png"
   ],
-  "useStateVerdict": {
-    "face_visible_above_printer": true,
-    "silhouette_test_passed": true,
-    "details": "In cradle-user-front-in-use.png the printer proxy occupies the lower 2/3 of the frame as expected, and the owl head — heart-shaped facial disc, recessed eye sockets, beak, and splayed tufts — is fully visible in the strip above. The composition reads as 'owl head perched above printer body' per the brief's intent. Round-1 failure mode (face hidden behind printer) is corrected."
+  "quietFrameVerdict": {
+    "cradle_quiet_alongside_printer": true,
+    "details": "In cradle-user-front-in-use.png the printer proxy (143 mm tall) dominates the silhouette as intended; the cradle (28 mm including feet) is a small low frame around the printer base. The cradle does not compete with the printer — it reads as 'printer perched in a quiet rectangular tray' per the brief's composition_metaphor. No face, no decoration, no tall back panel competes for attention. The threequarter in-use render confirms the same composition from a 3/4 angle: printer towering, cradle a small frame at the base, tray slot in front."
   },
-  "tuftVerdict": {
-    "reads_as_splayed_feather_clumps": true,
-    "no_forward_sweep": true,
-    "no_curl": true,
-    "details": "Each tuft visibly composed of 3 hulled feather profiles. Outward lean only — no Y-direction tilt or forward curl. Round-tipped, wider-than-tall when measured at the panel top. Silhouette reads as a feather clump rather than a wizard-hat point or curled horn (round-1 failure modes are gone)."
+  "filletConsistencyVerdict": {
+    "two_tiers_applied_throughout": true,
+    "no_chamfers": true,
+    "no_mid_tier_radii": true,
+    "details": "Every visible exterior edge of the cradle is r=3 (utility, top edges of perimeter walls) or r=10 (hero, exterior corners + base plate corners + printer→shelf concave). The two function-driven exceptions are documented in spec: r=1.5 foot-to-plate upper blend (flat foot bottom for adhesion), r=2 tray scoop leading edge (intentional sharp-ish-but-not-sharp). No chamfered edges anywhere. No mid-tier radii (4, 5, 6, 8) anywhere."
+  },
+  "uncertainItemNotes": {
+    "r10_corner_read": "After rendering, the r=10 cradle exterior corners read clean — not bulbous, not cartoony. The 25 mm wall height is roughly 2.5x the corner radius, so the corners blend continuously into the walls without the corner radius dominating. Recommend keeping at r=10. If the print-reviewer disagrees, a drop to r=6 would be straightforward (single param change).",
+    "r10_uniform_hero_radius": "The same r=10 applied to corners + base plate + printer→shelf concave reads as a coherent 'soft footprint' language rather than feeling repetitive. The three contexts are visually distinct (vertical corners vs. plate corners vs. concave sweep), so the shared radius reads as 'consistent design language' rather than 'three identical features'.",
+    "bridge_above_cable_notch": "5 mm wall × 25 mm bridge span. The bridge spans between the two side walls of the cable notch (each 41.5 mm of solid wall material on either side of the 25 mm notch — strong anchors). PLA bridges 25 mm reliably without supports. No print-reviewer flag necessary, but listed in testPrintCandidates for verification.",
+    "top_edge_fillet_r3_legibility": "r=3 top edge fillet is 12% of the 25 mm wall height. In the renders the fillet is visible but subtle — it does not 'roll' the wall. Reads as a deliberate softening, not as a manufacturing artifact. Keep at r=3."
   }
 }

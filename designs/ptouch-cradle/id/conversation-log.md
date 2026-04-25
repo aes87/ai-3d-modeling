@@ -103,3 +103,35 @@ Direct-Bash `cli-anything-openscad` calls produced 6 user-frame renders. Critiqu
 - Everything else from round 1 survives: tray as clean utility with scoop + integrated finger-grip, printer→shelf concave fillet, no feather embosses, softened vertical edges, base plate corner softening, convex panel face (less load-bearing now).
 
 **Status:** round 1 design declared broken. Brief flagged for revision. Modeler-notes-v2 pending user green-light on the revised direction above. Agent paused before writing v2 artifacts.
+
+### Turn 7 — round 2 lands, panda problem, owl direction abandoned
+
+**Modeler dispatched** with `modeler-notes-v2.md`. PASS first iteration (8/8 fixes). Notable deviations: panel arc radius recomputed for new height (135.57mm vs notes' 160mm), beak Y-anchor moved to prevent it floating after disc carve, tuft heights compensated for cos(tilt) projection, host_object_proxy used `color()` instead of `%` (OpenSCAD `--render` strips `%`), `cli-anything-openscad` preset cameras unusable for this design — fell back to direct OpenSCAD calls.
+
+**Use-state structural fix landed.** `cradle-user-front-in-use.png` confirms the face is visible above the printer body. Round-1 invisibility failure is dead.
+
+**But the creature read shifted from "uncanny owl" to "happy panda / teddy bear."** Two specific failures:
+- **Tufts read as rounded mammalian ears.** Hull-of-3-feathers smoothed away the feather character — each tuft = a single rounded blob, not 3 distinct splayed feathers. The smooth-blob risk modeler flagged in their report landed.
+- **Face features read small/subtle.** Eye recess at 1.5mm at the legibility threshold; eyes read as round dark patches, not deep elongated owl eyes. Beak too small to register.
+
+**Agent proposed round 3:** drop hull for unioned-with-gaps sharp feather shapes; deepen eye recess to 2mm; reshape eyes more vertical-elongated; bump beak. Three options offered: A tufts only, B tufts + face polish (rec), C reshape head silhouette.
+
+**User abandoned the owl direction entirely:**
+
+> "I want to abandon the owl-embellished branch. This is decent but I don't want it. Please work on a V3 that just strives for minimalism, great functionality, and clean smooth lines and rounds."
+
+**Pivot:** drop the entire creature motif. v3 = quiet Muji-Rams desk dock. No face, no tufts, no decoration. Functionality + clean smooth lines and rounds.
+
+**Structural decision (user):** back panel goes LOW. All four perimeter walls drop to 25mm — symmetric bathtub. The back panel as a distinct tall element is gone. "The printer isn't going to tip, the backwall is not useful."
+
+**v3 direction summary:**
+- Two parts, same architecture: stepped cradle (86 → 108mm) + tray (unchanged, scoop + integrated finger-grip stays).
+- All four cradle perimeter walls at 25mm. No tall back panel. No face, no tufts.
+- Generous radii everywhere: vertical body edges r=6, top edges r=3, base plate corners r=10, foot-to-plate blend r=1.5, printer→shelf concave fillet r=8.
+- Two-size fillet schedule (r=3 utility, r=8 hero). Wall thickness uniform 3mm.
+- No applied decoration of any kind. Surface continuity (every transition is a fillet, no chamfers).
+- Optional slight convexity dropped — pure flat planes.
+
+**Cradle Z drops dramatically:** 221mm → ~28mm. Printer (143mm) becomes the visual focus when installed.
+
+**Status:** writing brief.md substantial rewrite (drop owl machinery, replace with Muji form language) + `modeler-notes-v3.md` (mostly deletion fixes). Then dispatch modeler.

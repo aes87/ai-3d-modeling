@@ -1,11 +1,11 @@
 {
   "name": "ptouch-cradle",
-  "description": "Two-part desktop cradle + label-catch tray for Brother PT-P750W label printer. Round 2: back panel raised to 205mm so the owl face lives ABOVE the installed printer (face zone z=143-205, the only zone visible in actual use). Owl face: heart-shaped (rounded-shield) facial disc carved into the convex panel face, recessed eye sockets (NOT proud domes), no pupils, asymmetric hooked beak. Ear tufts rebuilt from scratch as splayed feather clumps (3 hulled feather profiles per tuft) with outward-only lean — no forward sweep, no curl. New host-object proxy module renders the printer in place for use-state heroes.",
+  "description": "Two-part desktop cradle + label-catch tray for Brother PT-P750W label printer. Round 3: owl direction abandoned. Quiet desk dock — function and frame, nothing more. All four cradle perimeter walls are 25mm uniform; the tall back panel is gone. Two-tier fillet schedule (r=3 utility, r=10 hero) applied throughout. The printer is the visual subject; the cradle is supporting frame.",
   "requiresId": true,
   "dimensions": {
     "x": 108,
     "y": 254.9,
-    "z": 221
+    "z": 28
   },
   "defaultTolerance": 1.0,
   "tolerances": {
@@ -15,7 +15,7 @@
     "tray_slot_z": 0.2,
     "tray_exterior_xy": 0.2,
     "aesthetic_features": 0.5,
-    "z": 4.5
+    "z": 4.0
   },
   "watertight": true,
   "maxDimensions": {
@@ -24,19 +24,14 @@
     "z": 256
   },
   "volume": {
-    "min": 80,
-    "max": 800
+    "min": 60,
+    "max": 400
   },
   "echoedDimensions": {
     "cradle": {
       "x": 108,
       "y": 254.9,
-      "z": 221
-    },
-    "cradle_body_no_tufts": {
-      "x": 108,
-      "y": 254.9,
-      "z": 205
+      "z": 28
     },
     "tray": {
       "x": 103.2,
@@ -49,7 +44,7 @@
     "cradle-user-front-threequarter-in-use",
     "cradle-user-front",
     "cradle-user-front-threequarter",
-    "cradle-user-left",
+    "cradle-user-top-threequarter",
     "tray-user-front",
     "tray-user-front-threequarter"
   ],
@@ -64,82 +59,29 @@
     "pocket_interior_h": 145,
     "wall_thickness": 3.0,
     "base_thickness": 4.0,
-    "tall_back_panel_height": 205,
     "low_perimeter_wall_height": 25,
     "cradle_body_w": 108,
     "cradle_printer_section_outer_d": 160,
     "cradle_printer_to_tray_gap": 0,
     "cradle_total_d": 254.9,
-    "cradle_total_h_with_tufts": 221,
+    "cradle_total_h": 28,
     "cable_slot_w": 25,
     "cable_slot_h": 20,
     "cable_slot_z_bottom": 0,
     "cable_slot_z_top": 20,
     "cable_slot_center_x_from_left_exterior": 54,
-    "cable_slot_style": "top-open notch (no bridge), resides entirely within low perimeter wall zone z=0-25mm. Lives on user-back (-Y) face.",
+    "cable_slot_style": "U-notch in -Y wall, z=0..20mm. Wall above notch (z=20..25, 5mm × 25mm) prints as a short bridge between the side walls of the notch — well within FDM bridging tolerance.",
     "foot_diameter": 8,
     "foot_height": 3,
     "foot_inset": 5,
-    "fillet_foot_to_plate_r": 1.5,
     "render_with_host_default": false,
     "render_with_host_note": "Top-level OpenSCAD parameter render_with_host (default false). When true, host_object_proxy() draws a 78x152x143 box at the printer's installed position inside the pocket. STL exports MUST keep render_with_host=false (proxy excluded from print geometry); use-state PNG renders override via --param render_with_host=true.",
-    "back_panel_top_arc_radius": 160,
-    "back_panel_top_center_z": 205,
-    "back_panel_top_corner_z": 198,
-    "back_panel_front_convexity_mm": 3,
-    "back_panel_vertical_edge_fillet_r": 4,
-    "back_panel_top_fillet_r": 6,
-    "back_panel_base_concave_fillet_r": 4,
-    "face_zone_z_min": 143,
-    "face_zone_z_max": 205,
-    "face_zone_height": 62,
-    "face_disc_shape": "rounded-shield",
-    "face_disc_top_z": 200,
-    "face_disc_bottom_z": 148,
-    "face_disc_top_w": 70,
-    "face_disc_bottom_w": 40,
-    "face_disc_depth_max_mm": 1.5,
-    "face_disc_rim_r": 2,
-    "face_eye_w": 16,
-    "face_eye_h": 20,
-    "face_eye_recess_depth": 1.5,
-    "face_eye_center_z": 180,
-    "face_eye_center_x_offset": 16,
-    "face_pupils_enabled": false,
-    "face_beak_top_w": 4,
-    "face_beak_base_w": 10,
-    "face_beak_top_z": 164,
-    "face_beak_tip_z": 148,
-    "face_beak_proud_max_mm": 4,
-    "face_beak_tip_forward_offset_mm": 5,
-    "face_beak_x_lean_mm": 1,
-    "face_beak_shape": "asymmetric hooked raptor beak — narrow at top, widening to base, tip pointing down with slight forward hook curl",
-    "tuft_count_per_side": 3,
-    "tuft_construction": "hull-of-3-feathers",
-    "tuft_inner_w": 8,
-    "tuft_inner_h": 14,
-    "tuft_inner_yd": 5,
-    "tuft_inner_tilt_deg": 10,
-    "tuft_middle_w": 10,
-    "tuft_middle_h": 16,
-    "tuft_middle_yd": 6,
-    "tuft_middle_tilt_deg": 20,
-    "tuft_outer_w": 8,
-    "tuft_outer_h": 12,
-    "tuft_outer_yd": 4,
-    "tuft_outer_tilt_deg": 30,
-    "tuft_center_x_offset": 25,
-    "tuft_base_blend_r": 4,
-    "tuft_total_footprint_w": 30,
-    "tuft_total_height_above_panel_top": 16,
-    "tuft_silhouette": "splayed feather clump — 3 hulled feather profiles per tuft, outward lean only (no forward curl, no Y-direction tilt), round-tipped, base blends into rounded panel top with r=4 fillet",
-    "printer_section_to_shelf_concave_fillet_r": 8,
-    "fillet_cradle_vertical_edges_r": 4.0,
-    "fillet_base_plate_corners_r": 8.0,
-    "fillet_top_edges_r": 1.5,
-    "fillet_tray_vertical_edges_r": 3.0,
+    "fillet_utility_r": 3.0,
+    "fillet_hero_r": 10.0,
+    "fillet_foot_to_plate_r": 1.5,
     "fillet_scoop_lip_leading_edge_r": 2.0,
-    "tray_shelf_riser_height": 0,
+    "fillet_schedule_note": "Two tiers + two function-driven exceptions. r=3 utility on top edges of perimeter walls, all break-edges, tray edges. r=10 hero on cradle exterior corners (4x), base plate corners (4x top + 4x bottom), printer-section→shelf concave fillet on both ±X sides. r=1.5 on foot-to-plate upper blend (function-driven exception — foot bottom stays flat for first-layer adhesion). r=2 on tray scoop lip leading edge (intentional documented exception — sharp-ish to look intentional but not razor-sharp). NO chamfers anywhere. NO mid-tier radii.",
+    "printer_section_to_shelf_concave_fillet_r": 10,
     "tray_slot_interior_w": 103.9,
     "tray_slot_interior_d": 94.9,
     "tray_slot_interior_h": 22.3,
@@ -175,7 +117,7 @@
     "tray_scoop_finger_grip_depth": 2.5,
     "sliding_fit_offset": 0.35,
     "slot_wall_thickness_each_side": 2.05,
-    "user_orientation_note": "+Y = user-front (tray slides out here; owl face visible from here). -Y = user-back (against-wall, cable notch). Render in user-frame per id/brief.md hero_views. PRIMARY hero is the use-state render with the printer proxy installed — silhouette test runs on cradle-user-front-in-use.png."
+    "user_orientation_note": "+Y = user-front (tray slides out here, printer faces user). -Y = user-back (against-wall, cable notch). Render in user-frame per id/brief.md hero_views. PRIMARY hero is the use-state render with the printer proxy installed — the 'is the cradle quiet next to the printer?' check runs on cradle-user-front-in-use.png."
   },
   "testPrintCandidates": [
     {
@@ -191,22 +133,22 @@
       "priority": "high"
     },
     {
-      "feature": "ear tuft splayed feather clump (round 2)",
-      "reason": "Each tuft = 3 hulled feather profiles per side, leaning 10/20/30° outward, no forward sweep. Per-feather lean angles are all <= 30° from vertical so supports should be unnecessary, but verify the hull does not produce a transient underhang. Round-1 forward-sweep tufts are dead and must not return.",
+      "feature": "5mm bridge above cable notch",
+      "reason": "Wall above the cable notch (z=20..25, 5mm tall × 25mm wide) prints as a short bridge between the notch's side walls. 25mm span is within FDM bridging tolerance for PLA, but verify slicer does not add unnecessary supports and the bridge surface is clean.",
       "category": "printability",
-      "priority": "high"
+      "priority": "medium"
     },
     {
-      "feature": "back panel convex +Y face legibility",
-      "reason": "3mm sagitta over 86mm chord (round 2 bumped from 2mm). Verify the convexity reads as a deliberate hug-the-printer curve rather than a manufacturing defect or an unwanted bulge.",
+      "feature": "r=10 cradle exterior corner fillet",
+      "reason": "Generous corner radius on a 25mm low wall — confirm it reads as 'quiet soft footprint' rather than 'bulbous' or 'cartoony'. Print-reviewer aesthetic check.",
       "category": "aesthetic",
       "priority": "medium"
     },
     {
-      "feature": "facial disc + recessed eye legibility",
-      "reason": "Heart-shaped recessed disc with 16x20 mm eye recesses (1.5mm depth). The face must read as a real-owl face (not cartoon mascot) AND must be visible above the printer in the use-state render. If the use-state silhouette test fails, the round failed.",
+      "feature": "r=10 printer→shelf concave fillet",
+      "reason": "Quarter-arc concave sweep on ±X sides of the cradle at the printer-section→shelf transition. Hero radius bumped from r=8 to r=10 in v3. Verify the fillet reads as a deliberate sculptural move (the one sculptural move on the cradle) rather than a slicer artifact.",
       "category": "aesthetic",
-      "priority": "high"
+      "priority": "medium"
     },
     {
       "feature": "tray wall thickness 1.6 mm",
