@@ -259,3 +259,20 @@ Agent proposed round 3 (tufts only / tufts+face polish / reshape head silhouette
 - All face/tuft spec params (eye_*, beak_*, tuft_*, face_disc_*, panel_convexity, etc.) — gone.
 
 **Modeler fix list:** see `id/modeler-notes-v3.md`.
+
+### 2026-04-25 — round 4 (refinements within v3 direction)
+
+**Trigger:** Round 3 v3 minimalism landed (commit `bc1f3da`). User said "pretty good" then identified three specific refinements: (1) tray holder side walls don't wrap continuously to the back wall (thin 2.05mm side walls vs 3mm divider creates a visual gap), (2) tray top edges show facet/stepping artifacts, (3) the existing 45° scoop + finger-grip reads as "wall with notch" rather than "scoop" — wanted a smooth continuous concave scoop from floor to top lip.
+
+**Direction:** unchanged. v3 minimalism stays. These are refinements, not a pivot.
+
+**Spec-block changes (this round):**
+
+- `cradle_w_shelf`: 108 → **110**. Slot side walls now 3.05mm matching `wall_thickness`. Footprint X grows by 2mm; `side_step` grows from 11 to 12 (still accommodates `transition_fillet_r=10`).
+- `tray_top_edge_fillet_r`: new param, **2.0**. Continuous fillet on all tray top edges.
+- `tray_fn`: 80 → **200**. Smooth curves for the rounded_rect, scoop curve, and top-edge fillet sweep.
+- Tray scoop block: replace `tray_scoop_angle_from_horizontal: 45`, `tray_scoop_height: 14`, `tray_scoop_base_vertical_height: 7`, `tray_scoop_finger_grip_width: 30`, `tray_scoop_finger_grip_depth: 2.5` with a new continuous-curve scoop spec — see `modeler-notes-v4.md` Fix 3 for parameters.
+
+**Form-language section:** the "Tray scoop lip + integrated finger-grip" feature description in the Feature-by-feature rationale now reads "Continuous smooth front scoop" — single concave curve from floor to top lip.
+
+**Modeler fix list:** see `id/modeler-notes-v4.md`.

@@ -57,9 +57,15 @@ render_with_host = false;
 // ===== Parameters =====
 
 // Overall footprint
-cradle_w_shelf       = 108;     // X, shelf (wide) section body width
+//
+// Round-4 update: cradle_w_shelf bumped from 108 → 110 so the slot side
+// walls grow from 2.05 mm to 3.05 mm (matching wall_thickness=3). The
+// tray-holder now reads as a continuous U-wrap around the tray's three
+// sides at uniform wall thickness. side_step grows 11 → 12, still
+// accommodating the r=10 transition fillet.
+cradle_w_shelf       = 110;     // X, shelf (wide) section body width
 cradle_w_printer     = 86;      // X, printer (narrow) section body width
-side_step            = (cradle_w_shelf - cradle_w_printer) / 2;  // 11 mm
+side_step            = (cradle_w_shelf - cradle_w_printer) / 2;  // 12 mm
 cradle_total_d       = 254.9;   // Y, overall cradle depth
 base_thickness       = 4.0;     // base plate thickness
 wall_thickness       = 3.0;     // perimeter wall thickness

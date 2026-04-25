@@ -135,3 +135,23 @@ Direct-Bash `cli-anything-openscad` calls produced 6 user-frame renders. Critiqu
 **Cradle Z drops dramatically:** 221mm → ~28mm. Printer (143mm) becomes the visual focus when installed.
 
 **Status:** writing brief.md substantial rewrite (drop owl machinery, replace with Muji form language) + `modeler-notes-v3.md` (mostly deletion fixes). Then dispatch modeler.
+
+### Turn 8 — round 3 lands, three v4 refinements within the minimalism direction
+
+**Modeler dispatched** with `modeler-notes-v3.md`. PASS first iteration (9/9 fixes). Cradle Z dropped 221→28mm, volume dropped 32%. cradle.scad shrunk 719→378 lines. Use-state hero confirms "printer perched in a quiet rectangular tray with a label catch in front" lands.
+
+**User reviewed on GitHub** (commit `bc1f3da`): "This is pretty good." Then three specific refinements:
+
+1. **Tray holder gap.** "It's weird the tray holder isn't closed in the back—turn that into a complete fillet... I mean the gap between the side walls and the back walls. Make sure the tray holder continuously wraps around the vertical sides and back of the tray."
+   - Diagnosis: slot side walls are 2.05mm thick (cradle_w_shelf=108, slot_w=103.9 → (108-103.9)/2 = 2.05). Divider wall (between printer pocket and tray slot) is 3mm. The thickness mismatch creates a visible step where the back wall meets the side walls — they don't read as a continuous U-wrap around the tray.
+   - Fix: bump `cradle_w_shelf` from 108 to **110**, giving slot side walls of **3.05mm** matching the 3mm `wall_thickness` rule. The holder now wraps continuously around 3 sides of the tray at uniform wall thickness.
+
+2. **Top-edge facet stepping on tray.** "Instead of gnurling/stepping the top rounded edges of the tray, just smoothly round them please."
+   - Diagnosis: tray walls have `fillet_vert_r=3` (vertical edge fillet via `rounded_rect`) but **no top-edge fillet** — the wall top is a sharp 90° cut. Plus `$fn=80` is producing visible faceting on the rounded vertical corners and on the boolean intersections.
+   - Fix: add a continuous **r=2 top-edge fillet** to all tray walls. Bump `$fn` from 80 to **200** for smooth curves throughout.
+
+3. **Smooth continuous front scoop.** "Add a front scoop to the tray so it's easy to pull small labels out... I just want a smooth continuous scoop at the front of the tray all the way to the top lip of the tray."
+   - Diagnosis: the existing scoop (45° upper 14mm + vertical lower 7mm + central finger-grip dip) has a hard kink at z=7 plus a stepped notch in the center. Reads as "wall with notch," not as "scoop." User wants a single smooth concave curve from floor to top lip.
+   - Fix: **delete** `scoop_cutter()` and `finger_grip_cutter()` modules. Replace with a single concave curved scoop face spanning the **full** front wall — from the floor's front edge (z=floor_t) up to the top lip (z=ext_h). One continuous concave curve, no kinks, soft rolled top lip.
+
+**Status:** writing modeler-notes-v4.md. Brief stays as-is (these are refinements within the v3 minimalism direction, not a pivot). Round 4 Revisions entry to be added.

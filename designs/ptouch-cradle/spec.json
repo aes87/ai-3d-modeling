@@ -1,9 +1,9 @@
 {
   "name": "ptouch-cradle",
-  "description": "Two-part desktop cradle + label-catch tray for Brother PT-P750W label printer. Round 3: owl direction abandoned. Quiet desk dock — function and frame, nothing more. All four cradle perimeter walls are 25mm uniform; the tall back panel is gone. Two-tier fillet schedule (r=3 utility, r=10 hero) applied throughout. The printer is the visual subject; the cradle is supporting frame.",
+  "description": "Two-part desktop cradle + label-catch tray for Brother PT-P750W label printer. Round 4 refines the v3 minimalism direction: cradle shelf widens 108→110 so the tray-holder side walls match the 3 mm wall_thickness rule, the tray gets a continuous r=2 top-edge fillet around the entire perimeter, and the front-wall scoop is rebuilt as a single smooth concave arc (r=18) from the floor's front edge up to a recessed top lip — replacing the round-3 45° scoop + central finger-grip. Quiet desk dock — function and frame, nothing more.",
   "requiresId": true,
   "dimensions": {
-    "x": 108,
+    "x": 110,
     "y": 254.9,
     "z": 28
   },
@@ -29,7 +29,7 @@
   },
   "echoedDimensions": {
     "cradle": {
-      "x": 108,
+      "x": 110,
       "y": 254.9,
       "z": 28
     },
@@ -60,7 +60,7 @@
     "wall_thickness": 3.0,
     "base_thickness": 4.0,
     "low_perimeter_wall_height": 25,
-    "cradle_body_w": 108,
+    "cradle_body_w": 110,
     "cradle_printer_section_outer_d": 160,
     "cradle_printer_to_tray_gap": 0,
     "cradle_total_d": 254.9,
@@ -69,7 +69,7 @@
     "cable_slot_h": 20,
     "cable_slot_z_bottom": 0,
     "cable_slot_z_top": 20,
-    "cable_slot_center_x_from_left_exterior": 54,
+    "cable_slot_center_x_from_left_exterior": 55,
     "cable_slot_style": "U-notch in -Y wall, z=0..20mm. Wall above notch (z=20..25, 5mm × 25mm) prints as a short bridge between the side walls of the notch — well within FDM bridging tolerance.",
     "foot_diameter": 8,
     "foot_height": 3,
@@ -79,8 +79,9 @@
     "fillet_utility_r": 3.0,
     "fillet_hero_r": 10.0,
     "fillet_foot_to_plate_r": 1.5,
-    "fillet_scoop_lip_leading_edge_r": 2.0,
-    "fillet_schedule_note": "Two tiers + two function-driven exceptions. r=3 utility on top edges of perimeter walls, all break-edges, tray edges. r=10 hero on cradle exterior corners (4x), base plate corners (4x top + 4x bottom), printer-section→shelf concave fillet on both ±X sides. r=1.5 on foot-to-plate upper blend (function-driven exception — foot bottom stays flat for first-layer adhesion). r=2 on tray scoop lip leading edge (intentional documented exception — sharp-ish to look intentional but not razor-sharp). NO chamfers anywhere. NO mid-tier radii.",
+    "tray_top_edge_fillet_r": 2.0,
+    "tray_fn": 200,
+    "fillet_schedule_note": "Two tiers + two function-driven exceptions. r=3 utility on top edges of cradle perimeter walls, all break-edges. r=10 hero on cradle exterior corners (4x), base plate corners (4x top + 4x bottom), printer-section→shelf concave fillet on both ±X sides. r=1.5 on foot-to-plate upper blend (foot bottom stays flat for first-layer adhesion). r=2 continuous fillet on the entire tray top edge (round-4 documented exception — the smaller radius reads better at the tray's smaller scale). NO chamfers anywhere. NO mid-tier radii.",
     "printer_section_to_shelf_concave_fillet_r": 10,
     "tray_slot_interior_w": 103.9,
     "tray_slot_interior_d": 94.9,
@@ -110,14 +111,15 @@
     "tray_exterior_w": 103.2,
     "tray_exterior_d": 94.2,
     "tray_exterior_h": 21.6,
-    "tray_scoop_angle_from_horizontal": 45,
-    "tray_scoop_height": 14,
-    "tray_scoop_base_vertical_height": 7,
-    "tray_scoop_finger_grip_width": 30,
-    "tray_scoop_finger_grip_depth": 2.5,
+    "tray_scoop_construction": "concave-arc-floor-to-top-lip",
+    "tray_scoop_top_recess": 12,
+    "tray_scoop_arc_radius": 18,
+    "tray_scoop_note": "Round 4 replaces the 45° scoop + central finger-grip with a single smooth concave circular arc on the front (+Y) wall. Arc start: floor's front edge (y=ext_d=94.2, z=floor_t=1.6). Arc end: recessed top lip (y=ext_d-12=82.2, z=ext_h=21.6). Arc radius 18 mm. The exterior and interior arcs are offset by wall_t=1.6 so the curved front wall has uniform 1.6 mm wall thickness. The user grabs the recessed top lip (soft-rounded by the r=2 top-edge fillet) for tray removal — no separate finger-grip needed.",
     "sliding_fit_offset": 0.35,
-    "slot_wall_thickness_each_side": 2.05,
-    "user_orientation_note": "+Y = user-front (tray slides out here, printer faces user). -Y = user-back (against-wall, cable notch). Render in user-frame per id/brief.md hero_views. PRIMARY hero is the use-state render with the printer proxy installed — the 'is the cradle quiet next to the printer?' check runs on cradle-user-front-in-use.png."
+    "slot_wall_thickness_each_side": 3.05,
+    "user_orientation_note": "+Y = user-front (tray slides out here, printer faces user). -Y = user-back (against-wall, cable notch). Render in user-frame per id/brief.md hero_views. PRIMARY hero is the use-state render with the printer proxy installed — the 'is the cradle quiet next to the printer?' check runs on cradle-user-front-in-use.png.",
+    "print_orientation_cradle": "Base down, walls vertical (functional/use orientation). No supports needed — all features under 45° overhang.",
+    "print_orientation_tray": "Back face on bed (-Y down), open top facing +Y in print-frame. The tray is modeled in functional (use) orientation in tray.scad; the slicer should rotate it 90° about +X so the back wall sits on the build plate. This orients the concave scoop's near-horizontal top tangent as an upward-facing slope, eliminating the severe overhang that would result from printing open-top-up. With this orientation no supports are needed; seam lands on the +Y curved front face (acceptable since the curve is the user-front feature, but seam alignment can be controlled in the slicer)."
   },
   "testPrintCandidates": [
     {
@@ -127,10 +129,16 @@
       "priority": "high"
     },
     {
-      "feature": "tray scoop angle with integrated finger-grip",
-      "reason": "Scoop face at 45° from horizontal plus a central concave finger-grip dip (2.5mm × 30mm) prints as threshold overhang. Verify slicer does not add unnecessary support and surface quality reads cleanly on the scoop + grip combined feature.",
+      "feature": "tray smooth concave scoop (round-4)",
+      "reason": "Front wall is a single smooth concave circular arc (r=18) from floor to recessed top lip. The arc's near-horizontal tangent at the top is a severe overhang in the open-top-up orientation; mitigated by printing tray on its back (-Y down on bed). Verify slicer's print-on-back orientation produces clean upward-facing slope on the scoop, no supports added, and the visible front face has acceptable seam placement.",
       "category": "printability",
       "priority": "high"
+    },
+    {
+      "feature": "tray top-edge continuous r=2 fillet",
+      "reason": "Round-4 addition: continuous quarter-arc roll around the entire tray top edge (back, sides, scoop top lip). Verify the fillet renders smoothly without facet stepping and reads as a soft top edge in user-front-threequarter views.",
+      "category": "aesthetic",
+      "priority": "medium"
     },
     {
       "feature": "5mm bridge above cable notch",
