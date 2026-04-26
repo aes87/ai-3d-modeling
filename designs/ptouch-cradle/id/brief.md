@@ -59,7 +59,7 @@ proportions:
 fillet_schedule:
   utility: 3.0    # cradle break-edges, top edges; tray vertical edges
   hero: 10.0      # cradle exterior corners, base plate corners, printer→shelf concave
-  tray_top_edge: 2.0   # back/side wall tops on tray; r=0.8 on 1.6mm front wall (thin-wall exception)
+  tray_top_edge: 1.6   # back/side tops on tray = wall_t (matches cradle's r=3 = its wall_t — same proportion, different absolute); r=0.8 on front wall = half wall_t for the thin lip
   tray_side_sweep: 20.0 # concave sweep from tray side wall (z=30) to front wall (z=10)
 features:
   primary:
@@ -71,7 +71,7 @@ features:
   secondary:
     - printer-section → shelf concave fillet (cradle, r=10)
     - base plate corner radius (cradle, r=10)
-    - tray top-edge fillet wraps continuously (r=2 back/sides, r=0.8 front)
+    - tray top-edge fillet wraps continuously (r=1.6 back/sides, r=0.8 front)
   tertiary: []
 decoration_policy:
   - feature: cradle_feet
@@ -151,7 +151,7 @@ Wall thickness uniform 3mm on cradle perimeter walls. Tray walls uniform 1.6mm.
 
 ### Tray uniform low front wall + r=20 side fillet sweeps (primary)
 
-Front wall is uniform z=10 across the full width; back wall + side walls are z=30. ONE concave quarter-arc per side (r=20) sweeps continuously from the side-wall top down to the front-wall top. The lowered front wall IS the grab feature — user reaches over the 10mm-tall low band to retrieve labels or pull the tray. Top-edge fillet wraps continuously: r=2 on back/sides, r=0.8 on the 1.6mm-thick front wall (function-driven exception — r=2 would collapse on the thin wall).
+Front wall is uniform z=10 across the full width; back wall + side walls are z=30. ONE concave quarter-arc per side (r=20) sweeps continuously from the side-wall top down to the front-wall top. The lowered front wall IS the grab feature — user reaches over the 10mm-tall low band to retrieve labels or pull the tray. Top-edge fillet wraps continuously: r=1.6 (= wall_t) on back/sides, r=0.8 on the 1.6mm-thick front wall (function-driven exception — half-wall_t reads cleaner than full-wall_t at this thickness). The r=wall_t back/side cap mirrors the cradle's r=3 on its 3mm wall — same design proportion (r equals wall thickness), different absolute numbers.
 
 **Must NOT look like:** a "scoop" cutout. A notched wall. A wall with a separate finger-grip feature. A drawer with a pull. The front wall is just LOWER than the others — a single uniform horizontal band — and the side fillets sweep down to it.
 

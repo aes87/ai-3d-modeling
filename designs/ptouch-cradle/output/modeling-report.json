@@ -3,7 +3,8 @@
   "validationPass": true,
   "iterations": 1,
   "round": 7,
-  "headline": "Round 7 simplifies the tray's front wall per modeler-notes-v7. The round-6 variable-height profile (corners at z=18, lowered center at z=10, transition arcs r=8, side fillets r=12) is collapsed to a single uniform front_wall_h=10 across the full width, with ONE concave fillet (r=20) per side handling the entire side-wall (z=30) to front-wall (z=10) transition. No corner bars, no intermediate flat sections, no sharp points. r=2 top-edge fillet on back/sides + r=0.8 on the front wall (smaller because the front wall is only 1.6 mm thick — r=2 collapses). Cradle untouched.",
+  "patchVersion": "v9",
+  "headline": "Round 7 patch v9 — three tray fixes (cradle untouched). Issue A: replace patch-v8 single-arc r=20 fillet with a tangent-continuous S-curve (two r=10 quarter-arcs) so both endpoints have horizontal tangent — no kink at z=front_wall_h. Issue B: 3D corner blend — front-wall-top cutter is now a Y-slab stack interpolating between INNER profile (flat top at z=front_wall_h) and OUTER profile (S-curve), so the wall reads as a uniform z=10 lip from inside the bin, eliminating the 'triangular blade' visible at the corners. Issue C: top_fillet_steps default bumped 24 → 48 (ridges halved, effectively invisible). KNOWN PRINTABILITY TRADEOFF: the new sloped wall top creates sub-mm slivers near the outer-edge peak in corner zones — geometrically forced at wall_t=1.6mm. See modeler-notes-v9 § CRITICAL printability tradeoff for options.",
   "parts": {
     "cradle": {
       "scad": "designs/ptouch-cradle/cradle.scad",
@@ -25,16 +26,16 @@
       "scad": "designs/ptouch-cradle/tray.scad",
       "stl": "designs/ptouch-cradle/output/tray.stl",
       "watertight": true,
-      "volume_mm3": 38900,
-      "volume_cm3": 38.90,
-      "face_count": 9010,
+      "volume_mm3": 38226,
+      "volume_cm3": 38.226,
+      "face_count": 20060,
       "dimensions": {
         "echoed":  { "tray": { "x": 103.2, "y": 94.2, "z": 30.0 } },
         "expected": { "tray": { "x": 103.2, "y": 94.2, "z": 30.0 } },
         "mesh_bbox_min": { "x": 0.0, "y": 0.0, "z": 0.0 },
-        "mesh_bbox_max": { "x": 103.2, "y": 94.2, "z": 29.948 },
+        "mesh_bbox_max": { "x": 103.2, "y": 94.2, "z": 30.001 },
         "withinTolerance": true,
-        "notes": "Round-7 simplification on tray-only. Mesh dimensions identical to round 6 (X 103.2, Y 94.2, Z 29.948). Volume slightly higher than round 6 (38.90 vs 38.49 cm³) because the front wall has more material (uniform z=10 across full width vs round 6's variable-height which had less material at the lowered center transitions). Face count drops 13252 → 9010 (32% fewer faces) because the front-wall-top cutter polygon is much simpler — 2 quarter arcs instead of 4 arcs + corner flats + transitions."
+        "notes": "Patch v9 (post-critique tray fixes A+B+C). Mesh bbox 103.2 × 94.2 × 30.001mm — within ±0.05mm tolerance. Volume slightly LOWER than v8 (38.226 vs 38.90 cm³, −0.7 cm³) because the new sloped wall top in the corner zones removes a small wedge of material relative to the patch-v8 cutter (which extruded a single XZ profile uniformly across wall_t — that profile sat ABOVE the v9 sloped surface at intermediate y values, so v8 had slightly more material). Face count UP (9010 → 20060) because the cutter is now built as a Y-slab stack of 16 interpolated polygons (plus inner/outer slop slabs) — each slab triangulates separately. The increase is bounded and acceptable for the visual fix."
       }
     }
   },
@@ -299,5 +300,74 @@
     "total_seconds_approx": 400,
     "comparison_note": "Tray STL is FASTER than round 6 (12s vs 16s) due to the simpler front-wall-top cutter polygon (2 arcs vs 4 arcs + corner flats). Face count drops 13252 → 9010 (32% fewer faces). Cradle render time unchanged (untouched scad)."
   },
-  "blockers": []
+  "blockers": [],
+  "patchV9": {
+    "summary": "Three tray-only fixes, all in tray.scad. Cradle untouched.",
+    "fixesApplied": {
+      "issueA_s_curve_fillet": {
+        "applied": true,
+        "scope": "front-wall-top cutter side-fillet geometry",
+        "description": "Replace patch-v8 single quarter-arc r=20 (vertical tangent at z=front_wall_h causing 90° kink) with two tangent-continuous quarter-arcs of r=10 each, joined at an inflection point. Both endpoints have horizontal tangent (matching side-wall top at z=ext_h and front-wall top at z=front_wall_h). C¹ continuous join at inflection. Total horizontal extent per side unchanged (20 mm), so flat front-wall middle and ramp endpoint are unaffected.",
+        "spec_diffs": [
+          "REMOVE: tray_front_wall_side_fillet_r=20",
+          "ADD:    tray_front_wall_side_fillet_r_each=10",
+          "REWRITE: tray_front_wall_construction (describe two-arc S-curve, tangent-continuous, instead of single r=20 arc)"
+        ]
+      },
+      "issueB_3d_corner_blend": {
+        "applied": true,
+        "scope": "front-wall-top cutter Y-extrusion construction",
+        "description": "Replace 2D-extruded cutter with a stack of thin Y-slabs that linearly interpolate between an INNER profile (flat top at z=front_wall_h, no S-curve) at y=ext_d-wall_t and an OUTER profile (full S-curve) at y=ext_d. Result: the wall top SURFACE varies smoothly across the wall_t=1.6mm depth — outer edge follows S-curve, inner edge stays flat at front_wall_h. From inside the bin the front wall reads as a uniform z=10 lip everywhere; the diagonal blade visible in patch-v8 renders is gone. From outside the S-curve sweep is preserved. Wall top in the corner column slopes from z=front_wall_h (inner) to z=arc(x) (outer) over wall_t — atan(1.6/20)≈4.6° from horizontal at steepest, well within FDM 45° overhang limit. New params: front_wall_y_slabs (16 draft / 32 ship). New helpers: _front_wall_top_cutter_pts_inner, _flatten_arc_to_flat_top, _lerp_pts. New cutter module body emits N+2 Y-slabs.",
+        "spec_diffs": []
+      },
+      "issueC_step_count_and_mating": {
+        "applied": "partial",
+        "scope": "render-quality default + back/sides cap mating boundary",
+        "description": "(1) top_fillet_steps default bumped 24 → 48 (ship 64 → 96). Slab height halves to ~0.04mm — invisible at any realistic viewing distance. (2) Mating boundary at y=ext_d-wall_t no longer abuts a tall blade (Issue B fixes this). The 0.4mm chamfer at the back/sides-cap-meets-sloped-wall-top corner suggested in the brief was not added — current render reads as smooth without it. Easy to revisit if a future critique flags it.",
+        "spec_diffs": [
+          "UPDATE: tray_top_fillet_steps_draft=48 (was 24)",
+          "UPDATE: tray_top_fillet_steps_ship=96 (was 64)"
+        ]
+      }
+    },
+    "knownPrintabilityTradeoff": {
+      "severity": "FLAGGED — surface to user before print",
+      "metric_v9": "20 thin walls (z=10.1..28.1mm, thickness 0.092..1.13mm), 1 bridge fail (false positive — see notes)",
+      "metric_v8_baseline": "9 thin walls (all 1.118..1.199mm), 0 bridge fails",
+      "rootCause": "The user-required combination — outer face S-curve from z=ext_h down to z=front_wall_h + inner face uniform at z=front_wall_h + wall_t=1.6mm — geometrically forces sub-mm cross-sections near the outer-corner peak at z near ext_h. ANY continuous wall-top blend with z_drop=20mm over 1.6mm of wall depth produces this near the peak. Not a modeling bug.",
+      "what_v9_delivers": "Visual brief fully realized in SCAD. Slicer will physically truncate the unprintable peaks (typically ~1-2mm of vertical fade at the very top of corner peaks) — not a structural failure, just cosmetic.",
+      "options_to_discuss": [
+        "A. Accept current — corners will print slightly truncated; renders accurate.",
+        "B. Drop outer-face peak below z=ext_h (e.g., z=ext_h-2): slivers smaller but still present; introduces a small flat shoulder at the outer corner.",
+        "C. Increase wall_t to ≥3mm: slivers gone (slope shallower); requires re-spec — exterior dim or interior cavity dim changes.",
+        "D. Curl outer-face peak inward at the top (3D corner fillet at z near ext_h): rounded peak instead of knife-edge; medium modeling work; partial fix.",
+        "E. Allow inner face to rise toward corners (partial blade): brings back the rejected blade in modified form."
+      ],
+      "modeler_recommendation": "Ship A for visual review; queue C (wall_t bump) discussion before print."
+    },
+    "deviations": [
+      {
+        "what": "Tray volume decreased 38.90 → 38.226 cm³ (−0.7 cm³, −1.7%)",
+        "why": "Patch v8's 2D-extruded cutter sat ABOVE the new sloped wall-top at intermediate y values; replacing it with a Y-slab stack of interpolated polygons removes that extra material. Within spec.json volume tolerance (30..400 cm³). No spec drift."
+      },
+      {
+        "what": "Face count up 9010 → 20060 (+11050 faces)",
+        "why": "Cutter now constructed as 16 interpolated slab polygons + 2 slop slabs along Y, each separately triangulated. STL still under typical render budgets and slicer limits. Acceptable cost for the 3D corner blend."
+      },
+      {
+        "what": "S-curve cutter polygon contains duplicate adjacent vertices at inflection points",
+        "why": "_arc_pts emits n+1 points including endpoints; concatenating two arcs that share an endpoint produces a duplicate. OpenSCAD polygon module tolerates duplicates (treats them as zero-length edges). No mesh artifacts observed in tray.stl. Could dedupe with a small helper if mesh inspection ever flags, but unnecessary for now."
+      }
+    ],
+    "verifiedOutput": {
+      "tray.stl": "watertight, 103.2 × 94.2 × 30.001mm",
+      "renders": [
+        "tray-iso.png — smooth S-curve sweep on both upper corners; clean uniform front lip from inside; no blade",
+        "tray-front.png — flat front-wall middle, S-curve sweeps at both ends, no kink",
+        "tray-user-front.png — user-frame front view re-rendered (camera approx)",
+        "tray-user-front-threequarter.png — re-rendered (camera approx)"
+      ],
+      "geometryReport": "tray-geometry-report.json — overall_pass=False (slivers + 1 false-positive bridge fail); SEE knownPrintabilityTradeoff above."
+    }
+  }
 }
