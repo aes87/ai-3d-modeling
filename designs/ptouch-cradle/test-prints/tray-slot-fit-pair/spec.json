@@ -1,0 +1,56 @@
+{
+  "name": "ptouch-cradle-test-tray-slot-fit-pair",
+  "description": "Test print: sliding fit verification between tray exterior (103.2 × 94.2 mm) and cradle slot (103.9 × 94.9 mm) with 0.35 mm per-side clearance. Two pieces printed together: mini cradle slot (U-channel) + mini tray section (solid slug). User inserts the slug into the channel to verify feel before committing to the full ~150 cm³ two-part print.",
+  "dimensions": {
+    "x": 223,
+    "y": 28,
+    "z": 30
+  },
+  "defaultTolerance": 2.0,
+  "tolerances": {
+    "slot_interior_w": 0.2,
+    "slot_interior_h": 0.2,
+    "tray_exterior_w": 0.2,
+    "tray_exterior_h": 0.2
+  },
+  "watertight": true,
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "volume": {
+    "min": 5,
+    "max": 60
+  },
+  "echoedDimensions": {
+    "mini_cradle_slot": {
+      "x": 110.0,
+      "y": 28.0,
+      "z": 25.0
+    },
+    "mini_tray_section": {
+      "x": 103.2,
+      "y": 25.0,
+      "z": 30.0
+    },
+    "combined_bed_footprint": {
+      "x": 223.2,
+      "y": 28.0,
+      "z": 30.0
+    }
+  },
+  "views": ["front", "iso"],
+  "params": {
+    "parent_design": "ptouch-cradle",
+    "params_file": null,
+    "slot_w": 103.9,
+    "slot_h": 22.3,
+    "cradle_wall_t": 3.05,
+    "tray_ext_w": 103.2,
+    "tray_ext_h": 30.0,
+    "test_y_depth": 25.0,
+    "sliding_fit_offset": 0.35,
+    "note": "All dimensions sourced directly from ptouch-cradle spec.json params. No shared params file exists for this project — parent SCAD files use inline parameters."
+  }
+}

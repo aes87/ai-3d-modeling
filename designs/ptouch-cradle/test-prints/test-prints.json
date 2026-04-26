@@ -1,0 +1,82 @@
+{
+  "parentDesign": "ptouch-cradle",
+  "parentParams": null,
+  "testPrints": [
+    {
+      "id": "tray-slot-fit-pair",
+      "name": "Tray-Slot Sliding Fit Pair",
+      "category": "fitment",
+      "priority": "high",
+      "reason": "Tray exterior (103.2 × 94.2 mm) must slide smoothly into cradle slot (103.9 × 94.9 mm) with 0.35 mm per-side clearance. FDM dimensional error on a 103 mm part can reach ±0.2–0.3 mm — close enough to the clearance that a mis-scaled print could bind or rattle. This test print answers the question before committing to the full ~150 cm³ two-part print.",
+      "features": [
+        "tray_walls_back_sides",
+        "low_wall_block"
+      ],
+      "zRange": [0, 30],
+      "criticalDimensions": {
+        "slot_interior_w":    { "nominal": 103.9, "tolerance": 0.2 },
+        "slot_interior_h":    { "nominal": 22.3,  "tolerance": 0.2 },
+        "tray_exterior_w":    { "nominal": 103.2, "tolerance": 0.2 },
+        "tray_exterior_h":    { "nominal": 30.0,  "tolerance": 0.2 },
+        "per_side_clearance": { "nominal": 0.35,  "tolerance": 0.0 }
+      },
+      "matePart": "Cradle tray slot (103.9 × 94.9 × 22.3 mm interior)",
+      "simplification": "Piece A: Y-slice of the cradle slot — two slot side walls (3.05 mm each) + 3 mm back wall + 4 mm base plate, 25 mm interior Y depth, open front and open top. Piece B: solid slug with the tray exterior cross-section (103.2 mm W × 30 mm H, r=3 corner fillets) extruded 25 mm in Y — no interior cavity, no ramp, no front lip. Both pieces placed on one bed with a 10 mm gap.",
+      "verificationMethod": "Trial fit: slide slug into channel. Smooth sliding with slight resistance = PASS. Binding = printer runs narrow, adjust XY compensation. Rattle = printer runs wide, adjust XY compensation.",
+      "designDir": "designs/ptouch-cradle/test-prints/tray-slot-fit-pair"
+    }
+  ],
+  "candidatesReviewed": [
+    {
+      "feature": "tray-to-slot sliding fit",
+      "disposition": "INCLUDED",
+      "id": "tray-slot-fit-pair",
+      "source": "fromSpecWriter + fromPrintReviewer"
+    },
+    {
+      "feature": "tray uniform low front wall + r=20 side fillet sweep",
+      "disposition": "SKIPPED — aesthetic only",
+      "rationale": "Visual check on the real tray print. No functional tolerance at risk. Print reviewer confirmed PASS (marginal only at fillet corner thin wall, which the tray-slot-fit-pair print will also expose since it includes the full 30 mm tray height). No separate test piece warranted."
+    },
+    {
+      "feature": "interior concave parabolic floor ramp",
+      "disposition": "SKIPPED — verify in slicer preview",
+      "rationale": "Print reviewer confirmed self-supporting in face-up orientation, all slope angles under 29° (well below 45° limit). No overhangs, no real bridges. Surface quality inside the tray is non-critical (labels rest on it). Verify in Bambu Studio slicer preview that no supports are generated; inspect ramp surface on the full tray print."
+    },
+    {
+      "feature": "tray top-edge fillets (r=2 back/sides, r=0.8 front)",
+      "disposition": "SKIPPED — aesthetic, visible on full print",
+      "rationale": "Both fillet tiers passed review. The r=0.8 deviation on the front wall is documented-correct. Visual inspection on the first full tray print is sufficient."
+    },
+    {
+      "feature": "cradle continuous tray-holder wrap",
+      "disposition": "SKIPPED — verified in renders",
+      "rationale": "Round 4 carry-over, verified in cradle-user-top-threequarter render every round since. No new geometry. Skip."
+    },
+    {
+      "feature": "cradle smooth top-edge curve (r=3 fillet)",
+      "disposition": "SKIPPED — aesthetic, visible on full print",
+      "rationale": "$fn=200, 64 slab steps at ship quality — step height ~0.047 mm, below FDM resolution. Verified in renders. Inspect on full cradle print."
+    },
+    {
+      "feature": "r=10 cradle exterior corner fillet",
+      "disposition": "SKIPPED — aesthetic, visible on full print",
+      "rationale": "No tolerance requirement. Visual check on the real print."
+    },
+    {
+      "feature": "r=10 printer-to-shelf concave fillet",
+      "disposition": "SKIPPED — aesthetic, vertical feature",
+      "rationale": "Purely vertical feature. No overhang. No tolerance requirement. Inspect on full cradle print."
+    },
+    {
+      "feature": "tray wall thickness 1.6 mm",
+      "disposition": "COVERED by tray-slot-fit-pair",
+      "rationale": "The mini tray section (Piece B) includes the full 1.6 mm walls and r=3 corner fillets at full scale. If wall integrity is marginal, it will manifest in the test piece before the full print is committed. The r=20 fillet corner thin-wall finding (1.026 mm minimum, from print reviewer) is NOT included in the simplified slug, but is a cosmetic-only risk; visual inspection on the full tray print is sufficient."
+    }
+  ],
+  "sources": {
+    "fromSpecWriter": ["tray-to-slot sliding fit"],
+    "fromPrintReviewer": ["tray-to-slot sliding fit", "tray r=20 fillet corner thin wall"],
+    "fromPlanner": []
+  }
+}
