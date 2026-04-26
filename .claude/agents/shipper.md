@@ -26,23 +26,42 @@ You will be given a design directory path. Read:
 
 Complete ALL of the following:
 
-### 1. Re-render custom views
+### 1. Re-render at ship quality
 
-If the design's `spec.json` has a `views` array with custom angles beyond the standard four (front, top, right, iso), render them:
+The modeler renders during iteration at **draft quality** (`$fn=100`, `top_fillet_steps=24`, etc.) for speed. Before delivery, re-render the STL and all PNGs at **ship quality** (`$fn=200`, `top_fillet_steps=64`, etc.) so the shipped artifacts are at maximum smoothness.
+
+Each design declares its quality knobs as top-level parameters. Override them via `-D` at render time without editing the file:
+
+```bash
+# Re-render STL at ship quality
+xvfb-run openscad -o designs/<name>/output/<name>.stl \
+  -D '$fn=200' -D 'top_fillet_steps=64' \
+  designs/<name>/<name>.scad
+
+# For multi-part designs, do this for every part (cradle, tray, etc.).
+```
+
+If the design has `arc_steps` or other curve-resolution parameters (declared at the top of the SCAD file), bump those too — typical pattern is `draft → ship`: 32→80, 24→64, etc. Check the SCAD file's parameter block.
+
+If the design's `spec.json` has a `views` array with custom angles beyond the standard four (front, top, right, iso), render them at ship quality too:
 
 ```bash
 node bin/validate.js designs/<name> --render-only
+# (validate.js currently renders at the design's default $fn — verify it picks up the bumped values, or call openscad directly per view.)
 ```
 
-If additional custom camera angles are needed (bottom-iso, edge views, etc.), render them with OpenSCAD directly:
+If additional custom camera angles are needed (bottom-iso, edge views, etc.), render them with OpenSCAD directly with the same `-D` overrides:
 
 ```bash
 xvfb-run openscad -o output/<name>-<view>.png \
+  -D '$fn=200' -D 'top_fillet_steps=64' \
   --camera=<x>,<y>,<z>,<tx>,<ty>,<tz>,<d> \
   --imgsize=1024,768 \
   --colorscheme=Tomorrow \
   designs/<name>/<name>.scad
 ```
+
+Verify the ship STL is watertight and dimensionally identical to the draft STL (only smoothness changed). If a thin-wall feature breaks at higher $fn (e.g. an offset goes negative due to finer polygon approximation), flag for the modeler — don't silently fall back to draft.
 
 ### 2. Copy outputs to docs
 

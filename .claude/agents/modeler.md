@@ -36,7 +36,24 @@ If the design shares parameters with other parts (multi-part assembly), also inc
 include <<name>-params.scad>
 ```
 
-**Quality:** `$fn = 80;`
+**Render quality (draft during iteration, ship at delivery):**
+
+Use draft settings during round-by-round iteration — they render 4-10× faster than ship quality with no critique-fidelity loss at normal viewing distances. The shipper agent re-renders at full quality before commit.
+
+Declare quality knobs as **top-level parameters** so the shipper can override via `-D` without editing the file:
+
+```openscad
+$fn              = 100;   // draft; shipper bumps to 200 via -D
+top_fillet_steps = 24;    // draft; shipper bumps to 64 via -D (only if the design uses fillet-stack constructions)
+```
+
+Guidelines:
+- `$fn = 100` for draft (was 80 historically; this is the new floor — produces visibly smoother corners than 80 with comparable cost).
+- `$fn = 200` for ship.
+- For top-edge fillet stacks built via `offset(r=-inset)` slabs, use `steps = 24` for draft (slab heights ~0.15mm at r=3, below FDM 0.2mm layer height — invisible in print) and `steps = 64` for ship.
+- Arc polygon point counts (e.g. concave fillet sweeps, curved scoops) ~32-40 for draft, ~80-120 for ship — declare as a parameter if the design re-renders multiple times.
+
+If a design's geometry doesn't render cleanly at draft settings (visible faceting on close-up renders, broken `offset()` operations, mesh artifacts), bump locally and document in the iteration report. But first consider whether the design is over-resolved or whether the construction is unnecessarily expensive — high-resolution rendering masks geometric issues that should be fixed at the source.
 
 **Dimension reporting:** Call `report_dimensions(x, y, z, "label")` at the end of the file so the validation pipeline can parse dimensions from OpenSCAD's stderr.
 

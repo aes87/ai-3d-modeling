@@ -51,7 +51,11 @@ include <fdm-pla.scad>
 include <bambu-x1c.scad>
 include <common.scad>
 
-$fn = 200;
+// Render quality. Draft during iteration; shipper bumps via -D for delivery.
+//   $fn:              100 draft → 200 ship
+//   top_fillet_steps:  24 draft →  64 ship
+$fn              = 100;
+top_fillet_steps = 24;
 
 // ===== Top-level toggles =====
 //
@@ -104,8 +108,7 @@ fillet_utility_r     = 3.0;     // r=3 break-edges, top edges, tray edges
 fillet_hero_r        = 10.0;    // r=10 cradle exterior corners, base plate
                                  // corners, printer→shelf concave
 
-// Top-edge fillet stack tessellation (round-5 bump 8→64 for smooth curve)
-top_fillet_steps     = 64;
+// top_fillet_steps declared at top of file (draft 24, ship 64 via -D).
 
 // Derived totals (echoed for validation)
 //

@@ -55,7 +55,13 @@ include <fdm-pla.scad>
 include <bambu-x1c.scad>
 include <common.scad>
 
-$fn = 200;
+// Render quality. Draft during iteration; shipper bumps via -D for delivery.
+//   $fn:              100 draft → 200 ship
+//   top_fillet_steps:  24 draft →  64 ship
+//   ramp_arc_steps:    32 draft →  96 ship
+$fn              = 100;
+top_fillet_steps = 24;
+ramp_arc_steps   = 32;
 
 // ===== Parameters =====
 int_w     = 100;    // interior width (X)
@@ -74,7 +80,7 @@ front_wall_h        = 18;
 // Top edge fillet schedule
 fillet_vert_r       = 3.0;        // exterior vertical edge fillets
 top_edge_fillet_r   = 2.0;        // continuous fillet on every wall top
-top_fillet_steps    = 64;         // tessellation for smooth top-edge curve
+// top_fillet_steps declared at top of file (draft 24, ship 64 via -D).
 
 // Interior floor ramp — concave arc
 ramp_y_extent       = 30;
@@ -83,7 +89,7 @@ ramp_front_y        = ext_d - wall_t;                   // 92.6 (interior front 
 ramp_back_z         = floor_t;                          // 1.6
 ramp_front_z        = front_wall_h;                     // 18
 ramp_arc_r          = 22;
-ramp_arc_steps      = 96;
+// ramp_arc_steps declared at top of file (draft 32, ship 96 via -D).
 
 // Exterior grab scoop on +Y face of front wall.
 //
