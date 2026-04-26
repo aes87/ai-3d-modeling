@@ -1,33 +1,38 @@
-// P-touch Cradle — Brother PT-P750W (round 3 / v3 minimalism)
+// P-touch Cradle — Brother PT-P750W (round 5 / v3 minimalism)
 //
-// ROUND-3 SCOPE (this file):
-//   The owl direction is abandoned. This is a quiet desk dock — function
-//   and frame, nothing more. Most of round 1 + round 2's face / tuft /
-//   panel geometry is deleted. The tall back panel collapses to a 25 mm
-//   low wall identical to the other three perimeter walls. The fillet
-//   schedule collapses to two tiers (r=3 utility, r=10 hero) plus the
-//   r=1.5 foot-to-plate exception. No decoration of any kind.
+// ROUND-5 SCOPE (this file):
+//   Three small refinements to round 4 — all simplifications:
+//     1. corner_feet() module deleted entirely. Base plate sits flush on
+//        the build plate at z=0. User applies silicone feet aftermarket.
+//     2. cable_slot_cutter() module deleted entirely. The -Y back wall is
+//        a clean continuous 25mm band — the printer's plug sits above the
+//        25mm wall height, so no notch is needed.
+//     3. Top-edge fillet rendered smooth: $fn 80→200 and the slab-stack
+//        steps 8→64 so the r=3 quarter-arc reads as a true continuous
+//        curve (each slab is now ~0.047mm tall, well below FDM resolution
+//        and below visual perception).
 //
-// What survives from round 2:
-//   - Stepped body footprint (86 mm printer section → 108 mm shelf).
+// What survives from round 4 (UNCHANGED):
+//   - Stepped body footprint (86 mm printer section → 110 mm shelf).
+//   - Continuous tray-holder wrap (slot side walls 3.05 mm).
 //   - Printer pocket (80 × 154 mm interior, 1 mm XY clearance).
-//   - Cable notch (25 × 20 mm) on the -Y back wall — now leaves a 5 mm
-//     bridge above (between notch top z=20 and wall top z=25).
-//   - Tray slot pocket (103.9 × 94.9 × ~21 mm, sliding fit 0.35 mm/side).
-//   - Four cylindrical feet (d=8, h=3) with r=1.5 upper blend.
+//   - Tray slot pocket (103.9 × 94.9 × ~22 mm, sliding fit 0.35 mm/side).
 //   - host_object_proxy() module + render_with_host parameter for
 //     use-state renders. STL export keeps render_with_host=false.
+//   - Hero r=10 fillets: cradle exterior corners, base plate corners,
+//     printer-section→shelf concave fillet on both ±X sides.
+//   - Utility r=3 fillet on top edges.
 //
-// What is gone in round 3:
-//   - Tall back panel (height 205 mm) — replaced by a 25 mm low wall.
-//   - Heart-shaped facial disc, recessed eye sockets, asymmetric beak.
-//   - Ear tufts (any construction).
-//   - Convex panel face, panel arc, vertical-edge softening.
-//   - Every face_*, eye_*, beak_*, tuft_*, back_panel_*, panel_* param.
+// What is gone in round 5:
+//   - corner_feet() module (and foot_d/foot_h/foot_inset/foot_blend_r).
+//   - cable_slot_cutter() module (and cable_slot_w/cable_slot_h/etc.).
+//   - The cradle_total_h "+3 below" comment (no feet below datum any more).
+//
+// Mesh Z-span goes from 28mm (was -3..25 with feet) to 25mm (now 0..25).
 //
 // User orientation (unchanged):
 //   +Y = user-front (tray slides out this way; printer faces user)
-//   -Y = user-back  (against-wall; cable notch lives here)
+//   -Y = user-back  (against-wall; cable runs over the top of this wall)
 //   +X = user-right
 //   -X = user-left
 //   +Z = up
@@ -36,16 +41,17 @@
 //   Origin at the back-left corner of the SHELF footprint (the widest
 //   part of the cradle). +X = right, +Y = forward (toward user), +Z = up.
 //   Back exterior at Y=0, front of cradle at Y = cradle_total_d.
-//   The printer section is inset on both sides by 11 mm (X = 11..97).
+//   The printer section is inset on both sides by 12 mm (X = 12..98).
 //
 // Print orientation:
 //   Base down, walls vertical. No supports needed at any feature.
+//   Base plate's full footprint sits flush on the bed at z=0.
 
 include <fdm-pla.scad>
 include <bambu-x1c.scad>
 include <common.scad>
 
-$fn = 80;
+$fn = 200;
 
 // ===== Top-level toggles =====
 //
@@ -60,9 +66,9 @@ render_with_host = false;
 //
 // Round-4 update: cradle_w_shelf bumped from 108 → 110 so the slot side
 // walls grow from 2.05 mm to 3.05 mm (matching wall_thickness=3). The
-// tray-holder now reads as a continuous U-wrap around the tray's three
-// sides at uniform wall thickness. side_step grows 11 → 12, still
-// accommodating the r=10 transition fillet.
+// tray-holder reads as a continuous U-wrap around the tray's three sides
+// at uniform wall thickness. side_step grows 11 → 12, still accommodating
+// the r=10 transition fillet.
 cradle_w_shelf       = 110;     // X, shelf (wide) section body width
 cradle_w_printer     = 86;      // X, printer (narrow) section body width
 side_step            = (cradle_w_shelf - cradle_w_printer) / 2;  // 12 mm
@@ -79,42 +85,34 @@ printer_section_d    = 160;     // Y (3 + 154 + 3)
 low_wall_h           = 25;
 
 // Concave fillet at printer-section → shelf transition
-// Hero radius. Capped by the side_step (11 mm) since the fillet must
-// fit within the 11 mm Y-delta between the printer and shelf footprints.
+// Hero radius. Capped by side_step (12 mm); the fillet must fit within
+// the Y-delta between the printer and shelf footprints.
 transition_fillet_r  = 10;
 
-// Cable slot (on -Y wall). Bridge above is wall_h - cable_slot_h = 5 mm.
-cable_slot_w         = 25;
-cable_slot_h         = 20;
-cable_slot_cx        = cradle_w_shelf / 2;  // 54 mm
-
-// Feet
-foot_d               = 8;
-foot_h               = 3;
-// foot_inset must accommodate (foot_d/2 + foot_blend_r) so the upper flare
-// stays inside the base plate footprint. Also kept clear of the r=10 hero
-// base-plate corner fillet so the foot does not crown the rounded corner.
-foot_inset           = 12;
-foot_blend_r         = 1.5;     // foot-to-plate concave fillet (function-driven exception)
-
-// Tray slot pocket dims (matches tray exterior 103.2 × 94.2 × 21.6 with
-// 0.35 mm sliding fit per side)
+// Tray slot pocket dims (matches tray exterior 103.2 × 94.2 × 30 with
+// 0.35 mm sliding fit per side in X and Y; slot height covers the lower
+// portion of the tray since round-5 tray is intentionally taller than
+// the 25mm cradle wall).
 slot_w               = 103.9;
 slot_d               = 94.9;
 slot_h               = 22.3;
 tray_section_d       = 94.9;
 tray_section_y0      = 160;     // back of tray slot = front of printer section
 
-// Fillet schedule — TWO tiers + one exception
+// Fillet schedule — TWO tiers (no foot exception in round 5)
 fillet_utility_r     = 3.0;     // r=3 break-edges, top edges, tray edges
 fillet_hero_r        = 10.0;    // r=10 cradle exterior corners, base plate
                                  // corners, printer→shelf concave
 
+// Top-edge fillet stack tessellation (round-5 bump 8→64 for smooth curve)
+top_fillet_steps     = 64;
+
 // Derived totals (echoed for validation)
-cradle_total_h       = low_wall_h + 3;   // ~28 mm includes top-edge fillet
-                                          // headroom (mesh ≤ 28 mm above
-                                          // bed datum). Feet extend to
-                                          // z = -3 below the datum.
+//
+// Round-5 update: feet are gone. The cradle's mesh extends from z=0 (base
+// plate bottom, flush with build plate) to z=low_wall_h=25 (top of wall
+// fillet). Total height = 25mm.
+cradle_total_h       = low_wall_h;   // 25 mm — flush base, no feet
 
 // ===== Structural asserts =====
 assert(wall_thickness >= MIN_WALL,    str("Wall thickness ", wall_thickness, " below min ", MIN_WALL));
@@ -126,56 +124,24 @@ assert(transition_fillet_r <= side_step + 0.01,
        "Transition fillet larger than side step");
 assert((cradle_w_printer - pocket_w)/2 >= wall_thickness - 0.01,
        "Printer section side walls below 3mm");
-assert(cable_slot_h < low_wall_h, "Cable slot must leave a wall bridge above");
-assert(low_wall_h - cable_slot_h >= 4,
-       str("Bridge above cable notch (", low_wall_h - cable_slot_h, "mm) below 4mm minimum"));
 
 // ===== 2D footprint =====
 //
 // Stepped footprint: the back of the cradle is the narrower printer
-// section (X = 11..97, Y = 0..160), the front is the wider shelf (X =
-// 0..108, Y = 160..254.9). The transition between the two has a concave
+// section (X = 12..98, Y = 0..160), the front is the wider shelf (X =
+// 0..110, Y = 160..254.9). The transition between the two has a concave
 // quarter-arc on each side (r = transition_fillet_r) sweeping from the
 // inner printer-section wall outward to the shelf wall.
-
-// Stepped exterior with a concave quarter-arc filling the inside corner
-// at the printer→shelf step. Geometry per side:
-//
-//   Right side (right exterior corner of printer section meets right
-//   exterior of shelf):
-//     - Printer right wall: vertical line at x = printer_x_right
-//                           (= side_step + cradle_w_printer = 97).
-//     - Shelf right wall:   vertical line at x = cradle_w_shelf = 108.
-//     - At y = printer_section_d (= 160), an inset corner exists where
-//       these two walls would meet via a horizontal step.
-//     - The CONCAVE fillet rounds away the inside corner at
-//       (printer_x_right, printer_section_d) by a quarter-arc of radius
-//       transition_fillet_r. Tangent points:
-//         T_vert = (printer_x_right,            printer_section_d - r)
-//         T_horiz = (printer_x_right + r,       printer_section_d)
-//       Arc center = (printer_x_right + r, printer_section_d - r),
-//       radius r, sweeping from angle 180° (T_vert) to 90° (T_horiz).
-//     - From T_horiz a short straight horizontal edge runs to the shelf
-//       wall at (cradle_w_shelf, printer_section_d). The length of that
-//       segment is (cradle_w_shelf - (printer_x_right + r)) = 1 mm
-//       given side_step=11 and r=10. The hero corner offset will
-//       absorb this 1 mm sliver.
-//
-//   Left side: mirror image. Tangent points:
-//     T_vert  = (side_step,            printer_section_d - r)
-//     T_horiz = (side_step - r,        printer_section_d)
-//   Arc center = (side_step - r, printer_section_d - r), sweeping
-//   from angle 0° (T_vert) to 90° (T_horiz).
 
 module stepped_footprint_raw() {
     N = 32;
     r = transition_fillet_r;
-    printer_x_right = side_step + cradle_w_printer;     // 97
-    printer_x_left  = side_step;                         // 11
+    printer_x_right = side_step + cradle_w_printer;     // 98
+    printer_x_left  = side_step;                         // 12
 
-    right_cx = printer_x_right + r;       // 107
+    right_cx = printer_x_right + r;       // 108
     right_cy = printer_section_d - r;     // 150
-    left_cx  = printer_x_left - r;        //   1
+    left_cx  = printer_x_left - r;        //   2
     left_cy  = printer_section_d - r;     // 150
 
     // Right concave arc: 180° → 90°
@@ -184,10 +150,9 @@ module stepped_footprint_raw() {
         [right_cx + r * cos(a), right_cy + r * sin(a)]
     ];
 
-    // Left concave arc: 0° → 90° (but we'll walk in reverse, 90° → 0°,
-    // when laying out the polygon perimeter)
+    // Left concave arc: 90° → 0° (reversed sweep when walking polygon CCW)
     left_arc = [for (i = [0 : N])
-        let(a = 90 - 90 * i / N)   // reversed sweep: 90° down to 0°
+        let(a = 90 - 90 * i / N)
         [left_cx + r * cos(a), left_cy + r * sin(a)]
     ];
 
@@ -195,14 +160,14 @@ module stepped_footprint_raw() {
         [[printer_x_left,    0]],                          // BL printer
         [[printer_x_right,   0]],                          // BR printer
         [[printer_x_right,   printer_section_d - r]],      // start of right arc (T_vert_R)
-        right_arc,                                         // arc 180° → 90°: ends at (right_cx, printer_section_d) = (107, 160)
-        [[cradle_w_shelf,    printer_section_d]],          // shelf NE corner (108, 160)
-        [[cradle_w_shelf,    cradle_total_d]],             // shelf FR corner
-        [[0,                 cradle_total_d]],             // shelf FL corner
-        [[0,                 printer_section_d]],          // shelf NW corner (0, 160)
-        left_arc,                                          // arc 90° → 0°: starts at (left_cx, printer_section_d) = (1, 160), ends at (printer_x_left, printer_section_d - r) = (11, 150)
-        [[printer_x_left,    printer_section_d - r]],      // T_vert_L (closes left side)
-        [[printer_x_left,    0]]                           // close back to BL
+        right_arc,                                         // 180° → 90°
+        [[cradle_w_shelf,    printer_section_d]],          // shelf NE
+        [[cradle_w_shelf,    cradle_total_d]],             // shelf FR
+        [[0,                 cradle_total_d]],             // shelf FL
+        [[0,                 printer_section_d]],          // shelf NW
+        left_arc,                                          // 90° → 0°
+        [[printer_x_left,    printer_section_d - r]],      // T_vert_L
+        [[printer_x_left,    0]]                           // close
     );
     polygon(points = points);
 }
@@ -230,42 +195,14 @@ module base_plate() {
         base_footprint();
 }
 
-// ===== Corner feet with r=1.5 upper blend =====
-module corner_feet() {
-    positions = [
-        [side_step + foot_inset,                    foot_inset                 ],
-        [side_step + cradle_w_printer - foot_inset, foot_inset                 ],
-        [foot_inset,                                cradle_total_d - foot_inset],
-        [cradle_w_shelf - foot_inset,               cradle_total_d - foot_inset],
-    ];
-    for (p = positions) {
-        translate([p[0], p[1], 0]) {
-            // Cylindrical foot below z=0
-            translate([0, 0, -foot_h])
-                cylinder(h = foot_h, d = foot_d, $fn = 48);
-            // Upper blend: small flare cone connecting the foot to the
-            // base plate. Flat foot bottom is preserved for FDM first-
-            // layer adhesion.
-            translate([0, 0, -foot_blend_r])
-                cylinder(h = foot_blend_r,
-                         d1 = foot_d,
-                         d2 = foot_d + 2 * foot_blend_r,
-                         $fn = 48);
-        }
-    }
-}
-
 // ===== Low perimeter wall block (25 mm tall stepped ring) =====
 //
 // The wall block extrudes the wall footprint to z = low_wall_h, with a
-// utility r=3 fillet rolled onto the top edge (the outermost top edge,
-// running around the entire perimeter).
+// utility r=3 fillet rolled onto the top edge.
 //
-// Implementation: extrude to (low_wall_h - r), then stack thin discs
-// in z that progressively inset (using offset(r = -inset)) following a
-// quarter-circle profile. Each inset = r * (1 - cos(angle)). The hero
-// vertical-corner fillet is delivered by the wall_footprint offset; the
-// utility top fillet is delivered by this stack.
+// Round-5 update: top_fillet_steps bumped 8→64 for a smooth top edge.
+// Each slab is now r/64 ≈ 0.047mm tall — invisible at any reasonable
+// render zoom and far below FDM layer height.
 
 module low_wall_block_solid() {
     r = fillet_utility_r;     // top-edge utility fillet
@@ -273,10 +210,9 @@ module low_wall_block_solid() {
     linear_extrude(height = low_wall_h - r)
         wall_footprint();
     // Quarter-arc profile rolled onto the top edge.
-    steps = 8;
-    for (i = [0 : steps - 1]) {
-        a0 = 90 * i       / steps;
-        a1 = 90 * (i + 1) / steps;
+    for (i = [0 : top_fillet_steps - 1]) {
+        a0 = 90 * i       / top_fillet_steps;
+        a1 = 90 * (i + 1) / top_fillet_steps;
         inset1 = r * (1 - cos(a1));
         z0 = (low_wall_h - r) + r * sin(a0);
         z1 = (low_wall_h - r) + r * sin(a1);
@@ -287,17 +223,14 @@ module low_wall_block_solid() {
     }
 }
 
-// Wall block carved by the printer pocket and the tray slot. The pocket
-// extends the full wall height (z=0..low_wall_h) since we want a clean
-// rectangular cavity for the printer to drop into; the pocket bottom is
-// the base plate (carved from z = base_thickness up).
+// Wall block carved by the printer pocket and the tray slot.
 module low_wall_block() {
     difference() {
         low_wall_block_solid();
 
         // Printer pocket — interior cavity for the printer body. Goes
         // FROM the base plate top up through the wall top (z=4..25).
-        pocket_x0 = side_step + (cradle_w_printer - pocket_w) / 2;  // 14
+        pocket_x0 = side_step + (cradle_w_printer - pocket_w) / 2;  // 15
         pocket_y0 = wall_thickness;                                  // 3
         translate([pocket_x0, pocket_y0, base_thickness - 0.01])
             cube([pocket_w, pocket_d, low_wall_h + 1]);
@@ -305,23 +238,10 @@ module low_wall_block() {
         // Tray slot — interior cavity for the tray. Open top, open front
         // (the +Y face of the slot is past the cradle's +Y wall, so the
         // tray slides out from the front).
-        slot_x0 = (cradle_w_shelf - slot_w) / 2;                     // 2.05
+        slot_x0 = (cradle_w_shelf - slot_w) / 2;                     // 3.05
         translate([slot_x0, tray_section_y0 - 0.01, base_thickness - 0.01])
             cube([slot_w, tray_section_d + 0.02, low_wall_h + 10]);
     }
-}
-
-// ===== Cable notch (subtractive) =====
-//
-// U-cut on the -Y back wall. Spans z = 0..cable_slot_h (0..20). Bridge
-// above the notch is (low_wall_h - cable_slot_h) = 5 mm tall × 25 mm
-// wide. 25 mm bridge span is well within FDM bridging tolerance for PLA;
-// the bridge prints across the side walls of the notch, supported on
-// both ends.
-
-module cable_slot_cutter() {
-    translate([cable_slot_cx - cable_slot_w / 2, -0.1, -0.01])
-        cube([cable_slot_w, wall_thickness + 0.2, cable_slot_h]);
 }
 
 // ===== Host-object proxy (round 2 NEW — for use-state renders) =====
@@ -332,11 +252,11 @@ module cable_slot_cutter() {
 // `--param render_with_host=true`.
 //
 // Installed position math:
-//   pocket interior origin (X) = side_step + (cradle_w_printer - pocket_w)/2 = 14
+//   pocket interior origin (X) = side_step + (cradle_w_printer - pocket_w)/2 = 15
 //   pocket interior origin (Y) = wall_thickness = 3
 //   pocket floor                = base_thickness = 4
 //   printer is centered in the 80×154 pocket with 1 mm XY clearance per side
-//   → printer X origin = 14 + 1 = 15
+//   → printer X origin = 15 + 1 = 16
 //     printer Y origin =  3 + 1 = 4
 //     printer Z origin =  4
 
@@ -361,13 +281,9 @@ module host_object_proxy(show = false) {
 // ===== Assembly =====
 
 module cradle() {
-    difference() {
-        union() {
-            base_plate();
-            low_wall_block();
-            corner_feet();
-        }
-        cable_slot_cutter();
+    union() {
+        base_plate();
+        low_wall_block();
     }
 }
 
@@ -376,9 +292,7 @@ host_object_proxy(show = render_with_host);
 
 // ===== Dimension report =====
 //
-// Echoed dimensions are the IDEAL design extents (not mesh bbox extents).
-// The mesh bbox extends to z = -foot_h below the datum because of the
-// cylindrical feet, so the actual mesh Z-span = low_wall_h + foot_h = 28.
-// We echo low_wall_h + 3 = 28 so the validator can match the mesh bbox.
+// Round-5: feet gone, cable notch gone. Mesh extends z=0..25 (flush base
+// to top of wall fillet). Echoed dimensions match mesh bbox exactly.
 report_dimensions(cradle_w_shelf, cradle_total_d, cradle_total_h, "cradle");
 report_dimensions(cradle_w_printer, printer_section_d, low_wall_h, "cradle_printer_section");

@@ -155,3 +155,32 @@ Direct-Bash `cli-anything-openscad` calls produced 6 user-frame renders. Critiqu
    - Fix: **delete** `scoop_cutter()` and `finger_grip_cutter()` modules. Replace with a single concave curved scoop face spanning the **full** front wall — from the floor's front edge (z=floor_t) up to the top lip (z=ext_h). One continuous concave curve, no kinks, soft rolled top lip.
 
 **Status:** writing modeler-notes-v4.md. Brief stays as-is (these are refinements within the v3 minimalism direction, not a pivot). Round 4 Revisions entry to be added.
+
+### Turn 9 — round 4 lands, tray scoop misunderstanding + four more refinements
+
+**Modeler dispatched** with `modeler-notes-v4.md`. PASS in 2 iterations (first iter exposed a wrong-side arc-center bug in the agent's spec; modeler corrected). All three v4 fixes landed. Bonus: host_object_proxy now renders gray correctly, making use-state composition unambiguous.
+
+**Use-state hero, top-down, and tray-front-threequarter renders** showed:
+- ✓ Tray holder wraps continuously (3mm uniform side walls + back wall)
+- ✓ Top-edge fillets smooth on tray (no facet stepping)
+- ✓ Tray scoop = single concave curve from floor to top lip
+
+**User reviewed on GitHub** (commit `d391e32`) and corrected the agent's interpretation of "tray scoop":
+
+> "OK, we are miscommunicating about what the tray scoop is. It's not a dustpan, it's a closed kanban bin. The scoop I want is interior to the tray and is FUNCTIONAL—it scoops up from the floor of the tray to the top surface so someone can easily slide their finger with a label under it up to the front lip and get it out. I will want to restore the front lip of the bin (OK if lower versus back wall but should exist) and add this scoop feature. I do like the smooth lines of the scoop but it's not implemented the functional way I want—revamp to include that design language but achieve functional intent."
+
+**Diagnosis of round-4 misinterpretation:** the agent built the tray scoop as the FRONT WALL ITSELF being a smooth concave curve, which ate the closed-bin character. The tray no longer reads as a 4-wall kanban bin from the front. User actually wanted: closed bin with all 4 walls solid, a SHORT front wall (lower than back), and a curved INTERIOR FLOOR RAMP from the back-flat-floor up to the top of the front lip — so a finger can slide UNDER a label and lift it out OVER the lip.
+
+**Plus four more refinements (sequential messages):**
+
+1. **Get rid of feet entirely.** "They complicate printing and are useless. I'll put silicone feet on, but make the bottom surface flush to the build plate." → delete `corner_feet()` module + foot params; base plate sits flush on build plate.
+
+2. **Eliminate cable notch entirely.** "The plug in the back isn't where you thought it was, just eliminate that hole entirely. The plug is above the height of the whole design, so no cutout needed." → delete `cable_slot_cutter()` + cable_slot params; back wall is a clean continuous 25mm band.
+
+3. **Cradle top edges smooth, not stair-stepped.** "Make sure the top edges of the cradle are all a smooth continuous curve, not stairstepped. I think I may just be seeing rendering anomalies but it still looks stepped." → bump cradle `$fn=80→200` and slab-stack `steps=8→64` (0.047mm per slab vs 0.375mm). Real artifact, not just render anomaly.
+
+4. **Tray taller + grabbable front lip + curved interior ramp.** "Make sure the tray front lip has a feature that is grabbable and conveys 'grab me'. Match the design language... same sort of fillet curve angle. And make the tray a bit taller—it's OK if it is taller than the cradle a bit." → tray ext_h 21.6→30mm (sticks up ~5mm above cradle). Interior ramp = concave arc, NOT linear. Add concave finger scoop on +Y exterior face of front wall (r=10 hero language, 50mm wide, ~14mm chord, 2.86mm deep).
+
+**Captured in vault:** `vault/projects/3d-printing/ptouch-cradle-critique-04.md` (full critique with all five round-5 items: tray rebuild + grab scoop + tray height bump + feet removal + notch removal + smooth top fillet).
+
+**Status:** writing `modeler-notes-v5.md`. Brief stays as-is (these are still refinements within v3 minimalism). User said "go ahead and bang that rev out" → dispatching modeler.
