@@ -108,23 +108,42 @@ module mini_cradle_slot() {
 
 
 // ===================================================================
-// PIECE B — MINI TRAY SECTION (solid slug)
+// PIECE B — MINI TRAY SECTION (hollow shell, open at top)
 //
 // Exterior cross-section of the tray (103.2 mm W × 30 mm H) extruded
 // test_y_depth mm in Y. r=3 vertical corner fillets match the real tray.
-// Solid throughout — no interior, no ramp, no front lip.
+// HOLLOW interior: 1.6 mm walls + 1.6 mm floor, open at the top.
+// What matters for the fit test is the EXTERIOR — interior can be
+// anything; making it a thin-walled shell saves ~70% of filament vs
+// a solid slug.
 // Printed with z=0 on bed (same orientation as the real tray).
 //
 // Coordinate origin: X=0 at outer left face, Y=0 at back face, Z=0 at bed.
 // ===================================================================
 
+shell_wall_t  = 1.6;   // matches tray's wall_t
+shell_floor_t = 1.6;   // matches tray's floor_t
+
 module mini_tray_section() {
-    linear_extrude(height = tray_ext_h)
-        // Same rounded-rect pattern as tray.scad rounded_rect() module.
-        translate([tray_fillet_r, tray_fillet_r])
-            offset(r = tray_fillet_r)
-                square([tray_ext_w - 2 * tray_fillet_r,
-                        test_y_depth - 2 * tray_fillet_r]);
+    difference() {
+        // Outer shell — same rounded rect as the solid version
+        linear_extrude(height = tray_ext_h)
+            translate([tray_fillet_r, tray_fillet_r])
+                offset(r = tray_fillet_r)
+                    square([tray_ext_w - 2 * tray_fillet_r,
+                            test_y_depth - 2 * tray_fillet_r]);
+
+        // Interior cavity — 1.6mm walls + 1.6mm floor, open at top
+        int_w = tray_ext_w - 2 * shell_wall_t;
+        int_d = test_y_depth - 2 * shell_wall_t;
+        int_r = max(tray_fillet_r - shell_wall_t, 0.8);
+        translate([shell_wall_t, shell_wall_t, shell_floor_t])
+            linear_extrude(height = tray_ext_h)   // extrude past the top to open
+                translate([int_r, int_r])
+                    offset(r = int_r)
+                        square([int_w - 2 * int_r,
+                                int_d - 2 * int_r]);
+    }
 }
 
 

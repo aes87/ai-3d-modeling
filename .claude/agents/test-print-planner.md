@@ -58,6 +58,7 @@ Test prints should use **minimum material** while preserving the **critical geom
 5. **Include datum features** — if the test piece needs to mate with something, include the registration/alignment geometry
 6. **One test, one piece** — each test print tests ONE critical question. Don't combine unrelated tests. Adjacent features that share geometry CAN be combined if it reduces total test prints without adding ambiguity
 7. **Angular slices over full rings** — for circular features (spigots, ridges), a 60–90° arc section is sufficient to test OD fitment. Don't print a full ring if a wedge will do. Add flat chord walls to close the section
+8. **Hollow significant volumes** — if a test piece has a chunk of bulk material that isn't load-bearing for the test (e.g., a "tray slug" cube whose only critical dimension is its EXTERIOR fitting a slot), make it a thin-walled shell open at the top. Match the parent design's wall thickness for the shell. Saves 60-80% of the filament without affecting test validity. Solid blocks larger than ~2 cm³ that aren't validating bulk-material behavior should always be hollowed
 
 ## Outputs
 

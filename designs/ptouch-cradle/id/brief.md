@@ -17,7 +17,7 @@ user_orientation:
   user_top:   "+Z face"
   use_context: "sits on a desk; printer occupies the pocket; user approaches from +Y"
   hero_face:  "user-front (clean utility frame around the printer body, tray in front)"
-  against_surface: "user-back (-Y) carries cable notch only"
+  against_surface: "user-back (-Y face (clean continuous wall, no interruption)"
 use_state:
   host_object: "Brother PT-P750W printer"
   host_envelope_mm: {x: 78, y: 152, z: 143}
@@ -41,10 +41,10 @@ hero_views:
     rationale: "top-down view — confirms full-perimeter symmetry of the low bathtub"
     requires_proxy: false
   - name: tray-user-front
-    rationale: "tray scoop + integrated finger-grip — clean utility face"
+    rationale: "clean low front wall — uniform z=10 across full width, the lowered band IS the grab feature"
     requires_proxy: false
   - name: tray-user-front-threequarter
-    rationale: "tray proportion + integrated finger-grip visibility"
+    rationale: "closed kanban bin proportion + r=20 concave side fillets + interior ramp visible"
     requires_proxy: false
 hero_dimension:
   name: low_wall_height
@@ -52,23 +52,34 @@ hero_dimension:
   rationale: "the wall height defines the form. Equal on all four sides. The cradle reads as a quiet symmetric tray. Every other dim should defer to this — there's nothing taller than 25mm of cradle anywhere."
 proportions:
   wall_uniformity: "all 4 cradle perimeter walls = 25mm. NO tall back panel. NO asymmetry."
-  wall_thickness: "3mm uniform on all perimeter walls; tray walls 1.6mm uniform"
+  wall_thickness: "3mm cradle perimeter walls; 1.6mm tray walls"
   fillet_consistency: "every transition is a fillet. NO chamfers. NO sharp edges except where structurally required (e.g. interior printer-pocket walls)."
   tray_subordination: "tray reads as a smaller continuation of the same form language as the cradle"
+  front_wall_asymmetry: "tray front wall z=10, back/sides z=30 — front is the access side; finger reaches over the lowered front lip"
 fillet_schedule:
-  utility: 3.0   # all top edges, all visible vertical edges, tray edges
-  hero: 10.0     # printer-section → shelf transition (concave); base plate corners
+  utility: 3.0    # cradle break-edges, top edges; tray vertical edges
+  hero: 10.0      # cradle exterior corners, base plate corners, printer→shelf concave
+  tray_top_edge: 2.0   # back/side wall tops on tray; r=0.8 on 1.6mm front wall (thin-wall exception)
+  tray_side_sweep: 20.0 # concave sweep from tray side wall (z=30) to front wall (z=10)
 features:
   primary:
-    - low symmetric perimeter walls (25mm × full perimeter, uniform)
-    - generous fillet schedule applied without exception
-    - tray scoop lip + integrated finger-grip
+    - low symmetric perimeter walls on cradle (25mm × full perimeter)
+    - flush base plate on cradle (no feet)
+    - closed 4-wall tray with uniform low front wall (z=10) and r=20 concave side sweeps
+    - interior floor ramp on tray (concave quadratic curve, floor → front lip)
+    - generous fillet schedule applied throughout
   secondary:
-    - printer-section → shelf concave fillet (the one sculptural move that earns its keep)
-    - base plate corner radius softening the footprint
-    - foot-to-plate upper blend (continues curvature down to the desk)
+    - printer-section → shelf concave fillet (cradle, r=10)
+    - base plate corner radius (cradle, r=10)
+    - tray top-edge fillet wraps continuously (r=2 back/sides, r=0.8 front)
   tertiary: []
 decoration_policy:
+  - feature: cradle_feet
+    mode: REMOVED
+    rationale: "removed round 5 — silicone feet applied aftermarket. Base plate sits flush on the build plate"
+  - feature: cable_notch
+    mode: REMOVED
+    rationale: "removed round 5 — printer plug sits above the 25mm wall height; cable runs over the top, no cutout needed"
   - feature: any_face_or_creature_geometry
     mode: REMOVED
     rationale: "owl direction abandoned end of round 2. No face, no eyes, no beak, no tufts. Pure utility-as-form."
@@ -81,23 +92,26 @@ decoration_policy:
   - feature: tall_back_panel
     mode: REMOVED
     rationale: "back wall drops from 205mm to 25mm to match the other 3 perimeter walls. No retaining-wall function needed; no aesthetic function wanted."
-  - feature: tray_scoop_lip
+  - feature: tray_lowered_front_wall
     mode: intrinsic
-    rationale: "functional, not decorative — only sculpted feature on the tray"
+    rationale: "the front wall's uniform z=10 height (vs z=30 back/sides) IS the grab feature — finger reaches over the low lip. No separate boss/indent/scallop"
+  - feature: tray_interior_floor_ramp
+    mode: intrinsic
+    rationale: "concave quadratic ramp from back-flat-floor to front lip — finger slides under labels and lifts them up over the front lip. Functional sculpture"
 species_cues: []
 anti_brief:
   - not a creature, not a mascot, not cute, not playful
   - not decorated, not embellished, not adorned, not themed
-  - not asymmetric: bathtub is full-perimeter symmetric (modulo the cable notch)
+  - cradle is full-perimeter symmetric (no cable notch); tray is symmetric in X and asymmetric in Z (low front, high back/sides — intentional grab affordance)
   - not slab-sided BUT clean flat planes with generous fillets, NOT tall imposing walls
   - no logo, no text, no emboss, no deboss
   - no convexity, no recess, no surface treatment beyond fillets
   - nothing suggests an animal, a face, or a thematic reference of any kind
 supports_permitted: []
 print_orientation:
-  cradle: "base down, walls vertical. No supports needed (low walls, no overhangs above 45°)."
-  tray: "face up (open top), back on bed. Scoop lip 45° face prints as overhang at threshold (printable, no supports)."
-  seam_hidden_on: "underside of base plate; user-back (-Y) wall exterior (where the cable notch lives)"
+  cradle: "base down, walls vertical, flush bottom on the build plate. No supports needed."
+  tray: "face up (open top up), back wall on bed. Concave interior ramp + r=20 side sweeps + uniform low front are all self-supporting at this orientation. No supports."
+  seam_hidden_on: "cradle: underside of base plate; user-back (-Y) wall exterior. Tray: back wall exterior."
 references:
   family_candidate: _id-library/families/quiet-utility.md  # candidate post-ship if this direction lands
 ```
@@ -106,7 +120,7 @@ references:
 
 Two rules govern every surface:
 
-**1. Function defines form. Nothing else.** The walls exist to hold the printer in its pocket. The base plate exists to keep the object stable. The feet exist to lift the base off the desk. The tray exists to catch labels with a scoop for retrieval. Each form is exactly the size and shape its function requires — no taller, no thicker, no more sculpted.
+**1. Function defines form. Nothing else.** The walls exist to hold the printer in its pocket. The base plate exists to keep the object stable. The tray exists to catch labels with a scoop for retrieval. Each form is exactly the size and shape its function requires — no taller, no thicker, no more sculpted.
 
 **2. Every transition is a fillet, never a chamfer or sharp edge.** Where two surfaces meet, they meet via a continuous curve. The radius schedule has just two values: r=3 for break-edges and utility transitions, r=10 for hero transitions (the printer-section → shelf concave, the base plate corners). Wherever a fillet can be applied without compromising function, apply it. The form language is "soft, smooth, continuous" — like a river-stone version of utility.
 
@@ -120,7 +134,7 @@ Two rules govern every surface:
 
 All four cradle perimeter walls = 25mm tall, 3mm thick. No tall back panel. The −Y back wall, +Y front wall (where the wall transitions into the tray slot), and ±X side walls are all the same height. The cradle reads as a clean rectangular tray that the printer drops into.
 
-The cable notch on the −Y back wall remains: 25×20mm U-shape at z=0-20, occupying the bottom 80% of the wall height. This is the only interruption to the wall's smooth top edge.
+The −Y back wall is a clean continuous 25mm band — no interruption. The PT-P750W's plug sits above the 25mm wall height; cable runs over the top of the back wall.
 
 **Must NOT look like:** a tall back panel. A picture frame. A retaining wall. Anything that wants to be the visual focus.
 
@@ -135,11 +149,17 @@ Wall thickness uniform 3mm on cradle perimeter walls. Tray walls uniform 1.6mm.
 
 **Must NOT look like:** any sharp edges, any chamfered edges, any inconsistent radii. If any visible edge in the model is at a different radius than r=3 or r=10, it should have a documented structural reason (e.g., interior printer-pocket walls stay sharp because they're hidden when the printer is installed and a fillet would reduce pocket clearance).
 
-### Tray scoop lip + integrated finger-grip (primary)
+### Tray uniform low front wall + r=20 side fillet sweeps (primary)
 
-Unchanged from v2. 45° scoop across upper 14mm of front wall, lower 7mm vertical, central 30mm concave finger-grip dip 2.5mm deep. This is the single sculpted move on the tray and it earns its keep functionally. Leading edge r=2mm.
+Front wall is uniform z=10 across the full width; back wall + side walls are z=30. ONE concave quarter-arc per side (r=20) sweeps continuously from the side-wall top down to the front-wall top. The lowered front wall IS the grab feature — user reaches over the 10mm-tall low band to retrieve labels or pull the tray. Top-edge fillet wraps continuously: r=2 on back/sides, r=0.8 on the 1.6mm-thick front wall (function-driven exception — r=2 would collapse on the thin wall).
 
-**Must NOT look like:** anything other than what it is now in v2.
+**Must NOT look like:** a "scoop" cutout. A notched wall. A wall with a separate finger-grip feature. A drawer with a pull. The front wall is just LOWER than the others — a single uniform horizontal band — and the side fillets sweep down to it.
+
+### Tray interior floor ramp (primary)
+
+Concave quadratic curve `z(y) = 1.6 + 8.4 * ((y - 62.6) / 30)²` running from the flat floor at y=62.6 (z=1.6) up to the front lip at y=92.6 (z=10). Tangent to the flat floor at the back, monotonically rising, concave from the cavity side. A finger sliding forward gets a smooth gradual incline that steepens toward the front. Self-supporting in face-up print orientation.
+
+A modeler-proven note: no circular arc satisfies (concave-from-cavity + connecting endpoints + above-floor) for these dimensions; the quadratic substitute preserves the spirit.
 
 ### Printer-section → shelf concave fillet (secondary)
 
@@ -148,10 +168,6 @@ r=10 concave fillet sweep on both ±X sides where the 86mm printer section trans
 ### Base plate corners (secondary)
 
 r=10 corner fillet on all 4 corners of the base plate (top and bottom). Reads as a softly filleted footprint. (Bump from v2's r=8 to consolidate hero radii at r=10.)
-
-### Foot-to-plate upper blend (secondary)
-
-Foot-to-plate r=1.5mm concave fillet on the upper meeting edge (foot bottom stays flat for first-layer adhesion). Continues the curvature language to the desk surface. Unchanged from v2.
 
 ### Removed features (full list — what v3 does NOT have)
 
@@ -168,7 +184,7 @@ Foot-to-plate r=1.5mm concave fillet on the upper meeting edge (foot bottom stay
 
 ## Modeler notes
 
-See `id/modeler-notes-v3.md` for the concrete fix list. Most fixes are deletion.
+See `id/modeler-notes-v7.md` for the latest fix list. Notes v1-v7 capture per-round changes (v1=round 1 owl, v2=round 2 owl rebuild, v3=round 3 minimalism pivot, v4=round 4 refinements, v5=round 5 closed bin, v6=round 6 lowered center, v7=round 7 simplified uniform front).
 
 **Non-negotiables:**
 - All four cradle perimeter walls = 25mm uniform. The −Y wall is NOT taller than the other three.
@@ -176,7 +192,7 @@ See `id/modeler-notes-v3.md` for the concrete fix list. Most fixes are deletion.
 - Two-tier fillet schedule (r=3 utility, r=10 hero) applied throughout. No chamfers anywhere. No mid-tier radii.
 - The host_object_proxy module survives — use-state renders are still required.
 
-**Seam hiding:** underside of base plate; user-back (-Y) wall exterior (where the cable notch lives).
+**Seam hiding:** underside of base plate; user-back (-Y) wall exterior.
 
 **Print orientation:** cradle base down, walls vertical. No supports needed at any feature.
 
@@ -276,3 +292,41 @@ Agent proposed round 3 (tufts only / tufts+face polish / reshape head silhouette
 **Form-language section:** the "Tray scoop lip + integrated finger-grip" feature description in the Feature-by-feature rationale now reads "Continuous smooth front scoop" — single concave curve from floor to top lip.
 
 **Modeler fix list:** see `id/modeler-notes-v4.md`.
+
+### 2026-04-25 — round 5 (closed bin restoration + grab + ramp + feet/notch removal)
+
+**Trigger:** Round 4 attempted a smooth front scoop but built it as front-wall-as-curve, eating the closed-bin character. User clarified intent: closed kanban bin with short front wall + interior floor ramp + grabbable exterior feature.
+
+**Tray:** rebuilt as proper closed 4-wall bin. Short front wall (z=18) vs full back/sides (z=30). Interior floor ramp (curved). Grabbable boss + indent on +Y exterior face for tray pull.
+
+**Cradle:** removed feet entirely (silicone aftermarket; base plate sits flush). Removed cable notch entirely (PT-P750W's plug is above the 25mm wall height). Cradle top-edge fillet bumped to 64-step stack + $fn=200 for smooth curves.
+
+**Print orientation:** tray reverts to face-up (was back-down in round 4 attempt).
+
+**Modeler fix list:** see `id/modeler-notes-v5.md`.
+
+### 2026-04-25 — round 6 (variable-height front wall + concave floor ramp)
+
+**Trigger:** Round 5 boss+indent grab too shallow (2.86mm into 1.6mm wall). Floor ramp arc placed convex (humped UP into cavity) — ergonomically wrong; finger had to climb over a hump.
+
+**Tray:** dropped boss+indent grab. Replaced with a lowered-center cutout in the front wall: corners stayed at z=18, center 50mm dropped to z=10, concave arc transitions r=8 between corner and center. The lowered center provides natural finger access from above. Floor ramp re-oriented to concave-from-cavity-side (substitute quadratic curve since no circular arc exists for these endpoints with all three constraints satisfied). Ramp now terminates at z=10 (lowered center top).
+
+**Cradle:** unchanged.
+
+**Modeler fix list:** see `id/modeler-notes-v6.md`.
+
+### 2026-04-25 — round 7 (simplified uniform front wall — final v3)
+
+**Trigger:** Round 6 variable-height front wall introduced visual clutter — the corner sections at z=18 read as unnecessary "top bars" flanking the central cutout, and the intersections between transition arcs and side fillets produced sharp points.
+
+**Tray:** collapsed variable-height profile to uniform z=10 across full width. ONE concave fillet sweep per side, r=20 (matches the 20mm height drop from z=30 sides to z=10 front), replacing round 6's two-fillets-in-series. No corners, no transitions, no intersection sharp points. The front wall reads as a single horizontal band with smooth concave shoulders rising to back/sides.
+
+Top-edge fillet: r=2 on back/sides; r=0.8 on the 1.6mm-thick front wall (function-driven exception — r=2 collapses on thin wall, modeler-anticipated).
+
+**Cradle:** unchanged.
+
+**Pipeline speedup convention introduced** between rounds 5 and 6: split render quality into draft (during iteration) vs ship (at delivery). Designs declare `$fn`, `top_fillet_steps`, `ramp_arc_steps` as top-level params; shipper bumps via -D overrides. Cut iteration time from ~2hrs/round to ~8min.
+
+**Modeler fix list:** see `id/modeler-notes-v7.md`.
+
+**Status:** Shipped commit `31a2e27` (v3 design page rewritten, ship-quality STLs). Test print added in commit `9a1c468` (`tray-slot-fit-pair`). All Revisions entries above are now historical record.

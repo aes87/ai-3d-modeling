@@ -223,3 +223,20 @@ This unifies all three issues:
 **Round 7 simplification:** drop the variable-height front wall entirely. Front wall = uniform z=10 across the full width. ONE concave fillet per side from side-wall-top (z=30) to front-wall-top (z=10), r=20 (matches the 20mm height drop). No corners, no transitions, no intersections, no sharp points.
 
 **Status:** `modeler-notes-v7.md` written. Cradle untouched again. Dispatching modeler.
+
+### Turn 12 — round 7 lands clean, ship pipeline run, test print added
+
+**Modeler PASS** on round 7, first iteration. Variable-height front wall collapsed to uniform z=10. ONE concave fillet sweep per side r=20 (replaces round-6's two-fillets-in-series). r=2 → r=0.8 deviation on 1.6mm front wall top fillet (anticipated, function-driven). Render time at draft quality: cradle STL 80s, tray STL ~12s, full pipeline ~8min vs round-5's 2hrs.
+
+**User reviewed round 7 on GitHub** (commit `9e3efb6`). Initial concern about a "floating beam over the scoop" in the threequarter view; agent investigated via diagnostic top-down + side renders. Conclusion: no floating geometry — the apparent "beam" is the back wall visible through the open front cutout, an orthographic projection artifact, not a defect. User accepted: "OK, I think you're smoking crack but go ahead and move forward."
+
+**Review pipeline run:**
+- print-reviewer PASS — 1 marginal (cross-section measurement artifact at r=20 fillet corner, not a real thin wall). No blockers.
+- fit-reviewer PASS — 0 mm³ interference, all clearances confirmed. Found one spec bug in `assemblies/ptouch-cradle.json` (tray X position 2.35 should be 3.40); SCAD geometry was always correct, fixed the assembly spec inline.
+- shipper ran ship-quality re-render (~13min cradle STL, ~6min tray STL); rewrote `docs/ptouch-cradle.md` v2 owl → v3 minimalism with full design log of the 7-round arc; updated README; pushed commit `31a2e27`.
+
+**Test print added** (user prompt: "are there no dimensional test prints for this?"): test-print-planner identified the tray-to-slot sliding fit as the only candidate that genuinely earns a test print (the other 6 spec.json candidates are aesthetic observation-only, can be checked on the real print). Built `tray-slot-fit-pair` test piece — mini cradle slot U-channel + matching tray section. Initial version had a solid tray slug; user pointed out the bulk would waste filament: rebuilt as a hollow shell with 1.6mm walls + 1.6mm floor, open at the top. Saves ~70% of filament. Codified as a norm in `.claude/agents/test-print-planner.md` simplification principles.
+
+**Doc audit** found multiple stale design docs in `docs/`: ptouch-cradle.md missing test-print section, humidity-output.md missing superseded banner, caliper-test.md image link wrong, glitter-wizard-hat.md pipeline table out of date, fan-tub-adapter-v2.md missing v3-proposal cross-reference, fan-tub-adapter-v3-proposal.md missing stalled banner. All fixed in commit `ea92875`.
+
+**Status:** Shipped. Design has landed. 7-round ID critique arc complete. Brief + conversation log + lessons + agent definitions all updated.
