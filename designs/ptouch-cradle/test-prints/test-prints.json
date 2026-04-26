@@ -27,23 +27,25 @@
     },
     {
       "id": "printer-corner-fit",
-      "name": "Printer Corner Fit (L-Test)",
+      "name": "Printer Corner Fit (U-Test)",
       "category": "fitment",
       "priority": "high",
-      "reason": "Cradle's printer pocket (80 × 154 mm interior) accommodates the PT-P750W (78 × 152 mm) with 1 mm/side XY clearance. Fit-reviewer verified the math, but FDM dimensional drift on a 78–152 mm part can reach ±0.2–0.3 mm — and the printer's actual corner radius/chamfer (not modeled in the proxy box) needs to clear the cradle's sharp 90° interior corner. Adding this test after the user noted that pocket fitment isn't validated by the tray-slot-fit-pair.",
+      "reason": "Cradle's printer pocket (80 × 154 mm interior) accommodates the PT-P750W (78 × 152 mm) with 1 mm/side XY clearance. Fit-reviewer verified the math, but FDM dimensional drift on a 78–152 mm part can reach ±0.2–0.3 mm — and the printer's actual corner radii/chamfers (not modeled in the proxy box) need to clear the cradle's sharp 90° interior corners. The U-shape covers three of the four pocket walls — both long sides + the closed back — so two inside back-corners and full-length engagement on both long axes are validated in one piece.",
       "features": [
         "printer_pocket_walls",
-        "printer_pocket_corner"
+        "printer_pocket_back_corners"
       ],
-      "zRange": [0, 25],
+      "zRange": [0, 12.5],
       "criticalDimensions": {
         "wall_thickness":     { "nominal": 3.0,   "tolerance": 0.2 },
-        "wall_height":        { "nominal": 25.0,  "tolerance": 0.2 },
+        "wall_height":        { "nominal": 12.5,  "tolerance": 0.2 },
+        "pocket_int_x":       { "nominal": 80.0,  "tolerance": 0.2 },
+        "pocket_int_y":       { "nominal": 154.0, "tolerance": 0.2 },
         "per_side_clearance": { "nominal": 1.0,   "tolerance": 0.0 }
       },
-      "matePart": "Brother PT-P750W printer (78 × 152 × 143 mm) — user provides the actual printer, places its corner against the L's inside angle",
-      "simplification": "Two perpendicular wall segments forming ONE inside corner of the printer pocket. Long leg 100 mm × 3 mm × 25 mm (along printer's long-axis side), short leg 80 mm × 3 mm × 25 mm (along printer's short-axis side). No floor — L is rigid enough as printed to stand on either leg. Three reference points: two open ends + the inside angle. ~13 cm³, ~10% of full cradle volume.",
-      "verificationMethod": "Place the L on a flat surface (one leg's outside face down). Set the printer's corner against the inside angle. Push the printer toward the corner. PASS = slides with slight consistent resistance, ~1 mm gap visible to each L wall, printer's corner seats without binding. FAIL-tight = bump pocket clearance to 1.2 mm. FAIL-loose = tighten to 0.8 mm. FAIL-corner-bind = add inside-corner relief to printer pocket subtraction.",
+      "matePart": "Brother PT-P750W printer (78 × 152 × 143 mm) — user provides the actual printer, slides it into the open end (+Y) of the U so its back corners seat against the closed back wall",
+      "simplification": "U-shaped: three perpendicular walls reproducing the full pocket footprint at half cradle height. Closed back wall 86 × 3 × 12.5 mm (full outer X), two long side walls 154 × 3 × 12.5 mm each running the full pocket length along Y. Open at the front (−Y) for printer entry. No floor — U is rigid as printed; printer rests on the desk during fit. ~14.8 cm³, ~11% of full cradle volume. Half-height vs the full cradle wall (25 mm) cuts layer count and print time roughly in half despite tripling total wall length, because the printer's outline is a constant cross-section over its 143 mm height.",
+      "verificationMethod": "Place the U on a flat surface (any wall outside-face down). Slide the printer into the open end (+Y); printer should bottom out against the back wall with both long edges tracking parallel to the side walls. PASS = uniform ~1 mm gap to each side wall along the full 152 mm engagement, both back corners seat without binding. FAIL-tight = bump pocket clearance to 1.2 mm. FAIL-loose = tighten to 0.8 mm. FAIL-corner-bind = add inside-corner relief to printer pocket subtraction.",
       "designDir": "designs/ptouch-cradle/test-prints/printer-corner-fit"
     }
   ],
