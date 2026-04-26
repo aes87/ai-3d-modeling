@@ -230,12 +230,23 @@ volume (tray):      38.9 cm³   (expected 30–400 cm³)  PASS
 volume (combined): 175.5 cm³   (expected 30–400 cm³)  PASS
 ```
 
+## Test Prints
+
+Before committing to the full ~150 cm³ print, verify the tray-to-slot sliding fit with a small dimensional test piece:
+
+| Test Print | Purpose | Volume | Print time |
+|------------|---------|-------:|-----------:|
+| [tray-slot-fit-pair](../designs/ptouch-cradle/test-prints/tray-slot-fit-pair/) | Mini cradle slot + matching tray slug. Verifies the 0.35mm/side sliding fit clearance at full-scale wall thickness before the real print. | ~30 cm³ | ~25 min |
+
+If the tray slides smoothly with consistent slight resistance: proceed to the full print. If it binds or rattles: adjust XY compensation in Bambu Studio (Process → Advanced → XY Compensation) by ±0.05mm and re-test before burning hours on the full job.
+
 ## Downloads
 
 | File | Description |
 |------|-------------|
 | [`cradle.stl`](../designs/ptouch-cradle/output/cradle.stl) | Cradle — print-ready mesh (ship quality) |
 | [`tray.stl`](../designs/ptouch-cradle/output/tray.stl) | Tray — print-ready mesh (ship quality) |
+| [`tray-slot-fit-pair.stl`](../designs/ptouch-cradle/test-prints/tray-slot-fit-pair/tray-slot-fit-pair.stl) | Test print — fit verification pair (~30 cm³) |
 | [`cradle.scad`](../designs/ptouch-cradle/cradle.scad) | Cradle parametric source |
 | [`tray.scad`](../designs/ptouch-cradle/tray.scad) | Tray parametric source |
 | [`spec.json`](../designs/ptouch-cradle/spec.json) | Validation spec |
@@ -255,6 +266,7 @@ volume (combined): 175.5 cm³   (expected 30–400 cm³)  PASS
 | Geometry | geometry-analyzer | Cradle: watertight, all transitions PASS. Tray: watertight, 1 marginal fillet corner |
 | Print review | print-reviewer | 7/7 PASS cradle, 4/4 PASS tray. 1 marginal (tray fillet corner 1.026mm). No blockers. |
 | Fit review | fit-reviewer | PASS — 0.0mm³ interference, all clearances confirmed analytically |
+| Test prints | test-print-planner | 1 piece — tray-slot-fit-pair (fitment verification) |
 | Ship | shipper | this commit |
 
 Built with pipeline v4

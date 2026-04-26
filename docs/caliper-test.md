@@ -13,7 +13,7 @@ A Gridfinity-compatible 2x1 bin that holds a HARTE 6-inch digital caliper uprigh
 ![Isometric view of 2x1 Gridfinity bin with pocket visible through the open top](images/caliper-test/caliper-test-iso.png)
 *Isometric view — stacking lip at top, thin-walled upper section, pocket opening visible inside.*
 
-![Top-down view showing stacking lip ring, bin interior, and pocket opening](images/caliper-test/caliper-test-front.png)
+![Top-down view showing stacking lip ring, bin interior, and pocket opening](images/caliper-test/caliper-test-top.png)
 *Top-down view — stacking lip ring (outer), bin walls, and the 70x18mm pocket opening (inner rectangle).*
 
 ## Design Overview

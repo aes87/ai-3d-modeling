@@ -120,6 +120,7 @@ Stars and crescent moons alternate around the circumference: star, moon, star, m
 | Model v1 | orchestrator | 4-row cutouts — wrong pattern |
 | Review | user | Single row near base, stars/moons only, tip too round |
 | Model v2 | orchestrator | Split files, single row at 10%, tip 1.5mm |
-| Geometry | geometry-analyzer | pending |
+| Geometry | geometry-analyzer | complete (`output/geometry-report.json`) |
+| Print review | print-reviewer | complete (`output/review-printability.md`) |
 
 Built with pipeline v4.1

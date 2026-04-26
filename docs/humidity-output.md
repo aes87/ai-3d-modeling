@@ -1,4 +1,6 @@
-# Humidity-Output Duct Mount
+# Humidity-Output Duct Mount (V1)
+
+> **Superseded — see [humidity-output-v2.md](humidity-output-v2.md).** V1 had three issues fixed in V2: spigot OD was 108mm (target ~107.6mm — too tight against duct ring), no lead-in taper for duct insertion, and inner fins started 5mm above the base (printed on air). Kept here for design history.
 
 Mounts a standard 4" flex dryer duct to the bin lid. Uses the same waffle-grid Y-branch architecture as the fan-tub-adapter-base — caulked permanently to the lid, no fasteners. The duct is secured with a 16" releasable zip tie over a closed-cell EPDM foam gasket for an airtight seal.
 

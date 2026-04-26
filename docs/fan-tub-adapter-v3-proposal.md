@@ -1,5 +1,7 @@
 # Fan-Tub Adapter v3.0 — Proposal: Shroud Cap + Guided Snap
 
+> **Status: Stalled.** Proposal accepted; design dirs stubbed at `designs/fan-tub-adapter-v3-base/` and `designs/fan-tub-adapter-v3-cap/` (`requirements.md` + `spec.json` only — no SCAD, no STL). Implementation paused indefinitely. The currently-shipped fan-tub-adapter is **[v2.0](fan-tub-adapter-v2.md)**; this doc is a forward proposal kept for reference.
+
 ## Problem Statement (v2 Shortcomings)
 
 The v2 clip is a thin ring (2mm thick, 119mm square frame) that sits on the fan top with four 1.5mm-thick cantilever arms dangling down to catch tiny ledges on the base rim. In practice:

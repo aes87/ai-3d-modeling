@@ -3,6 +3,7 @@
 A two-part replacement for the v1.0 bolt-on fan-tub adapter. The base plate is permanently caulked to the tub lid, and a snap-on retention clip holds the fan in place for tool-free removal and cleaning.
 
 **v1.0 is frozen** — see [fan-tub-adapter.md](fan-tub-adapter.md) for the bolt-on design.
+**v3.0 is stalled** — see [fan-tub-adapter-v3-proposal.md](fan-tub-adapter-v3-proposal.md) for the shroud-cap + guided-snap proposal (forward-looking, not yet implemented).
 
 ## System Overview
 
