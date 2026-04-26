@@ -1,0 +1,58 @@
+{
+  "name": "ptouch-cradle",
+  "description": "Two-part desktop cradle + label-catch tray for Brother PT-P750W. Checks tray sliding fit into cradle tray slot, and printer clearance in printer pocket.",
+  "parts": [
+    {
+      "name": "cradle",
+      "stlPath": "designs/ptouch-cradle/output/cradle.stl",
+      "position": [0, 0, 0],
+      "description": "Cradle body — printer pocket at back (Y=0..160), tray slot at front shelf (Y=160..254.9)."
+    },
+    {
+      "name": "tray",
+      "stlPath": "designs/ptouch-cradle/output/tray.stl",
+      "position": [2.35, 160.0, 4.0],
+      "description": "Label-catch tray in assembled position inside the tray slot. Tray X: centered in 103.9mm slot (slot X=2.05..105.95, tray W=103.2, centering offset=2.35). Tray Y: 160.0 = slot back wall. Tray Z: 4.0 = slot floor (base thickness). Pupil embosses protrude in tray local +Y which becomes cradle front-facing direction (away from slot interior)."
+    },
+    {
+      "name": "printer",
+      "stlPath": "assemblies/reference-stls/ptp750w-printer-box.stl",
+      "position": [0, 0, 0],
+      "description": "Brother PT-P750W reference box 78x152x143mm at X=15..93, Y=3..155, Z=4..147 inside printer pocket (pocket interior X=14..94, Y=3..157, Z=4+)."
+    }
+  ],
+  "checks": {
+    "interference": [
+      {
+        "partA": "tray",
+        "partB": "cradle",
+        "maxVolume": 0,
+        "description": "Tray body must not intersect cradle slot walls or floor — pure clearance fit"
+      },
+      {
+        "partA": "printer",
+        "partB": "cradle",
+        "maxVolume": 0,
+        "description": "Printer reference box must not intersect cradle printer pocket walls or floor"
+      }
+    ]
+  },
+  "fitSpecs": [
+    {
+      "name": "tray-slot-clearance",
+      "partA": "tray",
+      "partB": "cradle",
+      "type": "clearance",
+      "expected": { "min": 0.2, "max": 0.7 },
+      "description": "Sliding fit clearance between tray exterior and cradle slot walls (0.35mm per side spec)"
+    },
+    {
+      "name": "printer-pocket-clearance",
+      "partA": "printer",
+      "partB": "cradle",
+      "type": "clearance",
+      "expected": { "min": 0.8, "max": 1.5 },
+      "description": "Clearance fit between printer reference box and cradle printer pocket walls (1.0mm per side spec)"
+    }
+  ]
+}

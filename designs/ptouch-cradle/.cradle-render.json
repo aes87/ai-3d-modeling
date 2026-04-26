@@ -1,0 +1,242 @@
+{
+  "version": "1.0.0",
+  "name": "cradle-render",
+  "created": "2026-04-19T18:59:45.166405+00:00",
+  "modified": "2026-04-19T18:59:45.170053+00:00",
+  "source": {
+    "scad_file": "/workspace/projects/3d-printing/designs/ptouch-cradle/cradle.scad",
+    "discovered_params": {
+      "cradle_w_shelf": {
+        "value": 108,
+        "type": "number",
+        "comment": "X, shelf (wide) section body width"
+      },
+      "cradle_w_printer": {
+        "value": 86,
+        "type": "number",
+        "comment": "X, printer (narrow) section body width"
+      },
+      "side_step": {
+        "value": "(cradle_w_shelf - cradle_w_printer) / 2",
+        "type": "expression",
+        "comment": "11 mm per side"
+      },
+      "cradle_total_d": {
+        "value": 254.9,
+        "type": "number",
+        "comment": "Y, overall cradle depth"
+      },
+      "base_thickness": {
+        "value": 4.0,
+        "type": "number",
+        "comment": "base plate thickness"
+      },
+      "wall_thickness": {
+        "value": 3.0,
+        "type": "number",
+        "comment": "nominal wall thickness"
+      },
+      "pocket_w": {
+        "value": 80,
+        "type": "number",
+        "comment": "X interior pocket (78 printer + 2*1.0 clearance)"
+      },
+      "pocket_d": {
+        "value": 154,
+        "type": "number",
+        "comment": "Y interior pocket (152 + 2*1.0 clearance)"
+      },
+      "printer_section_d": {
+        "value": 160,
+        "type": "number",
+        "comment": "Y (3 back wall + 154 pocket + 3 front wall)"
+      },
+      "low_wall_h": {
+        "value": 25,
+        "type": "number",
+        "comment": "perimeter wall height"
+      },
+      "back_panel_h": {
+        "value": 145,
+        "type": "number",
+        "comment": "tall back panel body top"
+      },
+      "chamfer_len": {
+        "value": "side_step",
+        "type": "expression",
+        "comment": "11 mm \u2014 45\u00b0 means same in X and Y"
+      },
+      "chamfer_y_start": {
+        "value": "printer_section_d - chamfer_len",
+        "type": "expression",
+        "comment": "149"
+      },
+      "chamfer_y_end": {
+        "value": "printer_section_d",
+        "type": "expression",
+        "comment": "160"
+      },
+      "tuft_base_w": {
+        "value": 25,
+        "type": "number",
+        "comment": ""
+      },
+      "tuft_peak_dz": {
+        "value": 35,
+        "type": "number",
+        "comment": ""
+      },
+      "tuft_peak_inset_x": {
+        "value": 5,
+        "type": "number",
+        "comment": ""
+      },
+      "tuft_apex_r": {
+        "value": 2,
+        "type": "number",
+        "comment": ""
+      },
+      "tuft_thickness": {
+        "value": 3,
+        "type": "number",
+        "comment": ""
+      },
+      "cable_slot_w": {
+        "value": 25,
+        "type": "number",
+        "comment": ""
+      },
+      "cable_slot_h": {
+        "value": 20,
+        "type": "number",
+        "comment": ""
+      },
+      "cable_slot_cx": {
+        "value": 54,
+        "type": "number",
+        "comment": "center X from shelf-origin left (X=0)"
+      },
+      "foot_d": {
+        "value": 8,
+        "type": "number",
+        "comment": ""
+      },
+      "foot_h": {
+        "value": 3,
+        "type": "number",
+        "comment": ""
+      },
+      "foot_inset": {
+        "value": 5,
+        "type": "number",
+        "comment": ""
+      },
+      "slot_w": {
+        "value": 103.9,
+        "type": "number",
+        "comment": ""
+      },
+      "slot_d": {
+        "value": 94.9,
+        "type": "number",
+        "comment": ""
+      },
+      "slot_h": {
+        "value": 22.3,
+        "type": "number",
+        "comment": ""
+      },
+      "tray_section_d": {
+        "value": 94.9,
+        "type": "number",
+        "comment": ""
+      },
+      "tray_section_y0": {
+        "value": 160,
+        "type": "number",
+        "comment": ""
+      },
+      "fillet_vert_r": {
+        "value": 4.0,
+        "type": "number",
+        "comment": "cradle exterior vertical edges (walls)"
+      },
+      "fillet_base_corner_r": {
+        "value": 6.0,
+        "type": "number",
+        "comment": "base plate footprint corners (top-down)"
+      },
+      "fillet_top_r": {
+        "value": 1.5,
+        "type": "number",
+        "comment": "wall-top horizontal edge fillet"
+      },
+      "cradle_body_h": {
+        "value": "back_panel_h",
+        "type": "expression",
+        "comment": ""
+      },
+      "cradle_total_h": {
+        "value": "back_panel_h + tuft_peak_dz",
+        "type": "expression",
+        "comment": ""
+      },
+      "feather_w": {
+        "value": 20,
+        "type": "number",
+        "comment": ""
+      },
+      "feather_h": {
+        "value": 12,
+        "type": "number",
+        "comment": ""
+      },
+      "feather_raise": {
+        "value": 1.0,
+        "type": "number",
+        "comment": ""
+      },
+      "feather_cz": {
+        "value": "(base_thickness + low_wall_h) / 2",
+        "type": "expression",
+        "comment": "14.5"
+      },
+      "feather_y0": {
+        "value": "wall_thickness",
+        "type": "expression",
+        "comment": "3"
+      },
+      "feather_y1": {
+        "value": "chamfer_y_start",
+        "type": "expression",
+        "comment": "149"
+      },
+      "feather_span": {
+        "value": "feather_y1 - feather_y0",
+        "type": "expression",
+        "comment": "146"
+      },
+      "feather_gap": {
+        "value": "(feather_span - 3 * feather_w) / 4",
+        "type": "expression",
+        "comment": "(146-60)/4 = 21.5"
+      }
+    }
+  },
+  "overrides": {},
+  "render_settings": {
+    "camera": null,
+    "imgsize": [
+      800,
+      600
+    ],
+    "colorscheme": "Cornfield",
+    "projection": "ortho",
+    "render_mode": "render"
+  },
+  "library_paths": [
+    "/workspace/projects/3d-printing/scad-lib"
+  ],
+  "spec_file": null,
+  "outputs": []
+}

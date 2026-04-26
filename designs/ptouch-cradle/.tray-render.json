@@ -1,0 +1,127 @@
+{
+  "version": "1.0.0",
+  "name": "tray-render",
+  "created": "2026-04-19T18:59:46.106119+00:00",
+  "modified": "2026-04-19T18:59:46.109342+00:00",
+  "source": {
+    "scad_file": "/workspace/projects/3d-printing/designs/ptouch-cradle/tray.scad",
+    "discovered_params": {
+      "int_w": {
+        "value": 100,
+        "type": "number",
+        "comment": "interior width (X)"
+      },
+      "int_d": {
+        "value": 91,
+        "type": "number",
+        "comment": "interior depth (Y)"
+      },
+      "int_h": {
+        "value": 20,
+        "type": "number",
+        "comment": "interior height (Z)  \u2014 was 40, halved"
+      },
+      "wall_t": {
+        "value": 1.6,
+        "type": "number",
+        "comment": ""
+      },
+      "floor_t": {
+        "value": 1.6,
+        "type": "number",
+        "comment": ""
+      },
+      "ext_w": {
+        "value": "int_w + 2*wall_t",
+        "type": "expression",
+        "comment": "103.2"
+      },
+      "ext_d": {
+        "value": "int_d + 2*wall_t",
+        "type": "expression",
+        "comment": "94.2"
+      },
+      "ext_h": {
+        "value": "int_h + floor_t",
+        "type": "expression",
+        "comment": "21.6"
+      },
+      "fillet_vert_r": {
+        "value": 3.0,
+        "type": "number",
+        "comment": "tray exterior vertical edge fillets (kept)"
+      },
+      "eye_r": {
+        "value": 9,
+        "type": "number",
+        "comment": "up from 8; clamped from 10 for vertical fit on 21.6 mm wall"
+      },
+      "eye_raise": {
+        "value": 2,
+        "type": "number",
+        "comment": "up from 1.5"
+      },
+      "eye_cz": {
+        "value": 11,
+        "type": "number",
+        "comment": "\u2248 mid-height of 21.6 mm wall (adjusted from 13 to fit r=9)"
+      },
+      "eye_cx_off": {
+        "value": 22,
+        "type": "number",
+        "comment": "from tray centerline (unchanged)"
+      },
+      "pupil_r": {
+        "value": 4,
+        "type": "number",
+        "comment": "up from 3"
+      },
+      "pupil_extra": {
+        "value": 2,
+        "type": "number",
+        "comment": "additional raise beyond eye (total proud = 4)"
+      },
+      "beak_w": {
+        "value": 8,
+        "type": "number",
+        "comment": "up from 6"
+      },
+      "beak_h": {
+        "value": 8,
+        "type": "number",
+        "comment": "up from 6"
+      },
+      "beak_raise": {
+        "value": 2.5,
+        "type": "number",
+        "comment": "up from 2"
+      },
+      "beak_top_z": {
+        "value": 9,
+        "type": "number",
+        "comment": "top of triangle (below eyes)"
+      },
+      "beak_apex_z": {
+        "value": 1,
+        "type": "number",
+        "comment": "apex near the floor (beak_top_z - beak_h)"
+      }
+    }
+  },
+  "overrides": {},
+  "render_settings": {
+    "camera": null,
+    "imgsize": [
+      800,
+      600
+    ],
+    "colorscheme": "Cornfield",
+    "projection": "ortho",
+    "render_mode": "render"
+  },
+  "library_paths": [
+    "/workspace/projects/3d-printing/scad-lib"
+  ],
+  "spec_file": null,
+  "outputs": []
+}
