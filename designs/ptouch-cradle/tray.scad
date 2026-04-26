@@ -1,4 +1,62 @@
-// P-touch Catch Tray — closed kanban bin (round 7, patch v10)
+// P-touch Catch Tray — closed kanban bin (round 7, patch v11)
+//
+// ROUND-7 PATCH v11 (S-curve / cap continuity — corner gap + thin front face fix):
+//
+//   USER-VISIBLE ISSUE (two slicer-view screenshots in vault/0-inbox/,
+//   dated 2026-04-26):
+//     1. "odd gap between front of tray adornments and sidewall — should
+//        connect smoothly and continuously" — at the front-wall corner the
+//        S-curve sweep face starts ~1.6 mm ABOVE where the side-wall cap's
+//        outer-edge ends; the two surfaces don't meet, leaving a thin
+//        wedge-shaped gap in the slicer view.
+//     2. "Discontinuous thin front face on front wall of tray Odd —
+//        should be removed when other discontinuity fixed" — at y=92.55
+//        (the back_sides_mask boundary) the corner column's top z jumps
+//        from 28.4 (cap apex) to 30 (S-curve cutter top), exposing a
+//        thin vertical strip of front-wall material.
+//
+//   ROOT CAUSE: 1.6 mm height mismatch between the S-curve cutter
+//   outer-edge top and the side-wall cap outer-edge top, at the corner
+//   column (x ∈ [0, wall_t] ∪ [ext_w-wall_t, ext_w]).
+//     - Side-wall cap (r = top_edge_fillet_r = wall_t = 1.6, applied where
+//       y ≤ ext_d - wall_t - 0.05 = 92.55 via back_sides_mask) ends at
+//       outer-edge top z = ext_h - r = 28.4.
+//     - Front-wall-slab S-curve cutter outer-edge tangent point was at
+//       (x=0, z=ext_h) = (0, 30). 1.6 mm higher.
+//   Patch v10's mask clip at y=92.55 (the watertight fix) means the cap
+//   doesn't operate in the corner column; the column's outer edge
+//   therefore followed the cutter alone (z=30 at x=0), not the cap
+//   (z=28.4 at x=0). Both visible artifacts share that one root cause.
+//
+//   FIX (Option A from the next-steps note): lower the S-curve top tangent
+//   point to z = ext_h - top_edge_fillet_r = s_curve_top_z = 28.4 so it
+//   matches the cap outer-edge top. The S-curve and cap are then
+//   continuous at the corner.
+//
+//   GEOMETRIC CONSEQUENCE: the S-curve drop is now (28.4 - 10) = 18.4 mm
+//   instead of 20 mm. Two equal-radius tangent-continuous quarter-arcs
+//   give r_each = 9.2 (was 10) and total horizontal extent per side
+//   2 * r_each = 18.4 (was 20). The flat front-wall middle widens
+//   slightly (from [20, ext_w-20] to [18.4, ext_w-18.4]). Inflection
+//   point per side moves from (10, 20) to (9.2, 19.2) — both X and Z
+//   shift because the height drop is centered around the new midpoint.
+//
+//   The cutter polygon's outer-edge close drops from (ext_w+slop, ext_h)
+//   down to (ext_w, s_curve_top_z) = (ext_w, 28.4) via a vertical step at
+//   x=ext_w — and symmetrically on the LEFT — so the corner column's
+//   outer edge top is carved down from 30 to 28.4, matching the cap apex.
+//
+//   On the INNER (flatten-arc-to-flat-top) profile, the outer-edge corner
+//   vertices that used to be pinned at z=ext_h are now pinned at
+//   z=s_curve_top_z=28.4 too, so the outer-side wall faces of the
+//   front-wall-slab cutter are still vertical rectangles (not skewed
+//   parallelograms) and the inner→outer Y-slab lerp produces a clean
+//   ruled surface.
+//
+//   Bbox is unchanged (103.2 × 94.2 × 30) — the cap apex still reaches
+//   z=ext_h=30 at the inner face of the back/side walls; only the
+//   front-wall-slab cutter's outer-edge top z drops.
+//
 // Slides into the cradle's forward tray slot; catches auto-cut labels.
 //
 // ROUND-7 PATCH v10 (top-edge fillet alignment with cradle — Option C applied):
@@ -177,11 +235,6 @@ ext_h     = int_h + floor_t;      // 30.0
 
 // Front wall — uniform low height (round-7 simplification).
 front_wall_h                  = 10;     // single uniform height across full width
-// Patch v9: S-curve side fillet uses TWO tangent-continuous quarter-arcs
-// of radius front_wall_side_fillet_r_each per side. Total horizontal extent
-// per side = 2 * r_each = 20 mm (matches the patch-v8 r=20 single-arc extent).
-front_wall_side_fillet_r_each = 10;
-front_wall_side_extent        = 2 * front_wall_side_fillet_r_each;  // 20
 
 // Top edge fillet schedule
 fillet_vert_r           = 3.0;    // exterior vertical edge fillets
@@ -203,6 +256,24 @@ front_top_edge_fillet_r = 0.8;    // smaller fillet on front wall top
                                   //   exception — keeps the front lip soft
                                   //   without competing with the back/side cap.
 
+// Patch v11: S-curve top tangent point lowered from z=ext_h to
+// z = ext_h - top_edge_fillet_r so it MATCHES the side-wall cap's
+// outer-edge top (the cap rolls from outer at z = ext_h - r up to the
+// inner-face apex at z = ext_h). With the cap and the S-curve cutter
+// landing at the same z on the outer edge, the front-wall corner column
+// reads as one continuous surface — no gap, no thin front face. See
+// header for full root-cause + fix-recipe context.
+s_curve_top_z                 = ext_h - top_edge_fillet_r;   // 30 - 1.6 = 28.4
+
+// Patch v9 → v11: the S-curve still uses TWO tangent-continuous quarter-arcs
+// per side. With the lower top point the drop is now 18.4 mm and each arc
+// radius is 9.2 mm (was 10). Total horizontal extent per side =
+// 2 * r_each = 18.4 mm (was 20). The flat front-wall middle widens
+// slightly — [front_wall_side_extent, ext_w - front_wall_side_extent]
+// becomes [18.4, 84.8] (was [20, 83.2]).
+front_wall_side_fillet_r_each = (s_curve_top_z - front_wall_h) / 2;       // 9.2
+front_wall_side_extent        = 2 * front_wall_side_fillet_r_each;        // 18.4
+
 // Interior floor ramp — concave (parabolic) curve. Unchanged.
 ramp_y_extent       = 30;
 ramp_back_y         = ext_d - wall_t - ramp_y_extent;   // 62.6
@@ -220,8 +291,10 @@ assert(front_wall_h < ext_h,
        "Front wall height must be lower than back/side walls");
 assert(2 * front_wall_side_extent <= ext_w,
        "Side fillets overlap — reduce front_wall_side_fillet_r_each");
-assert(front_wall_side_fillet_r_each * 2 == (ext_h - front_wall_h),
-       "Each S-curve arc r must equal half the side-wall-to-front-wall height drop");
+assert(front_wall_side_fillet_r_each * 2 == (s_curve_top_z - front_wall_h),
+       "Patch v11: each S-curve arc r must equal half the (s_curve_top_z - front_wall_h) drop");
+assert(s_curve_top_z == ext_h - top_edge_fillet_r,
+       "Patch v11: S-curve top must match the side-wall cap outer-edge top (z = ext_h - top_edge_fillet_r)");
 assert(front_top_edge_fillet_r < wall_t,
        "Front top edge fillet must be smaller than wall thickness");
 assert(ramp_back_y > wall_t,
@@ -243,29 +316,50 @@ module outer_box_full() {
         rounded_rect(ext_w, ext_d, fillet_vert_r);
 }
 
-// ===== Front-wall top cutter — patch v9 =====
+// ===== Front-wall top cutter — patch v9 → v11 =====
 //
 // The cutter is built as a stack of thin Y-slabs that interpolate between:
 //
 //   INNER profile (at y = ext_d - wall_t):
 //     Flat top at z = front_wall_h across the full x range. The cutter
-//     polygon is a simple rectangle:
-//       (-slop, front_wall_h) → (ext_w+slop, front_wall_h) →
-//       (ext_w+slop, ext_h+slop) → (-slop, ext_h+slop)
+//     polygon is a simple rectangle (with the outer-edge corner-column
+//     drop-step matching the OUTER profile so per-vertex lerp stays
+//     vertical-edge-aligned).
 //
 //   OUTER profile (at y = ext_d):
 //     The S-curve cutter polygon. For each side, two tangent-continuous
-//     quarter-arcs of radius r_each = 10 form the S-curve from the
-//     side-wall-top outer corner (x=0 or x=ext_w, z=ext_h) down to the
-//     front-wall-top inner endpoint (x=20 or x=ext_w-20, z=front_wall_h).
+//     quarter-arcs of radius r_each = 9.2 (was 10 pre-v11) form the
+//     S-curve from the corner-column outer-edge tangent point
+//     (x=0 or x=ext_w, z=s_curve_top_z=28.4) down to the front-wall-top
+//     inner endpoint (x=2*r_each or x=ext_w-2*r_each, z=front_wall_h=10).
 //
-//     LEFT S-curve (traversed (20, 10) → (10, 20) → (0, 30)):
-//       bottom arc: center (20, 20),  r=10, θ from 270° down to 180° (CW)
-//       top arc:    center (0, 20),   r=10, θ from   0° up   to  90° (CCW)
+//     PATCH v11: the S-curve top z dropped from ext_h (30) to
+//     s_curve_top_z (28.4) so it MATCHES the side-wall cap's outer-edge
+//     top — the cap and the S-curve are now continuous at the corner.
+//     The polygon also now carves a vertical step from z=ext_h down to
+//     z=s_curve_top_z at x=ext_w and x=0 (the corner-column outer edge),
+//     so the corner column's outer-edge top sits at 28.4 — flush with
+//     the cap.
 //
-//     RIGHT S-curve (traversed (ext_w, 30) → (ext_w-10, 20) → (ext_w-20, 10)):
-//       top arc:    center (ext_w, 20),    r=10, θ from  90° up   to 180° (CCW)
-//       bottom arc: center (ext_w-20, 20), r=10, θ from   0° down to -90° (CW)
+//     LEFT S-curve (traversed (2*r_each, front_wall_h) → (r_each,
+//                              front_wall_h+r_each) → (0, s_curve_top_z)):
+//       bottom arc: center (2*r_each, front_wall_h+r_each)  = (18.4, 19.2)
+//                   r=9.2, θ from 270° down to 180° (CW)
+//                   endpoints: (18.4, 10) → (9.2, 19.2)
+//       top arc:    center (0, s_curve_top_z - r_each)      = (0, 19.2)
+//                   r=9.2, θ from 0° up to 90° (CCW)
+//                   endpoints: (9.2, 19.2) → (0, 28.4)
+//
+//     RIGHT S-curve (traversed (ext_w, 28.4) → (ext_w-r_each,
+//                               front_wall_h+r_each) → (ext_w-2*r_each,
+//                               front_wall_h)):
+//       top arc:    center (ext_w, s_curve_top_z - r_each)  = (ext_w, 19.2)
+//                   r=9.2, θ from 90° up to 180° (CCW)
+//                   endpoints: (ext_w, 28.4) → (ext_w-9.2, 19.2)
+//       bottom arc: center (ext_w-2*r_each, front_wall_h+r_each)
+//                                                            = (ext_w-18.4, 19.2)
+//                   r=9.2, θ from 0° down to -90° (CW)
+//                   endpoints: (ext_w-9.2, 19.2) → (ext_w-18.4, 10)
 //
 // Each slab is a thin linear_extrude across Y of the interpolated polygon.
 // Linear interpolation parameter t = (y_center - (ext_d - wall_t)) / wall_t,
@@ -274,27 +368,32 @@ module outer_box_full() {
 // a profile where the S-curve sweep is partially "flattened" toward the
 // horizontal at z=front_wall_h.
 //
-// Implementation note: the polygon vertex count is the SAME at both ends
-// (inner profile is constructed by replacing the four S-curve arc endpoints
-// + interior arc samples with their projection onto z=front_wall_h, except
-// the outer-edge top-corners stay at z=ext_h to match the cutter's box
-// boundary). This way per-vertex linear interpolation is well-defined.
+// Implementation note: the polygon vertex count is the SAME at both ends.
+// On the INNER profile, the arc samples are replaced by their flat-top
+// projections (z forced to front_wall_h, x kept the same). The two
+// outer-edge corner vertices (first sample of right_top_arc at
+// (ext_w, s_curve_top_z); last sample of left_top_arc at (0, s_curve_top_z))
+// are PINNED at z=s_curve_top_z on the INNER profile too — so the cutter's
+// outer-side wall faces are vertical rectangles (not skewed parallelograms)
+// and the inner→outer Y-slab lerp produces a clean ruled surface.
 //
 // Specifically, both INNER and OUTER profiles are walked in the same
 // vertex order:
-//   1. (-slop, ext_h + slop)            top-left of cut region
-//   2. (ext_w + slop, ext_h + slop)     top-right
-//   3. (ext_w + slop, ext_h)            step down to right outer edge
-//   4. RIGHT top-arc samples            (ext_w, ext_h) → (ext_w-10, 20)
-//   5. RIGHT bottom-arc samples         (ext_w-10, 20) → (ext_w-20, 10)
-//   6. (LEFT bottom-arc samples)        (20, 10) → (10, 20)
-//   7. (LEFT top-arc samples)           (10, 20) → (0, 30)
-//   8. (close back to point 1)
-// On the INNER profile, the arc vertices are replaced by their flat-top
-// projections (z forced to front_wall_h, x kept the same), EXCEPT the
-// outer-edge corner vertices ((ext_w, ext_h) and (0, ext_h)) — those stay
-// at z=ext_h on the INNER profile too, so the cutter's outer wall edge is
-// vertical and clean.
+//   1.  (-slop, ext_h + slop)            top-left of cut region
+//   2.  (ext_w + slop, ext_h + slop)     top-right of cut region
+//   3.  (ext_w + slop, ext_h)            step down to right outer edge
+//   4.  (ext_w, ext_h)                   right corner-column outer-top corner
+//   5.  RIGHT top-arc samples            (ext_w, s_curve_top_z) → (ext_w - r_each, front_wall_h + r_each)
+//   6.  RIGHT bottom-arc samples         → (ext_w - 2*r_each, front_wall_h)
+//   7.  (LEFT bottom-arc samples)        (2*r_each, front_wall_h) → (r_each, front_wall_h + r_each)
+//   8.  (LEFT top-arc samples)           → (0, s_curve_top_z)
+//   9.  (0, ext_h)                       left corner-column outer-top corner
+//  10.  (-slop, ext_h)                   step up to left slop edge
+//       (closes back to 1.)
+// (The slop margin at the top — between z=ext_h and z=ext_h+slop — clears
+// any cap material above the wall top. The vertical edges at x=ext_w and
+// x=0 from z=ext_h down to z=s_curve_top_z carve the corner column's
+// outer-edge top down to the cap apex.)
 
 function _arc_pts(cx, cz, r, a_start_deg, a_end_deg, n) =
     [for (i = [0 : n])
@@ -304,15 +403,20 @@ function _arc_pts(cx, cz, r, a_start_deg, a_end_deg, n) =
     ];
 
 // Build the OUTER (full S-curve) cutter polygon vertex list.
+// Patch v11: arc centers shifted from (·, ext_h - r) to (·, s_curve_top_z - r)
+// so the S-curve top tangent point lands at z=s_curve_top_z=28.4 (= cap
+// outer-edge top), not z=ext_h=30. Explicit (ext_w, ext_h) and (0, ext_h)
+// vertices added to carve the corner column's outer-edge top down from
+// ext_h to s_curve_top_z.
 function _front_wall_top_cutter_pts_outer() =
     let(slop = 1.0,
         n   = top_fillet_steps,
         r   = front_wall_side_fillet_r_each,
-        // RIGHT top arc: center (ext_w, ext_h - r), θ ∈ [90°, 180°] CCW.
-        //   θ=90°:  (ext_w, ext_h)            — outer edge top, horizontal tangent
-        //   θ=180°: (ext_w - r, ext_h - r)    — inflection, vertical tangent
+        // RIGHT top arc: center (ext_w, s_curve_top_z - r), θ ∈ [90°, 180°] CCW.
+        //   θ=90°:  (ext_w, s_curve_top_z)        — outer edge top, horizontal tangent (matches cap apex)
+        //   θ=180°: (ext_w - r, s_curve_top_z - r) — inflection, vertical tangent
         right_top_arc = _arc_pts(
-            ext_w, ext_h - r,
+            ext_w, s_curve_top_z - r,
             r, 90, 180, n),
         // RIGHT bottom arc: center (ext_w - 2r, front_wall_h + r), θ ∈ [0°, -90°] CW.
         //   θ=0°:   (ext_w - r, front_wall_h + r)  — inflection, vertical tangent
@@ -326,21 +430,24 @@ function _front_wall_top_cutter_pts_outer() =
         left_bot_arc = _arc_pts(
             2*r, front_wall_h + r,
             r, 270, 180, n),
-        // LEFT top arc: center (0, ext_h - r), θ ∈ [0°, 90°] CCW.
-        //   θ=0°:  (r, ext_h - r)        — inflection, vertical tangent
-        //   θ=90°: (0, ext_h)            — outer edge top, horizontal tangent
+        // LEFT top arc: center (0, s_curve_top_z - r), θ ∈ [0°, 90°] CCW.
+        //   θ=0°:  (r, s_curve_top_z - r) — inflection, vertical tangent
+        //   θ=90°: (0, s_curve_top_z)     — outer edge top, horizontal tangent (matches cap apex)
         left_top_arc = _arc_pts(
-            0, ext_h - r,
+            0, s_curve_top_z - r,
             r, 0, 90, n))
     concat(
-        [[-slop, ext_h + slop]],                 // 1. top-left
-        [[ext_w + slop, ext_h + slop]],          // 2. top-right
-        [[ext_w + slop, ext_h]],                 // 3. step down right outer edge
-        right_top_arc,                            // 4. (ext_w, ext_h)→(ext_w-r, ext_h-r)
-        right_bot_arc,                            // 5. (ext_w-r, ext_h-r)→(ext_w-2r, front_wall_h)
+        [[-slop, ext_h + slop]],                 // 1.  top-left of cut region
+        [[ext_w + slop, ext_h + slop]],          // 2.  top-right of cut region
+        [[ext_w + slop, ext_h]],                 // 3.  step down to right outer edge at z=ext_h
+        [[ext_w, ext_h]],                        // 4.  right corner-column outer-top corner
+        right_top_arc,                            // 5.  (ext_w, s_curve_top_z)→(ext_w-r, s_curve_top_z-r)
+        right_bot_arc,                            // 6.  →(ext_w-2r, front_wall_h)
         // implicit straight: (ext_w-2r, front_wall_h) → (2r, front_wall_h)
-        left_bot_arc,                             // 6. (2r, front_wall_h)→(r, ext_h-r)
-        left_top_arc                              // 7. (r, ext_h-r)→(0, ext_h)
+        left_bot_arc,                             // 7.  (2r, front_wall_h)→(r, front_wall_h+r)
+        left_top_arc,                             // 8.  →(0, s_curve_top_z)
+        [[0, ext_h]],                             // 9.  left corner-column outer-top corner
+        [[-slop, ext_h]]                          // 10. step up toward top-left slop close
         // closes back to 1.
     );
 
@@ -349,10 +456,13 @@ function _front_wall_top_cutter_pts_outer() =
 // (their x is kept unchanged so per-vertex linear interpolation produces
 // a clean ruled surface across Y).
 //
-// The two outer-edge corner vertices (the FIRST sample of right_top_arc
-// at (ext_w, ext_h), and the LAST sample of left_top_arc at (0, ext_h))
-// stay at z=ext_h so the cutter's vertical outer-edge faces are flat
-// rectangles, not skewed parallelograms.
+// Patch v11: the two outer-edge corner vertices (first sample of
+// right_top_arc at (ext_w, s_curve_top_z); last sample of left_top_arc at
+// (0, s_curve_top_z)) are pinned at z = s_curve_top_z on the INNER profile
+// — matching the OUTER profile's z value at those vertices — so the
+// cutter's vertical outer-edge wall faces are flat rectangles, not skewed
+// parallelograms. (Pre-v11 they were pinned at z=ext_h, which matched the
+// pre-v11 OUTER value.)
 function _flatten_arc_to_flat_top(pts, keep_first_z, keep_last_z) =
     [for (i = [0 : len(pts) - 1])
         let(p = pts[i],
@@ -366,28 +476,32 @@ function _front_wall_top_cutter_pts_inner() =
         n   = top_fillet_steps,
         r   = front_wall_side_fillet_r_each,
         // Same outer-profile arc samples (we only flatten the Z values).
-        right_top_arc = _arc_pts(ext_w, ext_h - r,
+        right_top_arc = _arc_pts(ext_w, s_curve_top_z - r,
                                  r, 90, 180, n),
         right_bot_arc = _arc_pts(ext_w - 2*r, front_wall_h + r,
                                  r, 0, -90, n),
         left_bot_arc  = _arc_pts(2*r, front_wall_h + r,
                                  r, 270, 180, n),
-        left_top_arc  = _arc_pts(0, ext_h - r,
+        left_top_arc  = _arc_pts(0, s_curve_top_z - r,
                                  r, 0, 90, n),
         // Flatten arcs to z=front_wall_h, but pin the outer-edge corner
-        // vertices at z=ext_h so the outer side faces stay vertical.
+        // vertices at their natural arc-endpoint z (= s_curve_top_z) so
+        // the outer side faces stay vertical.
         right_top_flat = _flatten_arc_to_flat_top(right_top_arc, true,  false),
         right_bot_flat = _flatten_arc_to_flat_top(right_bot_arc, false, false),
         left_bot_flat  = _flatten_arc_to_flat_top(left_bot_arc,  false, false),
         left_top_flat  = _flatten_arc_to_flat_top(left_top_arc,  false, true))
     concat(
-        [[-slop, ext_h + slop]],
-        [[ext_w + slop, ext_h + slop]],
-        [[ext_w + slop, ext_h]],
-        right_top_flat,
-        right_bot_flat,
-        left_bot_flat,
-        left_top_flat
+        [[-slop, ext_h + slop]],                 // 1.
+        [[ext_w + slop, ext_h + slop]],          // 2.
+        [[ext_w + slop, ext_h]],                 // 3.
+        [[ext_w, ext_h]],                        // 4.  corner-column outer-top corner
+        right_top_flat,                          // 5.
+        right_bot_flat,                          // 6.
+        left_bot_flat,                           // 7.
+        left_top_flat,                           // 8.
+        [[0, ext_h]],                            // 9.  corner-column outer-top corner
+        [[-slop, ext_h]]                         // 10.
     );
 
 // Linearly interpolate two equal-length vertex lists at parameter t ∈ [0, 1].

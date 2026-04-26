@@ -26,10 +26,10 @@ Quiet desk dock and label catch tray for the Brother PT-P750W label printer. Cle
 ### Tray — bare part
 
 ![Front elevation of the catch tray showing the uniform 10mm low front wall, S-curve side fillet sweeps from the 30mm side walls down to the 10mm front wall, and the clean horizontal grab lip across the full width.](images/ptouch-cradle/tray-user-front.png)
-*Tray front elevation — uniform 10mm front wall with S-curve sweeps on each corner. Two tangent-continuous quarter-arcs (r=10 each) join at an inflection point — horizontal tangent at both ends so the curve blends without a kink against either the side-wall top or the front-wall flat top.*
+*Tray front elevation — uniform 10mm front wall with S-curve sweeps on each corner. Two tangent-continuous quarter-arcs (r=9.2 each) join at an inflection point — horizontal tangent at both ends so the curve blends without a kink against either the cap outer-edge top or the front-wall flat top. The S-curve top tangent lands at z = ext_h − top_edge_fillet_r = 28.4, flush with the cap's outer-edge — corner reads as one continuous surface.*
 
 ![Three-quarter view of the catch tray showing the back/side walls at full 30mm height, the S-curve corner sweeps, and the rolled top-edge fillet matching the cradle's design proportion.](images/ptouch-cradle/tray-user-front-threequarter.png)
-*Tray three-quarter — 30mm back/side walls, S-curve corner sweeps with 3D corner blend (outer face follows the curve up to z=30, inner face stays uniform at z=10 across full width — clean kanban lip from inside the bin). Top-edge fillet r=1.6 = wall_t (matches cradle's r=3 = its wall_t — same design proportion).*
+*Tray three-quarter — 30mm back/side walls, S-curve corner sweeps with 3D corner blend (outer face follows the curve up to z=28.4 = cap outer-edge, inner face stays uniform at z=10 across full width — clean kanban lip from inside the bin). The S-curve and the rolled cap form one continuous surface at the corner. Top-edge fillet r=1.6 = wall_t (matches cradle's r=3 = its wall_t — same design proportion).*
 
 ## Design Overview
 
@@ -51,14 +51,14 @@ Two parts that assemble without fasteners or adhesive. The tray slides forward o
 
 TRAY (103.2 × 94.2 × 30mm, protrudes ~9mm above cradle wall):
 
-   ┌──────────────────────────┐  z=30mm back/side wall top (r=1.6 = wall_t fillet)
+   ┌──────────────────────────┐  z=30mm back/side wall top (r=1.6 = wall_t fillet, cap outer-edge at z=28.4)
    │      ← 100mm →           │
    │      open top            │
    │      interior            │  1.6mm walls
    │                          │  1.6mm floor
    │  parabolic ramp at front │
    ╲──────────────────────────╱  z=10mm front wall top (r=0.8 fillet)
-    S-curve sweeps both sides (2× r=10 quarter-arcs, tangent-continuous at both ends)
+    S-curve sweeps both sides (2× r=9.2 quarter-arcs, tangent-continuous at both ends; top lands at z=28.4 flush with cap)
 ```
 
 **Install sequence:**
@@ -88,7 +88,7 @@ No chamfers anywhere. No decoration of any kind.
 | Cradle volume | ~136.6 cm³ | Mesh analysis |
 | Tray bounding box | 103.2 × 94.2 × 30mm | 5mm above 25mm cradle wall by design |
 | Tray front wall height | 10mm | Uniform across full width |
-| Tray side-to-front fillet | S-curve, 2× r=10 quarter-arcs | Tangent-continuous at both ends (horizontal tangent at z=30 AND z=10) — joined at inflection point (10, 20). Outer face follows the curve; inner face stays at z=10 across full width via 16-slab Y-stack 3D corner blend. |
+| Tray side-to-front fillet | S-curve, 2× r=9.2 quarter-arcs | Tangent-continuous at both ends (horizontal tangent at z=28.4 = cap outer-edge AND z=10) — joined at inflection point (9.2, 19.2). Outer face follows the curve; inner face stays at z=10 across full width via 16-slab Y-stack 3D corner blend. S-curve top is flush with the side-wall cap's outer-edge top — corner reads as one continuous surface. |
 | Tray interior ramp | parabolic z(y) = 1.6 + 8.4·((y−62.6)/30)² | Tangent to floor at back, terminates at z=10 at front |
 | Tray volume | ~38.9 cm³ | Mesh analysis |
 | Combined volume | ~175.5 cm³ | |
@@ -113,7 +113,7 @@ No chamfers anywhere. No decoration of any kind.
 
 **Uniform 10mm front wall** — Flat at z=10 across the full width. The grab feature: user reaches over anywhere along the width. Tray interior cavity accessible above the 10mm front lip.
 
-**S-curve side fillet sweeps** — TWO tangent-continuous quarter-arcs per side (r=10 each, total horizontal extent 20mm matching the 20mm height drop from z=30 to z=10). Joined at an inflection point with vertical tangent. Horizontal tangent at z=30 (matches side-wall top) AND horizontal tangent at z=10 (matches front-wall flat top) — no kink at either end. Outer face follows the S-curve; inner face stays uniform at z=10 across the full width via a 16-slab Y-stack that linearly interpolates between OUTER and INNER profiles. The wall top in the corner zones slopes from z=10 (inner) to arc(x) (outer) over the 1.6mm wall depth — reads as a 3D corner blend, not a 2D extrusion.
+**S-curve side fillet sweeps** — TWO tangent-continuous quarter-arcs per side (r=9.2 each, total horizontal extent 18.4mm matching the 18.4mm height drop from z=28.4 to z=10). Joined at an inflection point with vertical tangent. Horizontal tangent at z=28.4 (the cap outer-edge top — flush with the side-wall cap, so the S-curve and cap form one continuous surface at the corner) AND horizontal tangent at z=10 (matches front-wall flat top) — no kink at either end. Outer face follows the S-curve; inner face stays uniform at z=10 across the full width via a 16-slab Y-stack that linearly interpolates between OUTER and INNER profiles. The wall top in the corner zones slopes from z=10 (inner) to arc(x) (outer) over the 1.6mm wall depth — reads as a 3D corner blend, not a 2D extrusion.
 
 **Top-edge fillets** — r=1.6 = wall_t continuous fillet on back and side wall tops (z=30). The cap rolls cleanly from the outer face to a point at the inner face — same construction principle as the cradle's r=3 = its wall_t. Same design proportion across the assembly, different absolute radii because the walls differ (cradle 3mm, tray 1.6mm). r=0.8 fillet on front wall top (z=10) — half wall_t for the thin front lip, keeps it soft without competing with the larger back/sides cap.
 
@@ -143,14 +143,14 @@ Both parts pass all printability checks. Zero real bridge spans in either part. 
 | Overhangs (tray) | PASS — sloped wall top is face-up | The 3D corner blend's wall-top slope is 4.6° from horizontal (well below 45° max); prints face-up cleanly |
 | Bridges (cradle) | PASS | 3 analyzer flags are false positives (open pocket voids) |
 | Bridges (tray) | PASS | 1 false-positive flag from the trimesh bridge detector confused by the corner-column slope; visually inspected, no real unsupported bridges |
-| Thin walls | ACCEPTED TRADEOFF | 26 sub-mm slivers near the corner-column outer-edge peaks (z>22mm) and at the cap apex (z>29mm). Geometrically forced at wall_t=1.6mm — the 3D corner blend's outer face rises to z=30 while the inner stays at z=10, producing sub-mm cross-sections near the peak. Slicer prints these as a soft fade (1–2 perimeter taper) rather than sharp peaks; cosmetic effect only, not structural. |
+| Thin walls | ACCEPTED TRADEOFF | 24 sub-mm slivers near the corner-column outer-edge peaks (z ∈ [10, 26]) and at the cap apex (z>29mm). Geometrically forced at wall_t=1.6mm — the 3D corner blend's outer face rises to z=28.4 (post-v11) while the inner stays at z=10, producing sub-mm cross-sections near the peak. Slicer prints these as a soft fade (1–2 perimeter taper) rather than sharp peaks; cosmetic effect only, not structural. |
 | Slicer | N/A | PrusaSlicer not installed |
 
 ### Geometry Analysis
 
 Cradle: 125 layers at 0.2mm, watertight, all transitions PASS. Tray: 150 layers, watertight. All bridge FAIL flags in both parts are false positives from the cross-section analyzer measuring across intentionally open pockets or arc-sampling artifacts on curved surfaces.
 
-**Accepted printability tradeoff:** the post-v9 3D corner blend produces sub-mm slivers near the outer-edge peaks of the S-curve sweep (corner columns at z>22mm) and at the cap apex (z>29mm). This is geometrically forced by simultaneously holding (1) outer face rising to z=ext_h=30 at the corner, (2) inner face uniform at z=front_wall_h=10, and (3) wall_t=1.6mm — any continuous transition with a 20mm Z-drop over 1.6mm Y produces sub-mm cross-sections near the peak. The slicer truncates the unprintable peak by ~1–2mm vertical, producing a softer corner in print rather than a sharp peak — the user accepted this as a cosmetic preference. No structural issue.
+**Accepted printability tradeoff:** the post-v9 3D corner blend produces sub-mm slivers near the outer-edge peaks of the S-curve sweep (corner columns at z ∈ [10, 26]) and at the cap apex (z>29mm). This is geometrically forced by simultaneously holding (1) outer face rising to z = ext_h − top_edge_fillet_r = 28.4 at the corner, (2) inner face uniform at z=front_wall_h=10, and (3) wall_t=1.6mm — any continuous transition with an 18.4mm Z-drop over 1.6mm Y produces sub-mm cross-sections near the peak. The slicer truncates the unprintable peak by ~1–2mm vertical, producing a softer corner in print rather than a sharp peak — the user accepted this as a cosmetic preference. No structural issue.
 
 ### Slicer Analysis
 
@@ -212,6 +212,12 @@ Rounds 4–7 iterated within v3 minimalism:
 
 Post-ship critique surfaced (a) "tab" tips at the upper corners of the front-wall scoop where the arc met the inner face of the side wall instead of the outer edge, and (b) sub-mm slivers at z≈29.9 near the front corners caused by the back/sides cap stack inset exceeding the wall thickness. Fixed by extending the arc to start at the OUTER edge (tangent horizontal at z=30 — flush with side-wall top) and clipping `back_sides_mask` to y ≤ ext_d - wall_t so the cap stack doesn't operate in the front-wall slab corner column.
 
+**v3 patch v11 — S-curve / cap continuity at the corner (this version)**
+
+Post-ship slicer-view critique surfaced two artifacts at the front-wall corner: (1) a thin wedge-shaped gap between the S-curve sweep and the side-wall cap, and (2) a thin vertical front-face strip at the v10 mask boundary (y=92.55). Both stemmed from a single 1.6 mm height mismatch — the patch v9 S-curve outer-edge tangent point sat at z=30, while the v10 r=wall_t cap's outer-edge sat at z=28.4 — and the v10 mask clip meant the cap couldn't fill the corner column.
+
+Fix (Option A): lowered the S-curve top tangent point to z = ext_h − top_edge_fillet_r = 28.4 so it lands flush with the cap outer-edge. The S-curve drop becomes 18.4 mm (was 20), the two tangent-continuous quarter-arcs become r=9.2 each (was 10), and the front-wall flat middle widens slightly (18.4..84.8 vs 20..83.2). The cutter polygon now also carves the corner column's outer-edge top from z=30 down to z=28.4 via vertical step edges at x=0 and x=ext_w. Watertight preserved (Option-C decoupling unchanged); thin-wall count drops 26 → 24 (the 2 z=28.1 corner-column slivers are gone since the corner column outer-edge no longer reaches that high).
+
 **v3 patch v9+v10 — S-curve, 3D corner blend, r=wall_t cap (commit `3601789`)**
 
 Critique on patch v8 surfaced three new issues with reference images: (1) the single quarter-arc had a vertical-tangent kink at z=10 against the flat front-wall top — design intent was a smooth continuous sweep tangent to BOTH endpoints; (2) a "blade" of material from the ramp top up to arc(x) was visible inside the bin at the corners; (3) the back/sides cap construction at r=2 + clamp produced a flat plateau, breaking the design proportion intended to align with the cradle's r=3 cap.
@@ -269,6 +275,7 @@ Two small fitment test pieces verify the load-bearing dimensions before committi
 | [`modeling-report.json`](../designs/ptouch-cradle/output/modeling-report.json) | Feature inventory (round 7 + patch v9 update) |
 | [`id/modeler-notes-v9.md`](../designs/ptouch-cradle/id/modeler-notes-v9.md) | Patch v9 — S-curve sweep + 3D corner blend + cap step bump |
 | [`id/modeler-notes-v10.md`](../designs/ptouch-cradle/id/modeler-notes-v10.md) | Patch v10 — r=wall_t cap alignment with cradle + watertight resolution |
+| [`id/modeler-notes-v11.md`](../designs/ptouch-cradle/id/modeler-notes-v11.md) | Patch v11 — S-curve / cap continuity at the corner |
 | [`review-printability.md`](../designs/ptouch-cradle/output/review-printability.md) | Full printability review |
 | [`review-fitment.json`](../designs/ptouch-cradle/output/review-fitment.json) | Fitment review — all clearances PASS |
 | [`id/brief.md`](../designs/ptouch-cradle/id/brief.md) | ID brief — v3 minimalism direction |
@@ -280,7 +287,7 @@ Two small fitment test pieces verify the load-bearing dimensions before committi
 |-------|-------|--------|
 | Spec | spec-writer | 2 parts, 5 mating interfaces, 8 test print candidates |
 | ID | id-designer | 7-round critique loop — rounds 1–2 owl, round 3 pivot to v3 minimalism, rounds 4–7 refinement |
-| Model | modeler | PASS (7 rounds + 3 patches: v3 → v4 tray wrap + fillets → v5 closed bin + ramp → v6 variable front wall → v7 simplified uniform front wall → v8 corner tabs + slivers → v9 S-curve + 3D corner blend → v10 r=wall_t cap aligned with cradle) |
+| Model | modeler | PASS (7 rounds + 4 patches: v3 → v4 tray wrap + fillets → v5 closed bin + ramp → v6 variable front wall → v7 simplified uniform front wall → v8 corner tabs + slivers → v9 S-curve + 3D corner blend → v10 r=wall_t cap aligned with cradle → v11 S-curve / cap continuity at the corner) |
 | Geometry | geometry-analyzer | Cradle: watertight, all transitions PASS. Tray: watertight, 1 marginal fillet corner |
 | Print review | print-reviewer | 7/7 PASS cradle, 4/4 PASS tray. 1 marginal (tray fillet corner 1.026mm). No blockers. |
 | Fit review | fit-reviewer | PASS — 0.0mm³ interference, all clearances confirmed analytically |
