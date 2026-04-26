@@ -103,3 +103,92 @@ Round 6 added a clever variable-height front wall to provide a grab feature with
 
 - Tray: 103.2 × 94.2 × 30mm. Unchanged. PASS.
 - Cradle: unchanged. PASS.
+
+---
+
+## Patch v8 — post-critique tray fixes (2026-04-26)
+
+Two visual issues from the v7 user-front renders, tray-only.
+
+### Issue 1 — corner "tabs" at the top of the front-wall scoop — FIXED
+
+Round-7's side-fillet arc started at the side-wall INNER face (x=wall_t),
+leaving a `wall_t × wall_t` (1.6 × 1.6 mm) column of material at full z=30
+between the outer edge (x=0) and the start of the arc. From the user-front
+view that read as a sharp little tab at each upper corner of the scoop.
+
+**Fix (geometric):**
+- Right arc: center moved from `(ext_w - wall_t, front_wall_h)` to
+  `(ext_w, front_wall_h)`. Same radius (r=20). Same angular sweep (90°→180°).
+- Left arc: center moved from `(wall_t, front_wall_h)` to `(0, front_wall_h)`.
+  Same radius (r=20). Same angular sweep (0°→90°).
+- Cutter polygon's right close edge now goes `(ext_w+slop, ext_h) →
+  (ext_w, ext_h)`; left close edge goes `(0, ext_h) → (-slop, ext_h+slop)`.
+- Updated assertion: `front_wall_side_fillet_r ≤ ext_w/2` (no overlap risk
+  with new geometry; `ext_w=103.2`, `r=20`, leaves 63.2 mm flat between
+  the two arcs at z=front_wall_h).
+
+The arc tangent at z=ext_h is now horizontal — flush with the side-wall top —
+so the corner blends smoothly with no tab. **Confirmed in renders:** tabs
+gone from `tray-user-front.png` and `tray-user-front-threequarter.png`.
+
+### Issue 2 — sub-mm slivers at z≈29.9 — FIXED
+
+The geometry-report flagged 0.09–0.11 mm "thin walls" at z=29.9 near the
+front corners since round 6. Two compounding causes:
+
+1. The back/sides cap-carve at z=28..30.5 was running through the corner
+   buffers all the way to y=ext_d (front edge), removing material in the
+   front-wall slab corner column. Combined with the new arc cutter, this
+   created discrepancies the cap-stack couldn't fully restore.
+
+2. More fundamental: the cap radius (r=2) **exceeds the wall thickness**
+   (wall_t=1.6). When the cap-stack inset reached 1.6 mm, the wall
+   material vanished entirely. Above that (inset 1.6..2.0), the cap-stack
+   produced a thin "hat" that floated over the cavity, registering as
+   sub-mm slivers in the slicer.
+
+**Fix (two parts):**
+
+a. **Restrict `back_sides_mask` corner buffers to y ≤ ext_d - wall_t.**
+   Previously the side-wall corner buffers extended through the full y
+   range (to y=ext_d). Now they stop at the back of the front-wall slab,
+   so the cap-carve and cap-stack do not operate in the front-wall slab
+   corner column. The arc cutter alone shapes the wall top there; the
+   vertical r=3 corner fillet handles the outer profile.
+
+b. **Clamp `inset1` in `footprint_fillet_stack` to `wall_t - 1.0 = 0.6`.**
+   This limits how far the cap-stack can pull inward. The result: the
+   rolled cap reads as r≈0.6 effective curvature near the very top, with
+   a small flat plateau at z>29.4 where inset would otherwise exceed 0.6.
+   Wall thickness stays ≥ 1.0 mm everywhere on the cap. Visually
+   imperceptible at any realistic viewing distance — the cap profile
+   below z=29.4 is still the full r=2 curve, and the human eye reads
+   that as the cap shape.
+
+The clamp is parameterized via a new `clamp_inset` argument
+(default true). The front-wall fillet stack uses r=0.8 < wall_t-1.0
+already, so it doesn't need the clamp; left enabled by default for
+safety / consistency.
+
+**Verified:** `tray-geometry-report.json` shows zero sub-mm thin walls
+at z>29 (was 3 in round 7). The remaining thin-wall flags (9 total, all
+at z∈[10.1, 26.1], thickness 1.118–1.199 mm) are mid-height side-wall
+measurements pre-existing from v7 and are above 1.1 mm — well within
+print-quality tolerance.
+
+### Changed files
+
+- `designs/ptouch-cradle/tray.scad` — header comment, cutter geometry
+  (left/right arc centers + close edges), `back_sides_mask` (corner-buffer
+  y-clip), `footprint_fillet_stack` (inset clamp parameter + math), one
+  assertion.
+- Cradle untouched.
+
+### Verified output
+
+- `tray.stl` watertight, bbox 103.2 × 94.2 × 30.001 mm (within ±0.05 of 30).
+- `tray-user-front.png` and `tray-user-front-threequarter.png` re-rendered
+  at draft quality. Visual confirmation: no corner tabs, no slivers.
+- `tray-geometry-report.json` regenerated. 9 thin walls (was 13 in v7),
+  all above 1.1 mm, none at z>29.
