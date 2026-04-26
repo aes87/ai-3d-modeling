@@ -184,3 +184,28 @@ Direct-Bash `cli-anything-openscad` calls produced 6 user-frame renders. Critiqu
 **Captured in vault:** `vault/projects/3d-printing/ptouch-cradle-critique-04.md` (full critique with all five round-5 items: tray rebuild + grab scoop + tray height bump + feet removal + notch removal + smooth top fillet).
 
 **Status:** writing `modeler-notes-v5.md`. Brief stays as-is (these are still refinements within v3 minimalism). User said "go ahead and bang that rev out" → dispatching modeler.
+
+### Turn 10 — round 5 lands, three coupled tray issues; round 6 unifies the fix
+
+**Modeler dispatched** with `modeler-notes-v5.md`. PASS in 1 iteration with two intentional deviations: (1) ramp arc center moved to +Y/-Z (notes had ambiguous geometry; modeler chose pan-edge curve which is convex from cavity), (2) added a lip-thickening boss behind the grab scoop to prevent punching through the 1.6mm wall. Tray ext_d grew 94.2 → 96.7 due to boss extending forward. Front wall top edge left sharp (1.6mm wall too thin for the r=2 fillet stack, function-driven exception).
+
+**Pipeline speedup (commit `b2695ec`)** between dispatch and feedback: split render quality into draft (during iteration: $fn=100, top_fillet_steps=24, ramp_arc_steps=32) vs ship (final: $fn=200, top_fillet_steps=64, ramp_arc_steps=96). Modeler agent and shipper agent definitions updated. Designs declare quality knobs as top-level params; shipper passes -D overrides. Verified speedup on ptouch-cradle: cradle STL ~15min → ~68s, tray STL ~20s.
+
+**User reviewed round 5 on GitHub** (commit `45eca15`), three coupled issues:
+
+1. **"Weird little 'fang' features" on front of tray.** The hard step where side walls (z=30) meet the short front wall (z=18) creates pointed protrusions at the upper corners visible in the user-front view. User wants smooth concave fillet sweep instead.
+
+2. **"Tray scoop should be concave, not convex—it's ergonomically retarded right now."** Round-5 modeler placed the ramp arc center on +Y/-Z, producing a convex pan-edge curve that bulges UP into the cavity. A finger sliding forward hits this hump and has to climb over. User wants concave curve (arc dips below chord, away from cavity) so finger gets a smooth gradual incline.
+
+3. **"I don't see how the front pull feature will help a person get their finger in to pull it."** Round-5 grab feature is a 50×14×2.86mm indent in a lip-thickening boss. Indent is too shallow — finger barely fits. User says it doesn't work as a grab.
+
+**Round 6 unified fix:** drop the boss + indent grab approach entirely. Replace with a **lowered-center cutout in the front wall**: outer corners stay at z=18, center 50mm drops to z=10, smooth concave-arc transitions between corner and center heights. The lowered center IS the grab feature — user reaches OVER it (only 10mm tall) to hook the front lip from above. Closed-bin character preserved (front wall exists everywhere, just at variable height). The interior ramp now terminates at z=10 (lowered center top) rather than z=18, so labels exit at the natural egress point.
+
+This unifies all three issues:
+- Fang fix: side-wall-to-front-wall transition gets a r=12 concave fillet (matching the 12mm height drop from z=30 to z=18).
+- Concave ramp fix: arc center moved to +Z side of chord (above midpoint), surface dips below chord (away from cavity), monotonically rising slope from back-floor to lowered-center-top.
+- Grab fix: lowered center cutout provides natural finger access from above.
+
+**Other round-6 changes:** tray ext_d reverts 96.7 → 94.2 (boss removed). All round-5 boss/indent params deleted from spec. First round operating under draft-quality convention — render iteration should be fast.
+
+**Status:** `modeler-notes-v6.md` written. Cradle.scad untouched in round 6 (only tray changes). Dispatching modeler.

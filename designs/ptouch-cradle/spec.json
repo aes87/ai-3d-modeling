@@ -1,6 +1,6 @@
 {
   "name": "ptouch-cradle",
-  "description": "Two-part desktop cradle + label-catch tray for Brother PT-P750W label printer. Round 5 substantively rebuilds the tray as a closed kanban bin with four real walls (back/sides at 30 mm, front wall short at 18 mm), an interior pan-edge floor ramp curving up to the front lip, and a grabbable exterior scoop on the +Y face. The cradle drops feet (silicone aftermarket) and the cable notch (printer plug clears the 25 mm wall), and the top-edge fillet is rendered smooth at $fn=200 + 64-step stack. Quiet desk dock — function and frame, nothing more.",
+  "description": "Two-part desktop cradle + label-catch tray for Brother PT-P750W label printer. Round 6 reworks the tray's front-of-bin treatment: the boss + scoop indent grab feature from round 5 is removed entirely; the front wall now has VARIABLE HEIGHT along X (corner sections at z=18, lowered center 50mm wide at z=10) — the lowered center IS the grab feature. Side-wall to front-wall corner fillets (r=12) eliminate the round-5 'fangs.' Interior floor ramp is re-oriented from convex (hump) to concave (slide-curve), terminating at the lowered-center top z=10. Cradle is unchanged from round 5.",
   "requiresId": true,
   "dimensions": {
     "x": 110,
@@ -24,7 +24,7 @@
     "z": 256
   },
   "volume": {
-    "min": 60,
+    "min": 30,
     "max": 400
   },
   "echoedDimensions": {
@@ -35,7 +35,7 @@
     },
     "tray": {
       "x": 103.2,
-      "y": 96.7,
+      "y": 94.2,
       "z": 30
     }
   },
@@ -72,10 +72,13 @@
     "fillet_utility_r": 3.0,
     "fillet_hero_r": 10.0,
     "tray_top_edge_fillet_r": 2.0,
-    "tray_fn": 200,
-    "tray_top_fillet_steps": 64,
-    "fillet_schedule_note": "Two tiers + one function-driven exception. r=3 utility on top edges of cradle perimeter walls and break-edges. r=10 hero on cradle exterior corners (4x), base plate corners (4x top + 4x bottom), printer-section→shelf concave fillet on both ±X sides, AND the grab scoop on the tray exterior. r=2 continuous fillet on the BACK + SIDE walls of the tray top edge (the front wall at 18 mm wall_t=1.6 has a sharp top edge — function-driven exception documented below). NO chamfers anywhere. NO mid-tier radii.",
-    "tray_front_wall_top_treatment_note": "Round 5: the front wall at wall_t=1.6 mm is too thin to support an r=2 quarter-arc top fillet via the slab-stack approach used on the back/sides. A bullnose (half-cylinder) cap was attempted but produced a CGAL non-manifold artifact at the corner clipping. Decision: leave the front wall top as a sharp edge. The brief's r=2 fillet rule applies on the back+side wall tops where wall_t allows it. Documented as a function-driven exception.",
+    "tray_fn_draft": 100,
+    "tray_fn_ship": 200,
+    "tray_top_fillet_steps_draft": 24,
+    "tray_top_fillet_steps_ship": 64,
+    "tray_ramp_arc_steps_draft": 32,
+    "tray_ramp_arc_steps_ship": 96,
+    "fillet_schedule_note": "Two tiers + concave corner fillets on the tray front-wall transitions. r=3 utility on tray vertical edge fillets and break-edges. r=10 hero on cradle exterior corners (4x), base plate corners (4x top + 4x bottom), printer-section→shelf concave fillet on both ±X sides. r=2 continuous fillet on the BACK + SIDE walls of the tray top edge (rolled inward). r=12 concave fillet on the side-wall to front-wall corners of the tray (matches the 12mm height drop from z=30 to z=18). r=8 concave transition arcs on the front wall between corner-h=18 and center-h=10 (matches the 8mm height drop). NO chamfers anywhere.",
     "printer_section_to_shelf_concave_fillet_r": 10,
     "tray_slot_interior_w": 103.9,
     "tray_slot_interior_d": 94.9,
@@ -86,9 +89,10 @@
     "tray_floor_z_above_desk": 5.6,
     "label_drop_min_mm": 58,
     "label_drop_max_mm": 73,
-    "front_wall_top_z_above_desk": 29,
+    "front_wall_top_z_above_desk_corner": 29,
+    "front_wall_top_z_above_desk_center": 21,
     "label_clears_front_wall_by_min_mm": 35,
-    "label_drop_note": "PT-P750W auto-cuts tape; labels exit at z=64-79mm desk-ref, clear front wall top at z=29mm desk-ref by 35-50mm, drop forward and down into tray.",
+    "label_drop_note": "PT-P750W auto-cuts tape; labels exit at z=64-79mm desk-ref, clear front wall corner top at z=29mm desk-ref by 35-50mm and clear lowered center top at z=21mm desk-ref by 43-58mm, drop forward and down into tray.",
     "tape_exit_z_above_printer_base_min": 60,
     "tape_exit_z_above_printer_base_max": 75,
     "tape_exit_face": "front (78mm x 143mm narrow face)",
@@ -105,57 +109,49 @@
     "tray_exterior_w": 103.2,
     "tray_exterior_d": 94.2,
     "tray_exterior_h": 30,
-    "tray_mesh_y_with_grab_boss": 96.7,
-    "tray_front_wall_h": 18,
+    "tray_front_wall_corner_h": 18,
+    "tray_front_wall_center_h": 10,
+    "tray_front_wall_center_w": 50,
+    "tray_front_wall_transition_arc_r": 8,
+    "tray_front_wall_corner_fillet_r": 12,
+    "tray_front_wall_construction": "Variable-height profile in the X-Z plane, extruded along Y over the front-wall slab (y = ext_d - wall_t .. ext_d). Corner sections at x=0..18.6 and x=84.6..103.2 reach z=18 (front_wall_corner_h). Lowered center at x=26.6..76.6 reaches z=10 (front_wall_center_h). Concave quarter-arcs r=8 between corner-z=18 and center-z=10 (smooth waterfall transition). Side-wall to front-wall fillets r=12 at the upper outer corners of the front wall (sweeping z=30→18) — eliminates the round-5 'fangs.' All transitions concave-from-above (curve dips below chord) for a smooth scooped reading.",
     "tray_back_side_wall_h": 30,
     "tray_height_above_cradle_wall": 5,
     "ramp_y_extent": 30,
     "ramp_back_y": 62.6,
     "ramp_front_y": 92.6,
     "ramp_back_z": 1.6,
-    "ramp_front_z": 18,
-    "ramp_arc_radius": 22,
-    "ramp_arc_construction": "Concave circular arc connecting (y=62.6, z=1.6) to (y=92.6, z=18). Arc center on the +Y/-Z (front-bottom) side of the chord at C ≈ (84.24, -2.34) — the side OPPOSITE to the bulge. The arc bulges toward (-Y, +Z) (up-and-back into the cavity), giving a pan-edge curve: SLOPE STEEPEST AT THE BACK and SHALLOWEST AT THE FRONT. Functionally: a finger sliding across the flat back floor rises smoothly up the ramp and lifts the label over the front lip. Self-supporting in face-up print orientation (the arc's normals always point upward).",
-    "grab_boss_proud": 2.5,
-    "grab_boss_width": 66,
-    "grab_boss_height_z": 16,
-    "grab_boss_corner_r": 5,
-    "grab_boss_construction": "Lip-thickening on the +Y exterior of the front wall, encompassing the scoop region. Built as the hull of 4 Y-axis cylinders at the rounded-rect-in-XZ corners. Boss adds 2.5 mm of material proud of the wall, giving a local thickness of 4.1 mm — enough to support a 2.86 mm-deep scoop with 1.24 mm of wall remaining at the deepest point.",
-    "grab_scoop_arc_r": 10,
-    "grab_scoop_chord_z": 14,
-    "grab_scoop_depth": 2.86,
-    "grab_scoop_center_z": 9,
-    "grab_scoop_width": 50,
-    "grab_scoop_x_center": 51.6,
-    "grab_scoop_construction": "Hull of two spheres of r=10 at (x=33.6, y=103.84, z=9) and (x=69.6, y=103.84, z=9) — a horizontal capsule. On the boss outer face (y=96.7), the cutter intersects in an oval indent fading from full chord (z=2..16) at x=33.6..69.6 to a point at x=26.6 and x=76.6. Reads as 'grab here' with smooth fade-out at the ends.",
+    "ramp_front_z": 10,
+    "ramp_orientation": "concave_from_cavity_side",
+    "ramp_construction": "Quadratic curve z(y) = 1.6 + 8.4 * ((y - 62.6) / 30)^2 connecting (62.6, 1.6) to (92.6, 10). Tangent to flat floor at the back (slope=0 at y=62.6). Concave from cavity side — curve dips below the chord; from a finger sliding forward, slope is gentle near the back, steepens monotonically toward the front (like climbing a slide). Round-6 modeling discovered that a circular arc with these endpoints + concave-from-cavity + above-floor constraint has no real solution (chord rise too small relative to chord length to keep the arc above z=floor_t). Quadratic curve satisfies all three properties simultaneously and meets the modeler-notes-v6 spirit exactly. Self-supporting in face-up print orientation (always angles up-and-forward, never overhangs).",
     "sliding_fit_offset": 0.35,
     "slot_wall_thickness_each_side": 3.05,
     "user_orientation_note": "+Y = user-front (tray slides out here, printer faces user). -Y = user-back (against-wall; cable runs over the top of the 25 mm wall, no notch). Render in user-frame per id/brief.md hero_views. PRIMARY hero is the use-state render with the printer proxy installed — the 'is the cradle quiet next to the printer?' check runs on cradle-user-front-in-use.png.",
     "print_orientation_cradle": "Base down, walls vertical (functional/use orientation). Base plate sits flush on bed. No supports needed — all features under 45° overhang.",
-    "print_orientation_tray": "Face up (open top up), back on bed. The interior ramp's pan-edge curve is fully self-supporting (the surface tangent always points up-and-back, never overhanging). Front wall at 18 mm is structurally fine. Exterior grab scoop is a concave indent — at depth 2.86 mm and chord 14 mm with r=10, local tangent angles stay well within the 45°-from-vertical envelope. Verify in slicer; no supports expected. The grab boss bottom face (z=0, y∈[ext_d, ext_d+2.5]) prints as a separate first-layer island (66 × 2.5 mm = 165 mm² adhesion area — fine for PLA on textured PEI)."
+    "print_orientation_tray": "Face up (open top up), back on bed. Variable-height front wall, side fillets, and concave parabolic ramp are all self-supporting. No supports."
   },
   "testPrintCandidates": [
     {
       "feature": "tray-to-slot sliding fit",
-      "reason": "Tray exterior (103.2 mm W × 94.2 mm D × 30 mm H) must slide smoothly into cradle slot with 0.35 mm per-side clearance. Note: round 5's tray is 5 mm taller than the cradle's 25 mm wall — the upper portion sticks above the cradle (intentional). If FDM dimensional error skews either part, tray will bind or rattle.",
+      "reason": "Tray exterior (103.2 mm W × 94.2 mm D × 30 mm H) must slide smoothly into cradle slot with 0.35 mm per-side clearance.",
       "category": "fitment",
       "priority": "high"
     },
     {
-      "feature": "interior pan-edge floor ramp",
-      "reason": "Round-5 substantive rebuild. The floor near the front rises along a concave arc (r=22, span y=62.6..92.6, rise z=1.6..18). Verify the arc renders as a smooth surface with no FDM faceting visible at typical viewing distance; verify the slope at the back end (steep) doesn't introduce overhang issues during printing.",
-      "category": "printability",
+      "feature": "tray variable-height front wall",
+      "reason": "Round-6 substantive rebuild. Corner sections at z=18, lowered center 50mm wide at z=10. Verify the concave transition arcs r=8 render as smooth waterfalls (no kinks at the transitions). Verify the side-wall to front-wall fillet r=12 reads as a smooth concave sweep (no 'fangs').",
+      "category": "aesthetic",
       "priority": "high"
     },
     {
-      "feature": "exterior grab boss + scoop",
-      "reason": "Round-5 new feature. Lip-thickening on +Y exterior of front wall (66 × 16 × 2.5 mm), with a 50 × 14 × 2.86 mm concave capsule scoop carved into it. Verify the scoop reads as a 'grab here' indent (not a hole), the boss adheres cleanly to the bed at first layer, and the wall remaining at deepest point of the scoop (~1.24 mm) is structurally sound.",
+      "feature": "interior concave parabolic floor ramp",
+      "reason": "Round-6 re-orientation. Quadratic curve from (y=62.6, z=1.6) to (y=92.6, z=10), tangent to flat floor at the back. Verify the surface reads as a smooth gradual incline that steepens toward the front (no humps), is concave from inside the cavity, and prints without supports.",
       "category": "printability",
       "priority": "high"
     },
     {
       "feature": "tray top-edge r=2 fillet on back/sides",
-      "reason": "Continuous quarter-arc roll around the tray's back + side wall tops at z=ext_h=30. Front wall top is sharp (function-driven exception per spec). Verify the back/sides fillet renders smoothly (64-step stack at $fn=200) and reads as a soft top edge in user-front-threequarter views.",
+      "reason": "Continuous quarter-arc roll around the tray's back + side wall tops at z=ext_h=30. Front wall top has its own variable-height profile (no separate top-edge roll). Verify the back/sides fillet renders smoothly.",
       "category": "aesthetic",
       "priority": "medium"
     },
@@ -167,7 +163,7 @@
     },
     {
       "feature": "cradle smooth top-edge curve (r=3 fillet)",
-      "reason": "Round-5 update: cradle $fn bumped 80→200 and slab-stack steps 8→64 so each slab is ~0.047 mm tall. The fillet should read as a true continuous quarter-circle in close-up renders, no stair-stepping visible at any zoom.",
+      "reason": "Round-5 carry-over: cradle $fn=200 and slab-stack steps=64 so each slab is ~0.047 mm tall. The fillet should read as a true continuous quarter-circle in close-up renders, no stair-stepping visible at any zoom.",
       "category": "aesthetic",
       "priority": "medium"
     },
@@ -179,13 +175,13 @@
     },
     {
       "feature": "r=10 printer→shelf concave fillet",
-      "reason": "Quarter-arc concave sweep on ±X sides of the cradle at the printer-section→shelf transition. Verify the fillet reads as a deliberate sculptural move.",
+      "reason": "Quarter-arc concave sweep on ±X sides of the cradle at the printer-section→shelf transition.",
       "category": "aesthetic",
       "priority": "medium"
     },
     {
       "feature": "tray wall thickness 1.6 mm",
-      "reason": "Tray walls at 1.6 mm (4 perimeters at 0.4 mm) are above minimum but thin. Verify wall integrity, particularly at the deepest point of the grab scoop where remaining wall is ~1.24 mm.",
+      "reason": "Tray walls at 1.6 mm (4 perimeters at 0.4 mm) are above minimum but thin. Verify wall integrity, particularly across the variable-height front wall transitions where the wall remains 1.6 mm thick throughout.",
       "category": "printability",
       "priority": "medium"
     }
