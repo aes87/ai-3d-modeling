@@ -237,7 +237,7 @@ Two small fitment test pieces verify the load-bearing dimensions before committi
 | Test Print | Purpose | Volume | Print time |
 |------------|---------|-------:|-----------:|
 | [tray-slot-fit-pair](../designs/ptouch-cradle/test-prints/tray-slot-fit-pair/) | Mini cradle slot + matching tray shell. Verifies the 0.35mm/side sliding fit clearance at full-scale wall thickness. | ~10 cm³ | ~12 min |
-| [printer-corner-fit](../designs/ptouch-cradle/test-prints/printer-corner-fit/) | U-shaped pocket section — closed back wall + both long sides at half cradle height. Verifies the 1mm/side clearance against the actual PT-P750W along the full 152mm length and at both back-inside corners (the proxy box used for fit-review doesn't capture printer corner radii/chamfers). | ~15 cm³ | ~15 min |
+| [printer-corner-fit](../designs/ptouch-cradle/test-prints/printer-corner-fit/) | Two full sides (back + right long) + two stubs forming three inside corners (back-left, back-right, front-right) at half cradle height. Pins both pocket X (80mm) and Y (154mm) interior dimensions and verifies 1mm/side clearance against the actual PT-P750W's corners (the proxy box used for fit-review doesn't capture printer corner radii/chamfers). | ~11 cm³ | ~12 min |
 
 **Recommendation: print both first, on the same bed run** (~30 minutes, ~25 cm³ total). If both pass: proceed to the full ~150 cm³ print. If either fails: adjust XY compensation in Bambu Studio (Process → Advanced → XY Compensation) by ±0.05mm and re-test before burning hours on the full job.
 
@@ -248,7 +248,7 @@ Two small fitment test pieces verify the load-bearing dimensions before committi
 | [`cradle.stl`](../designs/ptouch-cradle/output/cradle.stl) | Cradle — print-ready mesh (ship quality) |
 | [`tray.stl`](../designs/ptouch-cradle/output/tray.stl) | Tray — print-ready mesh (ship quality) |
 | [`tray-slot-fit-pair.stl`](../designs/ptouch-cradle/test-prints/tray-slot-fit-pair/tray-slot-fit-pair.stl) | Test print — tray-to-slot sliding fit (~10 cm³) |
-| [`printer-corner-fit.stl`](../designs/ptouch-cradle/test-prints/printer-corner-fit/printer-corner-fit.stl) | Test print — printer pocket U-fit (~15 cm³) |
+| [`printer-corner-fit.stl`](../designs/ptouch-cradle/test-prints/printer-corner-fit/printer-corner-fit.stl) | Test print — printer pocket two-sides-three-corners fit (~11 cm³) |
 | [`cradle.scad`](../designs/ptouch-cradle/cradle.scad) | Cradle parametric source |
 | [`tray.scad`](../designs/ptouch-cradle/tray.scad) | Tray parametric source |
 | [`spec.json`](../designs/ptouch-cradle/spec.json) | Validation spec |

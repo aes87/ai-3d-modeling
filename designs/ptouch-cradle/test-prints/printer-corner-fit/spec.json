@@ -1,6 +1,6 @@
 {
   "name": "printer-corner-fit",
-  "description": "U-shaped pocket test for ptouch-cradle's printer pocket — three walls (closed back + both long sides) at half height verify 1mm/side XY clearance against the actual PT-P750W corners on both inside back-corners along the full pocket length before committing to the full cradle print.",
+  "description": "Two-full-sides + stubs test for ptouch-cradle's printer pocket — full back wall + full right long wall + left/front stubs form three inside corners (back-left, back-right, front-right). Verifies pocket X (80mm) and Y (154mm) interior dimensions plus 1mm/side XY clearance against the actual PT-P750W corners. Front-left corner is the only one not present.",
   "parent": "ptouch-cradle",
   "category": "fitment",
   "priority": "high",
@@ -17,8 +17,8 @@
     "z": 256
   },
   "volume": {
-    "min": 10,
-    "max": 20
+    "min": 8,
+    "max": 14
   },
   "echoedDimensions": {
     "printer-corner-fit": {
@@ -32,6 +32,7 @@
     "wall_t": 3.0,
     "wall_h": 12.5,
     "pocket_int_x": 80,
-    "pocket_int_y": 154
+    "pocket_int_y": 154,
+    "stub_len": 25
   }
 }
