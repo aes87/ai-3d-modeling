@@ -24,6 +24,27 @@
       "simplification": "Piece A: Y-slice of the cradle slot — two slot side walls (3.05 mm each) + 3 mm back wall + 4 mm base plate, 25 mm interior Y depth, open front and open top. Piece B: solid slug with the tray exterior cross-section (103.2 mm W × 30 mm H, r=3 corner fillets) extruded 25 mm in Y — no interior cavity, no ramp, no front lip. Both pieces placed on one bed with a 10 mm gap.",
       "verificationMethod": "Trial fit: slide slug into channel. Smooth sliding with slight resistance = PASS. Binding = printer runs narrow, adjust XY compensation. Rattle = printer runs wide, adjust XY compensation.",
       "designDir": "designs/ptouch-cradle/test-prints/tray-slot-fit-pair"
+    },
+    {
+      "id": "printer-corner-fit",
+      "name": "Printer Corner Fit (L-Test)",
+      "category": "fitment",
+      "priority": "high",
+      "reason": "Cradle's printer pocket (80 × 154 mm interior) accommodates the PT-P750W (78 × 152 mm) with 1 mm/side XY clearance. Fit-reviewer verified the math, but FDM dimensional drift on a 78–152 mm part can reach ±0.2–0.3 mm — and the printer's actual corner radius/chamfer (not modeled in the proxy box) needs to clear the cradle's sharp 90° interior corner. Adding this test after the user noted that pocket fitment isn't validated by the tray-slot-fit-pair.",
+      "features": [
+        "printer_pocket_walls",
+        "printer_pocket_corner"
+      ],
+      "zRange": [0, 25],
+      "criticalDimensions": {
+        "wall_thickness":     { "nominal": 3.0,   "tolerance": 0.2 },
+        "wall_height":        { "nominal": 25.0,  "tolerance": 0.2 },
+        "per_side_clearance": { "nominal": 1.0,   "tolerance": 0.0 }
+      },
+      "matePart": "Brother PT-P750W printer (78 × 152 × 143 mm) — user provides the actual printer, places its corner against the L's inside angle",
+      "simplification": "Two perpendicular wall segments forming ONE inside corner of the printer pocket. Long leg 100 mm × 3 mm × 25 mm (along printer's long-axis side), short leg 80 mm × 3 mm × 25 mm (along printer's short-axis side). No floor — L is rigid enough as printed to stand on either leg. Three reference points: two open ends + the inside angle. ~13 cm³, ~10% of full cradle volume.",
+      "verificationMethod": "Place the L on a flat surface (one leg's outside face down). Set the printer's corner against the inside angle. Push the printer toward the corner. PASS = slides with slight consistent resistance, ~1 mm gap visible to each L wall, printer's corner seats without binding. FAIL-tight = bump pocket clearance to 1.2 mm. FAIL-loose = tighten to 0.8 mm. FAIL-corner-bind = add inside-corner relief to printer pocket subtraction.",
+      "designDir": "designs/ptouch-cradle/test-prints/printer-corner-fit"
     }
   ],
   "candidatesReviewed": [

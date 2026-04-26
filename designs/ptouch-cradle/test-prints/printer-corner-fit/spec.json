@@ -1,0 +1,37 @@
+{
+  "name": "printer-corner-fit",
+  "description": "L-shaped corner test for ptouch-cradle's printer pocket — verifies 1mm/side XY clearance against the actual PT-P750W corner before committing to the full cradle print.",
+  "parent": "ptouch-cradle",
+  "category": "fitment",
+  "priority": "high",
+  "dimensions": {
+    "x": 80,
+    "y": 100,
+    "z": 25
+  },
+  "defaultTolerance": 0.5,
+  "watertight": true,
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "volume": {
+    "min": 8,
+    "max": 25
+  },
+  "echoedDimensions": {
+    "printer-corner-fit": {
+      "x": 80,
+      "y": 100,
+      "z": 25
+    }
+  },
+  "views": ["iso", "front", "top"],
+  "params": {
+    "wall_t": 3.0,
+    "wall_h": 25.0,
+    "long_leg_y": 100,
+    "short_leg_x": 80
+  }
+}
