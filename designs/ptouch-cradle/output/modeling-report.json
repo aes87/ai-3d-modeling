@@ -2,16 +2,13 @@
   "designName": "ptouch-cradle",
   "validationPass": true,
   "iterations": 1,
-  "round": 6,
-  "headline": "Round 6 reworks the tray's front-of-bin treatment per modeler-notes-v6. The boss + scoop indent grab feature from round 5 is fully removed. Front wall now has VARIABLE HEIGHT along X (corner sections at z=18, lowered center 50mm wide at z=10). Side-wall to front-wall corner fillets (r=12) eliminate the round-5 'fangs.' Interior floor ramp re-oriented from convex (hump) to concave (parabolic slide-curve), terminating at the lowered-center top z=10. Cradle is unchanged from round 5.",
+  "round": 7,
+  "headline": "Round 7 simplifies the tray's front wall per modeler-notes-v7. The round-6 variable-height profile (corners at z=18, lowered center at z=10, transition arcs r=8, side fillets r=12) is collapsed to a single uniform front_wall_h=10 across the full width, with ONE concave fillet (r=20) per side handling the entire side-wall (z=30) to front-wall (z=10) transition. No corner bars, no intermediate flat sections, no sharp points. r=2 top-edge fillet on back/sides + r=0.8 on the front wall (smaller because the front wall is only 1.6 mm thick — r=2 collapses). Cradle untouched.",
   "parts": {
     "cradle": {
       "scad": "designs/ptouch-cradle/cradle.scad",
       "stl": "designs/ptouch-cradle/output/cradle.stl",
       "watertight": true,
-      "volume_mm3": 136608,
-      "volume_cm3": 136.61,
-      "face_count": 25960,
       "dimensions": {
         "echoed": {
           "cradle":                 { "x": 110.0, "y": 254.9, "z": 25.0 },
@@ -20,144 +17,119 @@
         "expected": {
           "cradle": { "x": 110, "y": 254.9, "z": 25 }
         },
-        "mesh_bbox_min":  { "x":   0.0, "y":   0.0, "z":  0.0 },
-        "mesh_bbox_max":  { "x": 110.0, "y": 254.9, "z": 25.001 },
-        "mesh_bbox_dims": { "x": 110.0, "y": 254.9, "z": 25.001 },
         "withinTolerance": true,
-        "notes": "Round-6: NO CHANGES vs round 5. Cradle dimensions, geometry, and watertight status all unchanged. Render time ~80s at draft quality ($fn=100, top_fillet_steps=24)."
+        "notes": "ZERO CHANGES from round 6. STL re-rendered to confirm cradle.scad untouched."
       }
     },
     "tray": {
       "scad": "designs/ptouch-cradle/tray.scad",
       "stl": "designs/ptouch-cradle/output/tray.stl",
       "watertight": true,
-      "volume_mm3": 38492,
-      "volume_cm3": 38.49,
-      "face_count": 13252,
+      "volume_mm3": 38900,
+      "volume_cm3": 38.90,
+      "face_count": 9010,
       "dimensions": {
         "echoed":  { "tray": { "x": 103.2, "y": 94.2, "z": 30.0 } },
         "expected": { "tray": { "x": 103.2, "y": 94.2, "z": 30.0 } },
         "mesh_bbox_min": { "x": 0.0, "y": 0.0, "z": 0.0 },
-        "mesh_bbox_max": { "x": 103.2, "y": 94.2, "z": 29.933 },
+        "mesh_bbox_max": { "x": 103.2, "y": 94.2, "z": 29.948 },
         "withinTolerance": true,
-        "notes": "Round-6 substantive rebuild on tray-only. Mesh y-extent reverts 96.7 → 94.2 (round-5 grab boss removed entirely; tray y now equals ext_d=int_d+2*wall_t exactly). Volume drops 76.14 → 38.49 cm³ (49% reduction): the round-5 ramp solid mass is replaced by a thinner concave parabolic surface, the front wall is shorter on average (variable z=10..18 vs uniform z=18), and the boss is gone. Top z=29.933 (0.07 mm under nominal — final fillet roll's last inset). Render time ~16s at draft quality (vs ~80s at ship)."
+        "notes": "Round-7 simplification on tray-only. Mesh dimensions identical to round 6 (X 103.2, Y 94.2, Z 29.948). Volume slightly higher than round 6 (38.90 vs 38.49 cm³) because the front wall has more material (uniform z=10 across full width vs round 6's variable-height which had less material at the lowered center transitions). Face count drops 13252 → 9010 (32% fewer faces) because the front-wall-top cutter polygon is much simpler — 2 quarter arcs instead of 4 arcs + corner flats + transitions."
       }
     }
   },
   "totals": {
-    "volume_cm3": 175.10,
+    "volume_cm3": 175.51,
     "max_z_cradle_mm": 25.001,
-    "max_z_tray_mm": 29.933,
+    "max_z_tray_mm": 29.948,
     "max_y_tray_mm": 94.2,
     "build_volume_max_z_mm": 256,
     "build_volume_margin_z_mm": 230.999,
     "build_volume_margin_y_mm": 1.1,
-    "round_5_volume_cm3": 212.81,
-    "volume_change_cm3": -37.71,
-    "volume_change_pct": -17.7,
-    "change_breakdown": "Cradle: ~unchanged (136.67 → 136.61 cm³, -0.06 cm³ — round-off only). Tray: -37.65 cm³ (boss removed, ramp solid lighter, front wall shorter on average). Net 17.7% reduction."
+    "round_6_volume_cm3": 175.10,
+    "volume_change_cm3": 0.41,
+    "volume_change_pct": 0.2,
+    "change_breakdown": "Tray: +0.41 cm³ (uniform front wall has slightly more material than the round-6 variable profile). Cradle: unchanged."
   },
-  "fixesAppliedV6": {
-    "fix1_tray_variable_height_front_wall": {
+  "fixesAppliedV7": {
+    "fix1_front_wall_uniform_z10": {
       "applied": true,
-      "scope": "substantive — front wall geometry replaced",
-      "description": "Round-5's uniform-height (z=18) front wall + boss + scoop indent is replaced with a variable-height profile: corner sections at full z=18, lowered center 50mm wide at z=10. Concave quarter-arc r=8 transitions between corner and center. The lowered center IS the grab feature — a finger reaches over the 10mm-tall opening and hooks the front lip from above. Construction: a 2D X-Z polygon describing the AIR-ABOVE-WALL profile (with side fillets, corner flats, transition arcs, lowered center) is extruded along Y over the front-wall slab and subtracted from the full-height tray box.",
+      "scope": "substantive — front wall geometry simplified",
+      "description": "Round-6's variable-height front wall (corners z=18, center z=10, transition arcs r=8, side fillets r=12) is replaced with a single uniform front_wall_h=10 across the full width. NO corner sections at z=18, NO transition arcs, NO variable-height profile. Front wall reads as a clean low band across the entire user-front face.",
       "spec_diffs": [
-        "DELETE: tray_front_wall_h, tray_front_wall_top_treatment_note, grab_boss_proud, grab_boss_width, grab_boss_height_z, grab_boss_corner_r, grab_boss_construction, grab_scoop_arc_r, grab_scoop_chord_z, grab_scoop_depth, grab_scoop_center_z, grab_scoop_width, grab_scoop_x_center, grab_scoop_construction, tray_mesh_y_with_grab_boss, ramp_arc_radius, ramp_arc_construction, front_wall_top_z_above_desk",
-        "ADD: tray_front_wall_corner_h=18, tray_front_wall_center_h=10, tray_front_wall_center_w=50, tray_front_wall_transition_arc_r=8, tray_front_wall_corner_fillet_r=12, tray_front_wall_construction (description)",
-        "ADD: front_wall_top_z_above_desk_corner=29, front_wall_top_z_above_desk_center=21",
-        "UPDATE: echoedDimensions.tray.y 96.7 → 94.2 (boss removed, mesh y reverts to ext_d)",
-        "UPDATE: tray_exterior_d 94.2 (unchanged) — round 5 had documented mesh-y separately; now mesh-y = ext_d exactly",
-        "UPDATE: label_drop_note + label_clears_front_wall_by_min_mm to reflect dual front-wall heights (corner z=29 desk-ref clears tape exit by 35-50mm; lowered center z=21 desk-ref clears by 43-58mm)",
-        "ADD: ramp_orientation, ramp_construction (parabolic, see fix 3)",
-        "ADD: tray render quality knobs (tray_fn_draft, tray_fn_ship, tray_top_fillet_steps_draft/ship, tray_ramp_arc_steps_draft/ship)"
+        "DELETE: tray_front_wall_corner_h, tray_front_wall_center_h, tray_front_wall_center_w, tray_front_wall_transition_arc_r",
+        "ADD: tray_front_wall_h=10, tray_front_wall_side_fillet_r=20, tray_front_top_edge_fillet_r=0.8",
+        "REPLACE: tray_front_wall_corner_fillet_r=12 → tray_front_wall_side_fillet_r=20",
+        "UPDATE: tray_front_wall_construction (description rewritten for uniform-height + single-fillet construction)",
+        "UPDATE: front_wall_top_z_above_desk (single value 21, was dual corner=29/center=21)",
+        "UPDATE: label_clears_front_wall_by_min_mm (43, was 35)",
+        "UPDATE: label_drop_note (single front-wall-top reference)",
+        "UPDATE: testPrintCandidates entry for the front wall (uniform low + side fillet sweep)"
       ],
-      "deviations": [
-        {
-          "what": "Front wall top edge has no separate r=2 top-edge roll fillet",
-          "why": "The variable-height profile already encodes concave arcs (transitions r=8, side fillets r=12) along the entire top edge — the wall top is curved-by-construction. Adding a separate r=2 roll on top would either A) require a much more complex slab-stack across the variable profile, or B) sit awkwardly on top of the existing arcs. Decision: skip the separate r=2 top-edge roll on the front wall; the variable-height arcs ARE the front-wall top treatment. Back/side walls keep the r=2 rolled cap unchanged from round 5."
-        },
-        {
-          "what": "Side-wall to front-wall fillet exists only WITHIN the front-wall slab (y in [ext_d-wall_t, ext_d])",
-          "why": "The fillet sweep (z=30 → z=18, r=12) is encoded into the front-wall-top cutter polygon, which extrudes only across the front-wall slab thickness. At y < ext_d-wall_t (in the side-wall extent BEHIND the front-wall slab), the side wall stays full-height z=30. There is a Y-direction step at y=ext_d-wall_t where the side wall's top suddenly drops from z=30 to z=18 over zero Y distance. Visually this is mostly hidden because the side wall top is itself filleted by the back/sides r=2 top-edge stack. A double-curvature fix (X-fillet + Y-fillet at the upper outer corners) was deemed beyond round-6 scope; if round-7 critique flags the Y-step, that's the next iteration. Documented in tray.scad source comments."
-        }
-      ]
-    },
-    "fix2_side_wall_to_front_wall_corner_fillet": {
-      "applied": true,
-      "scope": "encoded in fix 1's polygon",
-      "description": "Concave quarter-arc r=12 at the upper outer corners of the front wall, sweeping the wall's top edge from the side wall's z=30 down to the front-wall corner's z=18. Replaces the round-5 hard step that produced the visible 'fangs.' Encoded into the front-wall-top cutter polygon as `left_side_fillet` and `right_side_fillet` arcs.",
-      "spec_diff": "ADD: tray_front_wall_corner_fillet_r=12 (in fix1 spec_diffs list).",
       "deviations": []
     },
-    "fix3_concave_floor_ramp": {
+    "fix2_single_concave_side_fillet_r20": {
       "applied": true,
-      "scope": "ramp geometry replaced",
-      "description": "Round-5's circular arc ramp (convex pan-edge, hump up into cavity) is replaced with a quadratic curve z(y) = 1.6 + 8.4 * ((y - 62.6) / 30)^2 from (62.6, 1.6) to (92.6, 10). Tangent to the flat floor at the back (slope = 0 at y=62.6). Concave from cavity side (curve dips below the chord); from a finger sliding forward, slope is gentle near the back and steepens monotonically toward the front (like climbing a slide). The new ramp_front_z=10 (down from 18) terminates the ramp at the lowered-center top, producing a unified geometry where the ramp's front edge IS the lowered center's top.",
-      "spec_diff": "UPDATE: ramp_front_z 18 → 10. UPDATE: ramp_arc_radius DELETED (no longer a circular arc). ADD: ramp_orientation='concave_from_cavity_side', ramp_construction (description of quadratic curve).",
+      "scope": "encoded in the simplified front-wall-top cutter polygon",
+      "description": "ONE concave quarter-arc fillet per side, r=20, sweeping continuously from side-wall top (z=30) to front-wall top (z=10) over the 20mm height drop. Single curve, single radius, no intermediate flat section, no transition arc. Geometric construction: arc center at (wall_t, front_wall_h)=(1.6, 10) for the left side, sweeping 0°→90° CCW; mirror for right side. Concave-from-above (wall material bulges up into the cut region; user perceives a soft scoop).",
+      "spec_diff": "REPLACE: tray_front_wall_corner_fillet_r=12 → tray_front_wall_side_fillet_r=20.",
+      "deviations": []
+    },
+    "fix3_top_edge_fillet_r0_8_on_front_wall": {
+      "applied": true,
+      "scope": "front wall top fillet construction",
+      "description": "r=2 top-edge fillet roll continues on back + side walls (unchanged from round 6). A separate r=0.8 fillet stack rolls the front wall top at z=10. Constructed as a separate slab-stack restricted via a front_top_mask to the front wall slab in the X range BETWEEN the two side-fillet sweeps (x = wall_t + r_side .. ext_w - wall_t - r_side = 21.6 .. 81.6). The r=0.8 deviation from r=2 is documented per modeler-notes-v7 §Uncertain — the front wall is 1.6 mm thick and r=2 would exceed half the wall thickness, collapsing the offset.",
+      "spec_diff": "ADD: tray_front_top_edge_fillet_r=0.8 (in fix1 spec_diffs list).",
       "deviations": [
         {
-          "what": "Ramp is a quadratic curve, not a circular arc",
-          "why": "Modeler-notes-v6 fix3 specified a concave-from-cavity-side circular arc with center above chord, suggested r=25-35. Round-6 modeling derived that a circular arc passing through both endpoints (62.6, 1.6) and (92.6, 10) with center above chord ALWAYS dips below floor (z=floor_t=1.6) at its lowest point — proven by the quadratic in r that has negative discriminant. The chord rise (8.4mm over 30mm) is too small relative to the chord length to keep a concave-from-cavity arc above the floor. The notes anticipated this: 'Alternative if direct concave arc placement is geometrically tricky: use a Bezier curve or compound construction.' A quadratic z(y) = 1.6 + 8.4 * ((y-62.6)/30)^2 satisfies all three properties simultaneously (monotonic rise, concave from cavity, always above floor), tangent to flat floor at the back. Documented in spec.json under ramp_construction. Self-supporting in face-up print orientation (every layer of the ramp surface sits on solid floor material below)."
+          "what": "Front wall top fillet uses r=0.8, not r=2",
+          "why": "Front wall thickness is 1.6 mm. An r=2 fillet attempts to round the top inward by 2mm — that exceeds half the wall thickness and the slab-stack's offset(r=-inset) shrinks the rounded_rect footprint by more than the wall's half-thickness, collapsing the front wall material at the topmost layers. r=0.8 is half the wall thickness — the offset shrinks the footprint by at most 0.8mm, leaving a 0.8mm-wide top surface at the topmost layer (the offset starts at 0 and grows to 0.8 across the fillet stack). This is the deviation explicitly anticipated in modeler-notes-v7 §Uncertain. Alternative considered: skip the top fillet entirely on the front wall (leave a sharp top edge); rejected because the top edge would not match the back/sides' soft round."
+        },
+        {
+          "what": "Y-direction step at y = ext_d - wall_t (carried over from round 6)",
+          "why": "The front-wall-top cutter is extruded along Y across only the front-wall slab thickness (y = ext_d - wall_t .. ext_d). Outside that slab (y < ext_d - wall_t), the side wall stays at full z=30. The transition between the side-wall material at z=30 (back of slab) and the side-fillet sweep down to z=10 (front of slab) is a Y-direction discontinuity at y=92.6. Same as round 6's documented simplification. Visually mostly hidden because the side wall top is itself rolled by the r=2 top-edge fillet. Modeler-notes-v7 didn't flag this for fixing, so left as-is. If round-8 critique flags it, the fix is a double-curvature spherical fillet (r=20 in X plus r=2 in Y) at the upper outer corners."
         }
       ]
     },
-    "fix4_draft_render_quality_adoption": {
+    "fix4_interior_ramp_unchanged": {
       "applied": true,
-      "scope": "infrastructure adoption, no spec change",
-      "description": "Both SCAD files declare quality knobs at the top: $fn=100, top_fillet_steps=24, ramp_arc_steps=32 (tray only). Iteration renders at draft quality. Shipper bumps to ship quality at delivery via -D overrides.",
-      "spec_diff": "Render quality settings already present in tray.scad and cradle.scad from commit b2695ec; spec.json adds documentation of draft vs ship quality settings.",
-      "render_time_comparison": {
-        "cradle_stl_draft": "~80 s",
-        "tray_stl_draft":   "~16 s",
-        "comparison_note":  "Tray renders 5x faster than cradle (16s vs 80s). Cradle's CGAL face count is 6490 (printer pocket + tray slot + concave fillet between sections + smooth top fillet stack), tray's is 2252 (smaller part with simpler concave operations). Both are at draft quality. Round-5 ship-quality render times were ~15min cradle + ~1min tray; draft is ~10x faster on cradle, ~4x faster on tray."
-      },
+      "scope": "no-op verification",
+      "description": "Interior parabolic floor ramp z(y) = 1.6 + 8.4 * ((y - 62.6) / 30)^2 unchanged from round 6. Endpoint at z=10 still equals front_wall_h, just renamed (was front_wall_center_h, now front_wall_h). Param wiring updated: ramp_front_z = front_wall_h.",
+      "spec_diff": "None — ramp_front_z=10 already in spec.",
       "deviations": []
     }
   },
   "specDeviations": [
     {
-      "dimension": "tray.y",
-      "round_5_value": 96.7,
-      "round_6_value": 94.2,
-      "reason": "Round-5 grab boss (extending 2.5mm proud of front wall +Y face) is removed entirely. Mesh y-extent now equals ext_d = int_d + 2*wall_t = 91 + 3.2 = 94.2 mm exactly."
-    },
-    {
       "dimension": "tray.front_wall_top_z",
-      "round_5_value": 18,
       "round_6_value": "10 (center 50mm) / 18 (corners) — variable",
-      "reason": "Fix 1: front wall has variable height. Lowered center is the grab feature."
+      "round_7_value": 10,
+      "reason": "Fix 1: front wall is uniform z=10 across the full width. No more variable-height profile."
     },
     {
-      "dimension": "tray.ramp_front_z",
-      "round_5_value": 18,
-      "round_6_value": 10,
-      "reason": "Fix 3: ramp now terminates at the lowered-center top (z=10), not the corner top (z=18). Unified geometry between ramp front edge and lowered center top."
+      "dimension": "tray.front_wall_side_fillet_r",
+      "round_6_value": "12 (concave fillet z=30→18) + 8 (transition arc z=18→10) — two fillets in series",
+      "round_7_value": "20 (single concave fillet z=30→10)",
+      "reason": "Fix 2: ONE continuous concave quarter-arc per side replaces the round-6 two-fillets-in-series. Radius matches the 20mm height drop for a clean quarter circle."
     },
     {
-      "dimension": "tray.ramp_curve_type",
-      "round_5_value": "circular arc r=22, convex from cavity (hump up)",
-      "round_6_value": "quadratic curve, concave from cavity (slide-shape)",
-      "reason": "Fix 3 functional reorientation; circular arc with these endpoints + concave + above-floor has no real solution, so quadratic is used."
-    },
-    {
-      "dimension": "tray.ext_d (echoed)",
-      "round_5_value": "94.2 (envelope) but mesh-y reported 96.7",
-      "round_6_value": "94.2 (envelope and mesh-y match)",
-      "reason": "Boss removed; envelope and mesh agree."
+      "dimension": "tray.front_top_edge_fillet_r",
+      "round_6_value": "n/a (no separate front-wall top fillet — the variable arcs were the treatment)",
+      "round_7_value": 0.8,
+      "reason": "Fix 3: with the front wall now uniform-height, a separate top-edge roll fillet is added. r=0.8 instead of r=2 because the front wall is only 1.6 mm thick — r=2 would collapse the offset. Documented deviation per modeler-notes-v7 §Uncertain."
     },
     {
       "dimension": "tray.print_orientation",
-      "round_5_value": "face up",
-      "round_6_value": "face up (unchanged)",
-      "reason": "Concave parabolic ramp is fully self-supporting in face-up print orientation (always angles up-and-forward, never overhangs)."
+      "round_6_value": "face up",
+      "round_7_value": "face up (unchanged)",
+      "reason": "Concave side fillet sweeps from higher z (z=30 at side) to lower z (z=10 at front) in the X direction — every layer has support below. Concave parabolic ramp self-supporting (unchanged). No supports needed."
     }
   ],
   "features": [
     {
       "part": "cradle",
       "name": "base_plate",
-      "description": "Stepped base plate with r=10 hero corner radius. Footprint follows stepped_footprint_raw — narrow under printer section (X=12..98, Y=0..160), wider under shelf (X=0..110, Y=160..254.9). Concave r=10 quarter-arc on both ±X sides at the printer→shelf transition. UNCHANGED from round 5.",
+      "description": "Stepped base plate with r=10 hero corner radius. UNCHANGED from round 5/6.",
       "z_range": [0, 4],
       "outer_extent": 110,
       "inner_extent": null,
@@ -167,7 +139,7 @@
     {
       "part": "cradle",
       "name": "low_wall_block",
-      "description": "25 mm tall stepped perimeter wall block. UNCHANGED from round 5.",
+      "description": "25 mm tall stepped perimeter wall block. UNCHANGED from round 5/6.",
       "z_range": [4, 25],
       "outer_extent": 110,
       "inner_extent": 80,
@@ -177,7 +149,7 @@
     {
       "part": "cradle",
       "name": "printer_shelf_concave_fillet",
-      "description": "r=10 concave quarter-arc on both ±X sides where the 86 mm printer section transitions to the 110 mm shelf section. UNCHANGED from round 5.",
+      "description": "r=10 concave quarter-arc on both ±X sides where the 86 mm printer section transitions to the 110 mm shelf section. UNCHANGED from round 5/6.",
       "z_range": [0, 25],
       "outer_extent": null,
       "inner_extent": null,
@@ -187,7 +159,7 @@
     {
       "part": "cradle",
       "name": "host_object_proxy",
-      "description": "RENDER-ONLY printer proxy box (78 × 152 × 143 mm). UNCHANGED from round 5.",
+      "description": "RENDER-ONLY printer proxy box. UNCHANGED from round 5/6.",
       "z_range": [4, 147],
       "outer_extent": 78,
       "inner_extent": null,
@@ -199,17 +171,17 @@
     {
       "part": "tray",
       "name": "tray_floor",
-      "description": "Solid floor at z = 0..floor_t (0..1.6 mm) at the back portion of the bin (y = wall_t..ramp_back_y = 1.6..62.6). Full interior width (x = wall_t..ext_w-wall_t = 1.6..101.6).",
+      "description": "Solid floor at z = 0..floor_t (0..1.6 mm) at the back portion of the bin (y = wall_t..ramp_back_y = 1.6..62.6). Full interior width (x = wall_t..ext_w-wall_t = 1.6..101.6). UNCHANGED from round 6.",
       "z_range": [0, 1.6],
       "outer_extent": 103.2,
       "inner_extent": null,
-      "scad_line": 290,
+      "scad_line": 305,
       "transitions": { "below": "bed (or slot floor when installed)", "above": "tray_walls + interior_ramp" }
     },
     {
       "part": "tray",
       "name": "tray_walls_back_sides",
-      "description": "Back wall (-Y) and ±X side walls — vertical, rounded_rect outer outline with r=3 vertical edge fillet, uniform 1.6 mm thickness. Top edges (z = ext_h = 30) carry a continuous r=2 quarter-arc fillet rolled inward via 24-step slab stack at $fn=100 draft (64 ship). UNCHANGED from round 5.",
+      "description": "Back wall (-Y) and ±X side walls — vertical, rounded_rect outer outline with r=3 vertical edge fillet, uniform 1.6 mm thickness. Top edges (z = ext_h = 30) carry a continuous r=2 quarter-arc fillet rolled inward via 24-step slab stack. UNCHANGED from round 5/6.",
       "z_range": [0, 30],
       "outer_extent": 103.2,
       "inner_extent": 100,
@@ -218,52 +190,32 @@
     },
     {
       "part": "tray",
-      "name": "tray_front_wall_corners",
-      "description": "Variable-height front wall — outer corner sections at full z = 18. X ranges: x in [0, 18.6] (left) and x in [84.6, 103.2] (right). Material at y in [ext_d-wall_t, ext_d] = [92.6, 94.2]. Each corner section's top profile sweeps via a side-fillet (r=12, x in [wall_t, wall_t+12] sweeping z=30→18) into a flat segment at z=18 (5mm wide), then a transition arc (r=8) down to the lowered center.",
-      "z_range": [0, 18],
-      "outer_extent": null,
-      "inner_extent": null,
-      "scad_line": 145,
-      "transitions": { "part_of": "outer_body (front-wall-top-cutter shapes the top)" }
-    },
-    {
-      "part": "tray",
-      "name": "tray_front_wall_lowered_center",
-      "description": "Lowered center of the front wall, 50mm wide (x=26.6..76.6), top at z=10. THE GRAB FEATURE: a finger reaches over the 10mm tall opening and hooks the front lip from above. Replaces round-5's boss + scoop indent.",
+      "name": "tray_front_wall_uniform",
+      "description": "ROUND-7 SIMPLIFICATION. Uniform-height front wall at z=front_wall_h=10 across the entire width (x = wall_t+r_side..ext_w-wall_t-r_side = 21.6..81.6 in the flat segment between the two side fillets; full x-range x=wall_t..ext_w-wall_t when including the side fillet sweeps). Material at y in [ext_d-wall_t, ext_d] = [92.6, 94.2]. Replaces round-6's variable-height profile. THE GRAB FEATURE: user reaches over the 10mm-tall front wall ANYWHERE along its width to grab the lip or retrieve labels. r=0.8 top-edge fillet rolls the flat-segment top inward (limited by 1.6mm wall thickness — r=2 would collapse).",
       "z_range": [0, 10],
       "outer_extent": null,
       "inner_extent": null,
-      "scad_line": 145,
-      "transitions": { "part_of": "outer_body (front-wall-top-cutter shapes the top)" }
-    },
-    {
-      "part": "tray",
-      "name": "tray_front_wall_transitions",
-      "description": "Concave quarter-arc r=8 transitions between the corner-section flat (z=18) and the lowered center (z=10). Two arcs, mirrored. Each arc spans 8mm in X and 8mm in Z. Concave-from-above (curve dips below chord midpoint).",
-      "z_range": [10, 18],
-      "outer_extent": null,
-      "inner_extent": null,
-      "scad_line": 200,
-      "transitions": { "part_of": "outer_body (front-wall-top-cutter)" }
+      "scad_line": 165,
+      "transitions": { "part_of": "outer_body (front-wall-top-cutter shapes the top profile)" }
     },
     {
       "part": "tray",
       "name": "side_wall_to_front_wall_fillets",
-      "description": "Concave quarter-arc r=12 at the upper outer corners of the front wall, sweeping z=30 down to z=18 across an 12mm X span (wall_t..wall_t+12 on the left, ext_w-wall_t-12..ext_w-wall_t on the right). Replaces the round-5 hard step that produced 'fangs' at these corners. Encoded into the front-wall-top cutter polygon. NOTE: the fillet operates only within the front-wall slab (y in [ext_d-wall_t, ext_d]); a Y-direction step at y=ext_d-wall_t is documented as a known simplification.",
-      "z_range": [18, 30],
+      "description": "ROUND-7 SIMPLIFICATION. ONE concave quarter-arc per side, r=20, sweeping continuously from side-wall top (z=30) to front-wall top (z=10) over the 20mm height drop. Single curve, single radius, no intermediate flat sections. Geometric construction: arc center at (wall_t, front_wall_h)=(1.6, 10) for the left, 0°→90° CCW sweep; mirrored on the right. Concave-from-above. Replaces round-6's two-fillets-in-series (r=12 corner fillet z=30→18 + r=8 transition arc z=18→10). Encoded into the front-wall-top cutter polygon as left_side_fillet and right_side_fillet arcs. Operates only within the front-wall slab (y in [ext_d-wall_t, ext_d]); a Y-direction step at y=ext_d-wall_t is a documented simplification carried over from round 6.",
+      "z_range": [10, 30],
       "outer_extent": null,
       "inner_extent": null,
-      "scad_line": 200,
+      "scad_line": 215,
       "transitions": { "part_of": "outer_body (front-wall-top-cutter)" }
     },
     {
       "part": "tray",
       "name": "interior_floor_ramp",
-      "description": "Concave parabolic floor surface near the front of the bin. Curve z(y) = 1.6 + 8.4 * ((y-62.6)/30)^2 connects (y=62.6, z=1.6) (back end, tangent to flat floor) to (y=92.6, z=10) (front end, at lowered-center top). Concave from cavity side — curve dips below the chord. From a finger sliding forward: slope gentle at back, steepens monotonically toward front (like a slide). Self-supporting in face-up print orientation. Full interior X width (x = wall_t..ext_w-wall_t).",
+      "description": "Concave parabolic floor surface. Curve z(y) = 1.6 + 8.4 * ((y-62.6)/30)^2 connects (y=62.6, z=1.6) (back end, tangent to flat floor) to (y=92.6, z=10) (front end, at front-wall top). UNCHANGED from round 6 — endpoint at z=10 still matches front_wall_h.",
       "z_range": [1.6, 10],
       "outer_extent": null,
       "inner_extent": null,
-      "scad_line": 380,
+      "scad_line": 270,
       "transitions": { "part_of": "tray (cavity_cutter polygon)" }
     }
   ],
@@ -272,17 +224,17 @@
       "bed_face": "base plate bottom (z = 0 — flush with bed, NO feet)",
       "z_direction": "+Z print axis = design +Z (vertical)",
       "supports_required": [],
-      "notes": "UNCHANGED from round 5."
+      "notes": "UNCHANGED from round 5/6."
     },
     "tray": {
       "bed_face": "floor (z = 0 on bed) — face up (open top up)",
       "z_direction": "+Z print axis = design +Z (vertical)",
       "supports_required": [],
-      "notes": "Round 6 confirms face-up. Variable-height front wall is a 'missing material' feature, not an overhang — fully self-supporting. The transition arcs in X-Z are also self-supporting. The concave parabolic ramp surface curves DOWN from the floor surface (every layer of the ramp surface sits on solid floor material below) — no overhangs at any layer. The side-wall to front-wall fillet sweeps from a higher z to a lower z in the X direction — no overhangs at any layer. Verify in slicer; no supports expected."
+      "notes": "Round 7 confirms face-up. Uniform front wall is a simple closed perimeter — fully self-supporting. ONE concave side fillet per side sweeps from higher z (z=30 at the outer corner) to lower z (z=10 at the front-wall top) in the X direction — every layer has support below. Concave parabolic ramp surface (unchanged) curves DOWN from the floor surface — no overhangs at any layer. r=0.8 front-wall top fillet rolls inward — no overhangs. No supports."
     }
   },
   "userOrientationConfirmed": {
-    "user_front": "+Y face (tray slides in/out here; printer faces user; lowered center grab on tray)",
+    "user_front": "+Y face (low front lip — grab anywhere along its width)",
     "user_back": "-Y face (against-wall, no notch)",
     "user_left": "-X face",
     "user_right": "+X face",
@@ -298,61 +250,54 @@
     "output/tray-user-front.png",
     "output/tray-user-front-threequarter.png"
   ],
-  "render_method": "Direct openscad (2021.01) invocation with explicit eye+center cameras (--camera=eye_x,eye_y,eye_z,center_x,center_y,center_z). cli-anything-openscad presets remain unusable per all prior rounds' lessons. Combined-cradle-tray harness files (.combined-bare.scad, .combined-use.scad) used for views that show both parts in the same frame. Tray-only views use tray.scad directly; cradle-only views use cradle.scad directly. Render quality DRAFT throughout ($fn=100, top_fillet_steps=24, ramp_arc_steps=32).",
+  "render_method": "cli-anything-openscad render png with explicit gimbal cameras (tx,ty,tz,rx,ry,rz,d). Combined-cradle-tray harness files (.combined-bare.scad, .combined-use.scad) used for views that show both parts in the same frame. Tray-only views use tray.scad directly. Render quality DRAFT throughout ($fn=100, top_fillet_steps=24, ramp_arc_steps=32).",
   "verdicts": {
-    "tray_lowered_center_cutout": {
+    "front_wall_uniform_z10_band": {
       "passed": true,
-      "details": "tray-user-front shows the lowered-center cutout clearly: corner sections at z=18 with smooth concave fillets sweeping up to the side walls, transitioning via concave arc r=8 down to a 50mm flat segment at z=10. The opening reads as a clear 'reach in here' affordance — a finger fits comfortably above the 10mm tall lowered section. Much more obvious than round-5's 2.86mm-deep capsule indent."
+      "details": "tray-user-front shows a single horizontal line at z=10 across the full width of the front wall top, with concave fillet sweeps rising to z=30 at the sides. NO corner bars, NO sharp points, NO variable-height profile. Reads as a clean low band — exactly what was requested in the user-feedback turn 11."
     },
-    "tray_no_more_fangs": {
+    "single_concave_side_fillet_no_intermediate_section": {
       "passed": true,
-      "details": "tray-user-front and tray-user-front-threequarter both show smooth concave sweeps at the side-wall to front-wall transitions. No hard z-steps, no pointed protrusions. The r=12 fillet matches the 12mm height drop from z=30 to z=18, producing a continuous quarter-arc."
+      "details": "tray-user-front-threequarter and cradle-user-front-threequarter both show a single smooth quarter-arc sweep from each side wall top (z=30) curving down to the uniform front wall top (z=10). No intermediate flat z=18 section, no transition arcs, no kink. The r=20 sweeps look generous and friendly."
     },
-    "tray_concave_ramp_orientation": {
+    "no_sharp_points": {
       "passed": true,
-      "details": "tray-user-front-threequarter shows the interior ramp as a smooth concave surface dipping below the chord between back and front endpoints. From a finger's-eye view sliding forward across the floor, the surface gradually rises, slope steepening monotonically toward the front — no hump, no inflection. Profile verified: z(y) = 1.6 + 8.4 * ((y-62.6)/30)^2. Tangent to flat floor at back (slope=0), reaches z=10 at front with slope 0.56 (~29° from horizontal — printable, no overhang)."
+      "details": "All inspected views (tray-user-front, tray-user-front-threequarter, cradle-user-front, cradle-user-front-threequarter, cradle-user-top-threequarter) show no sharp protrusions in the front wall geometry. The visible Y-direction discontinuity at y=ext_d-wall_t (where the front-wall slab cutter terminates) is soft (r=2 top-edge fillet on side wall + r=20 concave sweep) and reads as a smooth transition, not a sharp point. Same documented simplification as round 6."
     },
-    "tray_unified_ramp_to_lowered_center_geometry": {
+    "front_wall_top_fillet_r0_8_works": {
       "passed": true,
-      "details": "Ramp terminates at z=10 = lowered-center top z. The ramp's front edge IS the back edge of the lowered-center cutout — single continuous z=10 line across the front of the bin. No discontinuity, no awkward join."
+      "details": "r=0.8 front-wall top fillet renders cleanly. Watertight check passes (is_watertight: true). The deviation from r=2 to r=0.8 was anticipated in modeler-notes-v7 §Uncertain (front wall is 1.6 mm thick — r=2 exceeds half the wall thickness and would collapse). r=0.8 leaves a soft round on the front lip without offset failure."
     },
-    "no_round5_grab_boss": {
+    "interior_ramp_unchanged": {
       "passed": true,
-      "details": "Boss + scoop + capsule end-caps fully removed. Mesh y-extent reverts 96.7 → 94.2 (= ext_d exactly)."
+      "details": "Quadratic ramp z(y) = 1.6 + 8.4 * ((y-62.6)/30)^2 unchanged from round 6. Tangent to flat floor at the back, terminates at z=10 at the front wall interior face. Self-supporting in face-up print orientation."
     },
-    "cradle_unchanged": {
+    "cradle_zero_changes": {
       "passed": true,
-      "details": "cradle.scad untouched. STL and renders match round-5 geometry. Only difference: render time (80s draft vs 15min ship in round 5). All round-3, 4, 5 cradle improvements preserved."
+      "details": "cradle.scad untouched. STL re-rendered to verify: dimensions identical (110 × 254.9 × 25). All round-3, 4, 5, 6 cradle work preserved."
     }
   },
-  "uncertainItemsFromV6Notes": {
-    "lowered_center_50mm_wide_10mm_tall": "Reads cleanly in tray-user-front. The width-to-height ratio (50:10) feels balanced — the cutout dominates the lower-front but doesn't overwhelm the bin's closed-kanban character. If round-7 critique flags it as too cramped (finger access still tight), bump width to 60-70 or drop center height to 8.",
-    "front_wall_transition_arc_r_8": "Renders smoothly at draft quality (24-step slab approximations of the arc). Could be bumped to r=10 for hero-radius consistency; r=8 was chosen to match the 8mm height difference (corner z=18 to center z=10) for a clean quarter-arc.",
-    "side_wall_to_front_wall_fillet_r_12": "Reads as a smooth sweep, eliminating the round-5 fang. The 12mm fillet matches the 12mm height drop (z=30 to z=18) for a clean quarter-arc. Doesn't eat too much side-wall material — the fillet is confined to the front-wall slab thickness in Y.",
-    "concave_ramp_curve_depth": "Quadratic curve with z'(62.6)=0 and z'(92.6)=0.56 produces a shape that's visually subtle from most angles (the curve is gentle), pronounced from the threequarter angle. Mid-point of curve at y=77.6 has z=3.7 (chord at 5.8 — 2.1mm dip below chord). If round-7 critique flags as too subtle, switch to higher exponent (e.g. cubic) for sharper steepening at front.",
-    "ramp_terminating_at_z_10": "Ramp now ends at the lowered-center top (z=10), shorter rise than round-5's 16.4mm. The visual effect is gentler — the bin reads as predominantly flat with a soft front lift, not a dramatic ramp. Consistent with the v3 minimalism direction.",
-    "draft_quality_render_times": "Cradle ~80s, tray ~16s. 5x speedup on cradle vs round-5 ship quality (15min). Iteration cycle is now fast enough to do multiple round-trips without time pressure."
+  "uncertainItemsFromV7Notes": {
+    "front_wall_uniform_height_z10": "Reads cleanly in the renders. The 10mm tall front wall feels right for a closed-bin tray — clearly a 'low lip' but tall enough to contain dropped labels. If round-8 critique flags as too short, bump to 12; if too tall, drop to 8. Current verdict: pass.",
+    "side_fillet_r20": "The r=20 sweep matches the 20mm height drop from z=30 to z=10 — produces a clean quarter circle. Reads as 'gentle and ergonomic' in renders, not 'too generous.' Consumes 20mm of side-wall material at the front (x=wall_t to wall_t+20=21.6, mirrored). Modeler stuck with r=20 (not r=15) because the larger radius reads as friendlier and matches the height drop exactly. If round-8 critique flags as too generous, drop to r=15.",
+    "r2_top_edge_fillet_on_front_wall_collapses": "Confirmed: r=2 collapses on a 1.6mm wall (the offset(r=-inset) shrinks the footprint by up to 2mm at the topmost layer, exceeding half the wall thickness). Modeler used r=0.8 (half the wall thickness) for the front wall top fillet. Slab-stack assembles cleanly with this radius. Documented deviation."
   },
   "buildVolumeSanityCheck": {
     "cradle": { "x": 110, "y": 254.9, "z": 25.001, "build_x_max": 256, "build_y_max": 256, "build_z_max": 256, "passes": true, "y_margin_mm": 1.1 },
-    "tray": { "x": 103.2, "y": 94.2, "z": 29.933, "build_x_max": 256, "build_y_max": 256, "build_z_max": 256, "passes": true }
+    "tray": { "x": 103.2, "y": 94.2, "z": 29.948, "build_x_max": 256, "build_y_max": 256, "build_z_max": 256, "passes": true }
   },
   "watertightCheck": {
     "cradle": { "isWatertight": true },
     "tray":   { "isWatertight": true }
   },
   "renderTimeRecord": {
-    "cradle_stl_draft_seconds":   80,
-    "tray_stl_draft_seconds":     16,
-    "cradle_user_front_seconds":  64,
-    "cradle_user_front_threequarter_seconds": 56,
-    "cradle_user_top_threequarter_seconds":   60,
-    "cradle_user_front_in_use_seconds":       84,
-    "cradle_user_front_threequarter_in_use_seconds": 94,
-    "tray_user_front_seconds":    12,
-    "tray_user_front_threequarter_seconds":   12,
-    "total_pipeline_seconds":     478,
-    "comparison_to_round_5_ship_quality": "Round 5 cradle STL took ~15 minutes at $fn=200 + 64-step fillet stack. Round 6 cradle STL takes ~80 seconds at $fn=100 + 24-step. ~10x speedup. Tray went from ~60 seconds (round 5 ship) to ~16 seconds (round 6 draft) — 4x speedup. Combined: a full 7-render iteration round drops from ~30+ minutes to ~8 minutes."
+    "tray_stl_draft_seconds": 12,
+    "cradle_stl_draft_seconds": 60,
+    "tray_user_front_seconds": 10,
+    "tray_user_front_threequarter_seconds": 10,
+    "cradle_view_seconds_each": 60,
+    "total_seconds_approx": 400,
+    "comparison_note": "Tray STL is FASTER than round 6 (12s vs 16s) due to the simpler front-wall-top cutter polygon (2 arcs vs 4 arcs + corner flats). Face count drops 13252 → 9010 (32% fewer faces). Cradle render time unchanged (untouched scad)."
   },
   "blockers": []
 }

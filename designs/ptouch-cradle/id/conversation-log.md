@@ -209,3 +209,17 @@ This unifies all three issues:
 **Other round-6 changes:** tray ext_d reverts 96.7 → 94.2 (boss removed). All round-5 boss/indent params deleted from spec. First round operating under draft-quality convention — render iteration should be fast.
 
 **Status:** `modeler-notes-v6.md` written. Cradle.scad untouched in round 6 (only tray changes). Dispatching modeler.
+
+### Turn 11 — round 6 lands but front wall is too cluttered; round 7 simplifies
+
+**Modeler PASS** on round 6, first iteration. Quadratic curve substituted for circular arc on the ramp (no real solution to the constraint set; modeler proved impossibility before substituting). Closed bin + concave ramp + r=12 side fillets all landed. Render time 8min total at draft quality (vs round-5's 2 hours at ship quality) — speedup convention working.
+
+**User reviewed round 6 on GitHub** (commit `1815c23`):
+
+> "You went retard on the front edge of the tray. It doesn't need that top bar, it shouldn't have sharp points. Rework just the tray to be a simpler, more friendly/ergonomic design."
+
+**Diagnosis:** the variable-height front wall (corners at z=18, lowered center at z=10, transition arcs between, plus side fillets r=12 down to corners) created too many distinct geometric features. The corners at z=18 read as unnecessary "top bars" flanking the central cutout. The intersections between transition arcs and side fillets produce sharp points where multiple features meet.
+
+**Round 7 simplification:** drop the variable-height front wall entirely. Front wall = uniform z=10 across the full width. ONE concave fillet per side from side-wall-top (z=30) to front-wall-top (z=10), r=20 (matches the 20mm height drop). No corners, no transitions, no intersections, no sharp points.
+
+**Status:** `modeler-notes-v7.md` written. Cradle untouched again. Dispatching modeler.

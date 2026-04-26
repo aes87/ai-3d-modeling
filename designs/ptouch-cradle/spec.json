@@ -1,6 +1,6 @@
 {
   "name": "ptouch-cradle",
-  "description": "Two-part desktop cradle + label-catch tray for Brother PT-P750W label printer. Round 6 reworks the tray's front-of-bin treatment: the boss + scoop indent grab feature from round 5 is removed entirely; the front wall now has VARIABLE HEIGHT along X (corner sections at z=18, lowered center 50mm wide at z=10) — the lowered center IS the grab feature. Side-wall to front-wall corner fillets (r=12) eliminate the round-5 'fangs.' Interior floor ramp is re-oriented from convex (hump) to concave (slide-curve), terminating at the lowered-center top z=10. Cradle is unchanged from round 5.",
+  "description": "Two-part desktop cradle + label-catch tray for Brother PT-P750W label printer. Round 7 simplifies the tray's front wall: the round-6 variable-height profile (corners at z=18, lowered center at z=10, transition arcs) is collapsed to a single uniform height z=10 across the full width. ONE concave fillet sweep (r=20) per side handles the entire side-wall (z=30) to front-wall (z=10) transition — no intermediate flat sections, no sharp points. The grab feature is now the entire low front lip — user reaches over the 10 mm front wall anywhere along its width. Top-edge fillet (r=2 on back/sides; r=0.8 on front wall — front wall is 1.6 mm thick, r=2 collapses) wraps continuously. Cradle is unchanged from round 5.",
   "requiresId": true,
   "dimensions": {
     "x": 110,
@@ -78,7 +78,7 @@
     "tray_top_fillet_steps_ship": 64,
     "tray_ramp_arc_steps_draft": 32,
     "tray_ramp_arc_steps_ship": 96,
-    "fillet_schedule_note": "Two tiers + concave corner fillets on the tray front-wall transitions. r=3 utility on tray vertical edge fillets and break-edges. r=10 hero on cradle exterior corners (4x), base plate corners (4x top + 4x bottom), printer-section→shelf concave fillet on both ±X sides. r=2 continuous fillet on the BACK + SIDE walls of the tray top edge (rolled inward). r=12 concave fillet on the side-wall to front-wall corners of the tray (matches the 12mm height drop from z=30 to z=18). r=8 concave transition arcs on the front wall between corner-h=18 and center-h=10 (matches the 8mm height drop). NO chamfers anywhere.",
+    "fillet_schedule_note": "Two tiers + ONE concave side fillet on the tray front-wall transition. r=3 utility on tray vertical edge fillets and break-edges. r=10 hero on cradle exterior corners (4x), base plate corners (4x top + 4x bottom), printer-section→shelf concave fillet on both ±X sides. r=2 continuous fillet on the BACK + SIDE walls of the tray top edge (rolled inward). r=0.8 fillet on the front wall TOP (smaller than r=2 because the front wall is only 1.6 mm thick — r=2 would exceed the wall thickness and collapse the offset). r=20 concave fillet on the side-wall to front-wall corners of the tray (matches the 20 mm height drop from z=30 to z=10 — single quarter-arc, no intermediate sections). NO chamfers anywhere.",
     "printer_section_to_shelf_concave_fillet_r": 10,
     "tray_slot_interior_w": 103.9,
     "tray_slot_interior_d": 94.9,
@@ -89,10 +89,9 @@
     "tray_floor_z_above_desk": 5.6,
     "label_drop_min_mm": 58,
     "label_drop_max_mm": 73,
-    "front_wall_top_z_above_desk_corner": 29,
-    "front_wall_top_z_above_desk_center": 21,
-    "label_clears_front_wall_by_min_mm": 35,
-    "label_drop_note": "PT-P750W auto-cuts tape; labels exit at z=64-79mm desk-ref, clear front wall corner top at z=29mm desk-ref by 35-50mm and clear lowered center top at z=21mm desk-ref by 43-58mm, drop forward and down into tray.",
+    "front_wall_top_z_above_desk": 21,
+    "label_clears_front_wall_by_min_mm": 43,
+    "label_drop_note": "PT-P750W auto-cuts tape; labels exit at z=64-79mm desk-ref, clear the uniform front wall top at z=21mm desk-ref by 43-58mm, drop forward and down into tray.",
     "tape_exit_z_above_printer_base_min": 60,
     "tape_exit_z_above_printer_base_max": 75,
     "tape_exit_face": "front (78mm x 143mm narrow face)",
@@ -109,12 +108,10 @@
     "tray_exterior_w": 103.2,
     "tray_exterior_d": 94.2,
     "tray_exterior_h": 30,
-    "tray_front_wall_corner_h": 18,
-    "tray_front_wall_center_h": 10,
-    "tray_front_wall_center_w": 50,
-    "tray_front_wall_transition_arc_r": 8,
-    "tray_front_wall_corner_fillet_r": 12,
-    "tray_front_wall_construction": "Variable-height profile in the X-Z plane, extruded along Y over the front-wall slab (y = ext_d - wall_t .. ext_d). Corner sections at x=0..18.6 and x=84.6..103.2 reach z=18 (front_wall_corner_h). Lowered center at x=26.6..76.6 reaches z=10 (front_wall_center_h). Concave quarter-arcs r=8 between corner-z=18 and center-z=10 (smooth waterfall transition). Side-wall to front-wall fillets r=12 at the upper outer corners of the front wall (sweeping z=30→18) — eliminates the round-5 'fangs.' All transitions concave-from-above (curve dips below chord) for a smooth scooped reading.",
+    "tray_front_wall_h": 10,
+    "tray_front_wall_side_fillet_r": 20,
+    "tray_front_top_edge_fillet_r": 0.8,
+    "tray_front_wall_construction": "Uniform-height profile in the X-Z plane, extruded along Y over the front-wall slab (y = ext_d - wall_t .. ext_d). Front wall reaches a single z=10 (front_wall_h) across the full width — no corners, no transitions, no variable-height sections. ONE concave quarter-arc r=20 per side at the upper outer corners of the front wall, sweeping continuously from side-wall top (z=30) to front-wall top (z=10) over the 20 mm height drop. Single curve, single radius, no intermediate flat sections. The arcs are concave-from-above (wall material bulges up into the cut region; user perceives a soft scoop). The grab feature is the entire low front lip — user reaches over anywhere along its width.",
     "tray_back_side_wall_h": 30,
     "tray_height_above_cradle_wall": 5,
     "ramp_y_extent": 30,
@@ -138,8 +135,8 @@
       "priority": "high"
     },
     {
-      "feature": "tray variable-height front wall",
-      "reason": "Round-6 substantive rebuild. Corner sections at z=18, lowered center 50mm wide at z=10. Verify the concave transition arcs r=8 render as smooth waterfalls (no kinks at the transitions). Verify the side-wall to front-wall fillet r=12 reads as a smooth concave sweep (no 'fangs').",
+      "feature": "tray uniform low front wall + r=20 side fillet sweep",
+      "reason": "Round-7 simplification. Front wall is uniform z=10 across the full width (no variable-height profile, no corner bars). ONE concave quarter-arc r=20 per side sweeps continuously from side-wall top (z=30) to front-wall top (z=10). Verify the front-wall top reads as a single horizontal band, the side fillets are smooth concave scoops (no kinks), and there are NO sharp points or feature intersections in the front wall geometry from any angle.",
       "category": "aesthetic",
       "priority": "high"
     },
@@ -150,8 +147,8 @@
       "priority": "high"
     },
     {
-      "feature": "tray top-edge r=2 fillet on back/sides",
-      "reason": "Continuous quarter-arc roll around the tray's back + side wall tops at z=ext_h=30. Front wall top has its own variable-height profile (no separate top-edge roll). Verify the back/sides fillet renders smoothly.",
+      "feature": "tray top-edge fillets (r=2 back/sides, r=0.8 front)",
+      "reason": "Continuous quarter-arc roll around the tray's back + side wall tops at z=ext_h=30 (r=2). Smaller r=0.8 roll on the front wall top at z=10 because the front wall is only 1.6 mm thick (r=2 would exceed half the wall thickness and collapse the offset). Verify both fillets render smoothly and the transitions blend cleanly into the side fillet sweep.",
       "category": "aesthetic",
       "priority": "medium"
     },
@@ -181,7 +178,7 @@
     },
     {
       "feature": "tray wall thickness 1.6 mm",
-      "reason": "Tray walls at 1.6 mm (4 perimeters at 0.4 mm) are above minimum but thin. Verify wall integrity, particularly across the variable-height front wall transitions where the wall remains 1.6 mm thick throughout.",
+      "reason": "Tray walls at 1.6 mm (4 perimeters at 0.4 mm) are above minimum but thin. Verify wall integrity, particularly across the front wall and the side fillet sweep regions where the wall remains 1.6 mm thick throughout.",
       "category": "printability",
       "priority": "medium"
     }

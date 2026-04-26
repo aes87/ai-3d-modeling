@@ -1,59 +1,51 @@
-// P-touch Catch Tray — closed kanban bin (round 6)
+// P-touch Catch Tray — closed kanban bin (round 7)
 // Slides into the cradle's forward tray slot; catches auto-cut labels.
 //
-// ROUND-6 SCOPE (this file — tray-only revision):
+// ROUND-7 SCOPE (this file — tray-only simplification):
 //
-// Round 5's front-wall treatment is replaced. The boss + scoop indent
-// grab feature is fully removed. In its place, the front wall has
-// VARIABLE HEIGHT along X: corner sections at full z = 18, lowered
-// center 50 mm wide at z = 10. The lowered center IS the grab feature —
-// a finger reaches over the 10 mm tall opening and hooks the front lip.
+// Round 6's variable-height front wall (corners at z=18, lowered center at
+// z=10, transition arcs between, side fillets r=12) read as visual clutter
+// — corner sections looked like unnecessary "top bars" and the multiple
+// fillet/arc intersections produced visible sharp points. Round 7 collapses
+// the front wall to a single uniform low height with one continuous concave
+// fillet sweep from each side wall down to it.
 //
-//   1. Variable-height front wall.
-//      - Corner sections (x = 0..18.6 and x = 84.6..103.2): wall top z = 18.
-//      - Lowered center (x = 26.6..76.6): wall top z = 10.
-//      - Concave transition arcs (r = 8) between corner-z=18 and center-z=10.
-//      - Smooth.
+//   1. Front wall: uniform height z = 10 across the full width.
+//      No corners, no transitions, no variable-height profile.
+//      A clean horizontal band on the user-front face.
 //
-//   2. Side-wall to front-wall fillets (no more "fangs").
-//      - Concave quarter-arc r = 12 at each upper outer corner of the
-//        front wall, sweeping from the side-wall top z = 30 down to the
-//        front-wall corner top z = 18. Replaces round 5's hard step.
+//   2. Side-wall to front-wall: ONE concave quarter-arc per side, r = 20.
+//      Sweeps continuously from side wall top (z = 30) to front wall top
+//      (z = 10) over the 20 mm height drop. Single curve, single radius,
+//      no intermediate flat sections.
 //
-//   3. Concave interior floor ramp (re-orientation from round 5's hump).
-//      - Quadratic curve from (y = 62.6, z = 1.6) to (y = 92.6, z = 10).
-//      - z(y) = 1.6 + 8.4 · ((y - 62.6) / 30)² .
-//      - Tangent to the flat floor at the back (slope = 0 at y = 62.6),
-//        gentle near back, steepens monotonically toward the front
-//        ("smooth gradual incline like climbing a slide").
-//      - Concave-from-cavity-side (curve dips below the chord); fully
-//        self-supporting in face-up print orientation.
-//      - Terminates at the lowered-center top z = 10 (was z = 18 round 5).
-//      - A circular arc with these endpoints + concave-from-cavity-side
-//        + above-floor constraint has no real solution (proven during
-//        modeling — chord rise too small). Quadratic curve satisfies the
-//        spirit of the modeler-notes-v6 fix exactly: monotonic rise,
-//        concave from cavity, smoothly tangent to flat floor.
+//   3. Top-edge fillet: r = 2 roll on the back + side wall tops (unchanged
+//      construction). Front wall top fillet uses r = 0.8 because the front
+//      wall is only 1.6 mm thick — r = 2 would exceed half the wall
+//      thickness and collapse the offset. r = 0.8 keeps a soft round on
+//      the front lip without offset failure. Documented deviation per
+//      modeler-notes-v7 §Uncertain.
 //
-//   4. Render quality.
-//      - $fn = 100, top_fillet_steps = 24, ramp_arc_steps = 32 (DRAFT).
-//      - Shipper bumps to ship quality via -D overrides at delivery.
+//   4. Interior floor ramp — UNCHANGED from round 6.
+//      Quadratic curve z(y) = 1.6 + 8.4 · ((y - 62.6) / 30)² .
+//      Tangent to flat floor at the back; terminates at z = 10 at the
+//      front-wall interior face (which is now the uniform front-wall top).
 //
-// What survives unchanged from round 5:
+// What survives unchanged from round 6:
 //   - Closed 4-wall bin architecture.
 //   - Interior cavity X×Y dims (100 × 91 mm).
-//   - Tray exterior X dim (103.2 mm). Y dim REVERTS to 94.2 (boss removed).
+//   - Tray exterior X dim (103.2 mm). Y dim 94.2 mm.
 //   - Z dim (30 mm).
 //   - Tray-to-slot sliding fit (0.35 mm/side).
 //   - Vertical exterior corner fillet r = 3.
-//   - Top-edge fillet r = 2 on the back + side walls (rolled inward).
+//   - Render quality: $fn = 100, top_fillet_steps = 24, ramp_arc_steps = 32.
 //
 // Print orientation:
-//   FACE-UP (open top up), back on bed. Concave ramp surface and front
-//   wall variable-height profile are all self-supporting. No supports.
+//   FACE-UP (open top up), back on bed. Concave side fillet sweeps and
+//   parabolic ramp are all self-supporting. No supports.
 //
 // User orientation:
-//   +Y = user-front (lowered-center grab face)
+//   +Y = user-front (low front lip — grab anywhere along its width)
 //   -Y = user-back  (back wall)
 //   +Z = up         (open top)
 
@@ -77,67 +69,39 @@ wall_t    = 1.6;
 floor_t   = 1.6;
 
 ext_w     = int_w + 2*wall_t;     // 103.2
-ext_d     = int_d + 2*wall_t;     // 94.2 (round-6: boss removed, reverted from 96.7)
+ext_d     = int_d + 2*wall_t;     // 94.2
 ext_h     = int_h + floor_t;      // 30.0
 
-// Front wall — variable-height profile.
-front_wall_corner_h        = 18;   // corner sections full height
-front_wall_center_h        = 10;   // lowered center height (grab feature)
-front_wall_center_w        = 50;   // lowered center X-width
-front_wall_transition_r    = 8;    // concave arc radius between corner and center
-front_wall_corner_fillet_r = 12;   // side-wall to front-wall corner fillet
+// Front wall — uniform low height (round-7 simplification).
+front_wall_h            = 10;     // single uniform height across full width
+front_wall_side_fillet_r = 20;    // concave quarter-arc side wall (z=30) → front wall (z=10)
 
 // Top edge fillet schedule
-fillet_vert_r              = 3.0;  // exterior vertical edge fillets
-top_edge_fillet_r          = 2.0;  // continuous fillet on back/sides wall tops
+fillet_vert_r           = 3.0;    // exterior vertical edge fillets
+top_edge_fillet_r       = 2.0;    // continuous fillet on back/sides wall tops
+front_top_edge_fillet_r = 0.8;    // smaller fillet on front wall top (1.6 mm wall — r=2 collapses)
 
-// Derived front-wall layout (X-Z plane, looking from -Y toward +Y).
-//
-// X ranges:
-//   [0, wall_t]                                 = side wall material (full ext_h)
-//   [wall_t, wall_t + corner_fillet_r]          = side fillet sweep z=30→18, r=12
-//   [wall_t + corner_fillet_r, _corner_flat_x_end]  = corner flat at z=18
-//   transition_arc r=8 spans corner_flat_end → center_start, z=18→10
-//   [center_start, center_end]                  = lowered center at z=10
-//   transition_arc r=8 spans center_end → corner_flat_start (right side)
-//   etc, mirrored.
-//
-// Geometry math:
-//   center_start = (ext_w - center_w) / 2 = (103.2 - 50)/2 = 26.6
-//   center_end   = ext_w - center_start = 76.6
-//   corner_flat_x_end_left  = center_start - transition_r = 18.6
-//   corner_flat_x_start_right = center_end + transition_r = 84.6
-//   corner_flat_x_start_left  = wall_t + corner_fillet_r = 13.6
-//   corner_flat_x_end_right   = ext_w - wall_t - corner_fillet_r = 89.6
-//
-// Self-check: corner_flat_x_end_left (18.6) >= corner_flat_x_start_left (13.6)
-// so there's a 5 mm flat segment at z = 18 between the side fillet and the
-// transition arc. That's the visible "corner" of the front wall.
-
-_center_start            = (ext_w - front_wall_center_w) / 2;                      // 26.6
-_center_end              = ext_w - _center_start;                                   // 76.6
-_corner_flat_x_end_left  = _center_start - front_wall_transition_r;                // 18.6
-_corner_flat_x_start_right = _center_end + front_wall_transition_r;                // 84.6
-_corner_flat_x_start_left  = wall_t + front_wall_corner_fillet_r;                   // 13.6
-_corner_flat_x_end_right   = ext_w - wall_t - front_wall_corner_fillet_r;           // 89.6
-
-// Interior floor ramp — concave (parabolic) curve.
+// Interior floor ramp — concave (parabolic) curve. Unchanged from round 6.
 ramp_y_extent       = 30;
 ramp_back_y         = ext_d - wall_t - ramp_y_extent;   // 62.6
 ramp_front_y        = ext_d - wall_t;                   // 92.6
 ramp_back_z         = floor_t;                          // 1.6
-ramp_front_z        = front_wall_center_h;              // 10 (round-6: was 18)
+ramp_front_z        = front_wall_h;                     // 10
 
 // ===== Structural asserts =====
 assert(wall_t >= MIN_WALL, str("Tray wall ", wall_t, " below min ", MIN_WALL));
 assert(floor_t >= MIN_FLOOR_CEIL, str("Tray floor ", floor_t, " below min floor"));
 assert(ext_w <= 256 && ext_d <= 256 && ext_h <= 256, "Tray exceeds bed");
-assert(front_wall_center_h > floor_t,
-       "Lowered center height too low — must be above floor");
-assert(front_wall_corner_h < ext_h,
-       "Front wall corner must be lower than back/side walls");
-assert(_corner_flat_x_end_left > _corner_flat_x_start_left,
-       "Corner flat segment vanishes — adjust transition_r or corner_fillet_r");
+assert(front_wall_h > floor_t,
+       "Front wall height too low — must be above floor");
+assert(front_wall_h < ext_h,
+       "Front wall height must be lower than back/side walls");
+assert(front_wall_side_fillet_r <= (ext_w - 2*wall_t) / 2,
+       "Side fillets overlap — reduce front_wall_side_fillet_r");
+assert(front_wall_side_fillet_r >= (ext_h - front_wall_h),
+       "Side fillet radius too small for the height drop — won't reach front wall top");
+assert(front_top_edge_fillet_r < wall_t,
+       "Front top edge fillet must be smaller than wall thickness");
 assert(ramp_back_y > wall_t,
        "Ramp back-y too close to back wall — flat floor region too small");
 assert(ramp_front_z > ramp_back_z,
@@ -157,56 +121,106 @@ module outer_box_full() {
         rounded_rect(ext_w, ext_d, fillet_vert_r);
 }
 
-// ===== Front-wall variable-height top cutter =====
+// ===== Front-wall top cutter =====
 //
 // Removes the air ABOVE the front-wall top profile in the front-wall slab
-// region (y >= ext_d - wall_t). The 2D profile is in the X-Z plane; it is
+// region (y >= ext_d - wall_t). The 2D profile is in the X-Z plane,
 // extruded along Y across the front-wall thickness (with a small slop
 // margin so the cutter cleanly clips through both wall faces).
 //
 // Profile (CCW polygon describing the AIR-TO-CUT region above the wall):
 //
-//   Top edge: horizontal at z = ext_h + slop, from x = -slop to x = ext_w + slop.
+//   Top edge: horizontal at z = ext_h + slop, full X span.
 //
-//   Bottom edge (the wall top profile, walked right→left):
-//     1. (ext_w+slop, ext_h)
-//     2. (ext_w - wall_t, ext_h)        — top of right side wall material
-//     3. RIGHT SIDE FILLET (quarter arc r=12, center (ext_w-wall_t-r, ext_h)).
-//        Sweeps from (ext_w - wall_t, ext_h) [angle 0°] to
-//                    (ext_w - wall_t - r, ext_h - r) [angle 270°/=-90°].
-//        Concave from above (curve dips below chord).
-//     4. (corner_flat_x_end_right, front_wall_corner_h) — end of right
-//        corner flat segment at z = 18.
-//     5. (corner_flat_x_start_right, front_wall_corner_h) — start of right
-//        corner flat (= 84.6 — one end of right transition arc).
-//     6. RIGHT TRANSITION ARC (quarter arc r=8, center (corner_flat_x_start_right,
-//        front_wall_corner_h)). Sweeps from (corner_flat_x_start_right,
-//        front_wall_corner_h) [angle 270°] to (center_end, front_wall_center_h)
-//        [angle 180°]. Wait — let me redo: the arc goes from
-//        (84.6, 18) DOWN-AND-LEFT to (76.6, 10). With center (76.6, 18):
-//          - (84.6, 18) is at angle 0° from center (right of center)
-//          - (76.6, 10) is at angle 270°/=-90° (below center)
-//          - Sweep CW (decreasing angle) from 0° to -90° gives the SE quadrant
-//            of the circle, which is below-and-right of the center —
-//            arc passes through (76.6 + 8cos(-45°), 18 + 8sin(-45°)) =
-//            (82.26, 12.34). z=12.34 < chord midpoint z=14, so curve dips
-//            below chord — concave from above. ✓
-//     7. (center_end, front_wall_center_h) — start of lowered center.
-//     8. (center_start, front_wall_center_h) — end of lowered center.
-//     9. LEFT TRANSITION ARC mirror.
-//    10. (corner_flat_x_end_left, front_wall_corner_h) — end of left corner flat.
-//    11. (corner_flat_x_start_left, front_wall_corner_h) — start of left corner
-//        flat (= 13.6, one end of left side fillet).
-//    12. LEFT SIDE FILLET (mirror of right). Quarter arc r=12, center
-//        (corner_flat_x_start_left, ext_h) = (13.6, 30). Sweeps from
-//        (13.6, 18) [angle 270°] to (1.6, 30) [angle 180°].
-//    13. (wall_t, ext_h) — top of left side wall.
-//    14. (-slop, ext_h)
+//   Bottom edge (the wall-top profile, walked right→left):
+//     1. (ext_w + slop, ext_h)
+//     2. (ext_w - wall_t, ext_h)         — top of right side wall material
+//     3. RIGHT SIDE FILLET — single quarter arc r=20, center
+//        (ext_w - wall_t - r, front_wall_h) = (81.6, 10).
+//        Sweeps from (ext_w - wall_t, ext_h) [angle  0°] (= 81.6+20=101.6
+//        wait — center is 81.6, radius 20: angle 0 → x=101.6) NO — the
+//        endpoint at the side-wall top is (1.6, 30). Re-derive:
+//          - We want endpoint A at (ext_w - wall_t, ext_h) = (101.6, 30).
+//          - Distance from center (81.6, 10) to A: √(20² + 20²) ≠ r. WRONG.
+//        Correct geometry: for a quarter-arc r=20 sweeping from the
+//        side-wall top (x = ext_w - wall_t, z = ext_h) DOWN to the front
+//        wall top (z = front_wall_h) over horizontal travel of r,
+//        the center must be on the LINE z = front_wall_h at horizontal
+//        offset r from the side wall, AND on the LINE x = ext_w - wall_t.
+//        These are two perpendicular lines; only one center satisfies both
+//        simultaneously when (ext_h - front_wall_h) = r. Here that's
+//        30 - 10 = 20 = r. ✓
+//        So center = (ext_w - wall_t - 0, front_wall_h) = (101.6, 10).
+//        WRONG — that puts the arc passing through (101.6, 30) (top of
+//        side wall) and (81.6, 10) (front wall top inset by r). Let me
+//        re-think which orientation we want.
+//
+//        OBJECTIVE: from above, looking at the front wall top, we want a
+//        smooth curve that BLENDS INWARD. The wall top at the side is
+//        z=30 (full height). The wall top in the middle is z=10. The
+//        curve sweeps from z=30 at x=ext_w-wall_t INWARD to z=10 at some
+//        x = ext_w - wall_t - r. The curve is CONCAVE FROM ABOVE (dips
+//        below the chord) — from the user's perspective looking at the
+//        front, the transition is a soft scoop, not a hard step.
+//
+//        For a concave-from-above quarter arc with horizontal endpoint at
+//        x_outer (z=ext_h) and "inner" endpoint at x_outer - r (z=front_wall_h),
+//        the arc center is at (x_outer, front_wall_h). The arc passes
+//        from (x_outer, x_outer + r·cos θ at θ=90°) … let me redo simply:
+//
+//        Center = (x_outer, front_wall_h). Radius r.
+//          - Point A at angle 90°: (x_outer + 0, front_wall_h + r)
+//                                = (x_outer, ext_h)  ✓ (since r = ext_h - front_wall_h)
+//          - Point B at angle 180°: (x_outer - r, front_wall_h + 0)
+//                                = (x_outer - r, front_wall_h)  ✓
+//        Sweep from 90° to 180° (CCW) traces a quarter arc passing
+//        through (x_outer + r·cos 135°, front_wall_h + r·sin 135°)
+//        = (x_outer - r·√2/2, front_wall_h + r·√2/2)
+//        = (x_outer - 14.14, front_wall_h + 14.14).
+//        For the right side: x_outer = ext_w - wall_t = 101.6, so the
+//        midpoint is at (101.6 - 14.14, 10 + 14.14) = (87.46, 24.14).
+//        Chord midpoint: ((101.6 + 81.6)/2, (30 + 10)/2) = (91.6, 20).
+//        Arc midpoint (87.46, 24.14) is to the LEFT of chord midpoint
+//        (87.46 < 91.6) and ABOVE it (24.14 > 20). That's the upper-left
+//        side of the chord — i.e., the arc bulges UP-AND-LEFT relative
+//        to the chord.
+//
+//        From the user-front perspective (looking at the front wall in
+//        the X-Z plane from -Y), we want the wall TOP profile to scoop
+//        gently — the air ABOVE the wall is what we cut. The cutter
+//        polygon's bottom edge IS the wall-top profile. Following the
+//        bottom edge from right to left in the cutter polygon: at
+//        x=101.6 we're at z=30; the arc dips DOWN to z=10 at x=81.6.
+//        For "concave from above" (the user perceives a soft scoop),
+//        the curve should bulge AWAY from the user — i.e., the wall-top
+//        material should bulge UP into the cut region, leaving a
+//        concave (saddle) appearance. Equivalently, the arc midpoint
+//        should be ABOVE the chord midpoint (more wall material survives).
+//
+//        With center (x_outer, front_wall_h), arc from 90° to 180°:
+//        midpoint is (87.46, 24.14), ABOVE chord midpoint (20). ✓
+//        The wall material below this curve forms a bulge that rises
+//        smoothly from the front wall top up to the side wall top.
+//        Visually: a concave scoop in the air above the wall.
+//
+//     4. (ext_w - wall_t - r, front_wall_h) = (81.6, 10).
+//
+//     5. (wall_t + r, front_wall_h) = (21.6, 10).
+//
+//     6. LEFT SIDE FILLET — mirror of right. Quarter arc r=20, center
+//        (wall_t, front_wall_h) = (1.6, 10), arc from 0° to 90° (CCW).
+//          - 0°: (1.6 + 20, 10) = (21.6, 10)  ✓
+//          - 90°: (1.6, 10 + 20) = (1.6, 30)  ✓
+//        Walked from (21.6, 10) up to (1.6, 30). Concave-from-above mirror.
+//
+//     7. (wall_t, ext_h) = (1.6, 30).
+//
+//     8. (-slop, ext_h) — slop on left edge.
 //
 //   Closing left edge: vertical from (-slop, ext_h) to (-slop, ext_h+slop).
 //   Closing right edge: vertical from (ext_w+slop, ext_h+slop) to top.
 
-function _arc_pts_quarter(cx, cz, r, a_start_deg, a_end_deg, n) =
+function _arc_pts(cx, cz, r, a_start_deg, a_end_deg, n) =
     [for (i = [0 : n])
         let(t = i / n,
             a = a_start_deg + t * (a_end_deg - a_start_deg))
@@ -215,61 +229,36 @@ function _arc_pts_quarter(cx, cz, r, a_start_deg, a_end_deg, n) =
 
 function _front_wall_top_cutter_pts() =
     let(slop = 1.0,
-        n_fillet = top_fillet_steps,
-        // Right side fillet: center (ext_w - wall_t - r12, ext_h), arc from
-        // angle 0° to 270° going CW (decreasing → from 0 to -90).
-        right_side_fillet = _arc_pts_quarter(
-            ext_w - wall_t - front_wall_corner_fillet_r, ext_h,
-            front_wall_corner_fillet_r, 0, -90, n_fillet),
-        // Right transition arc: center (center_end, corner_h), arc from 0° to -90°.
-        right_transition = _arc_pts_quarter(
-            _center_end, front_wall_corner_h,
-            front_wall_transition_r, 0, -90, n_fillet),
-        // Left transition arc: center (center_start, corner_h), arc from -90° to -180°.
-        // From (center_start, center_h) up to (corner_flat_x_end_left, corner_h).
-        // Center (26.6, 18); (26.6, 10) is at angle -90°; (18.6, 18) is at angle 180°.
-        // Sweep CW from -90° to -180° (= 180°): goes through (26.6 + 8cos(-135°),
-        // 18 + 8sin(-135°)) = (20.94, 12.34). Below chord (= 14). ✓
-        left_transition = _arc_pts_quarter(
-            _center_start, front_wall_corner_h,
-            front_wall_transition_r, -90, -180, n_fillet),
-        // Left side fillet: center (wall_t + r12, ext_h), arc from -90° to -180°.
-        // (corner_flat_x_start_left, corner_h) at angle -90°; (wall_t, ext_h)
-        // at angle 180°.
-        left_side_fillet = _arc_pts_quarter(
-            wall_t + front_wall_corner_fillet_r, ext_h,
-            front_wall_corner_fillet_r, -90, -180, n_fillet))
+        n = top_fillet_steps,
+        r = front_wall_side_fillet_r,
+        // Right side fillet: center (ext_w - wall_t, front_wall_h),
+        // arc 90° → 180° CCW (going up-and-left from front wall top
+        // inward to side wall top). Walked right→left in cutter, so
+        // start at angle 90° (= side wall top, x=ext_w-wall_t) and
+        // sweep TO 180° (= front wall top inner, x=ext_w-wall_t-r).
+        // _arc_pts generates from a_start to a_end inclusive in order.
+        right_side_fillet = _arc_pts(
+            ext_w - wall_t, front_wall_h,
+            r, 90, 180, n),
+        // Left side fillet: center (wall_t, front_wall_h),
+        // arc 0° → 90° CCW. Walked right→left in cutter, so start at
+        // angle 0° (x=wall_t+r, front wall top inner) and sweep to
+        // 90° (x=wall_t, side wall top).
+        left_side_fillet = _arc_pts(
+            wall_t, front_wall_h,
+            r, 0, 90, n))
     concat(
-        [[-slop, ext_h + slop]],                // top-left
+        [[-slop, ext_h + slop]],                // top-left of cut region
         [[ext_w + slop, ext_h + slop]],         // top-right
         [[ext_w + slop, ext_h]],                // step down to right edge
-        right_side_fillet,                      // sweep down to corner top z=18
-        [[_corner_flat_x_end_right, front_wall_corner_h]],   // right corner flat right end
-        // right transition arc walks from corner_flat_x_start_right (84.6, 18)
-        // to center_end (76.6, 10). _arc_pts_quarter generated from 0° to -90°
-        // around center (76.6, 18) gives points (76.6+8, 18) → (76.6, 10).
-        right_transition,
-        [[_center_start, front_wall_center_h]],              // end of lowered center (left side)
-        // left transition arc from (26.6, 10) to (18.6, 18).
-        left_transition,
-        [[_corner_flat_x_start_left, front_wall_corner_h]],  // left corner flat right end
-        // left side fillet from (13.6, 18) to (1.6, 30).
-        left_side_fillet
-        // After left_side_fillet ends at (wall_t, ext_h) the polygon closes
-        // back to (-slop, ext_h+slop) automatically via OpenSCAD polygon.
+        right_side_fillet,                      // arc from (101.6, 30) → (81.6, 10)
+        // continue along uniform front wall top z=10
+        // (right_side_fillet ends at (81.6, 10); left_side_fillet starts
+        //  at (21.6, 10) — bottom edge from (81.6,10) to (21.6,10) is
+        //  the flat front wall top.)
+        left_side_fillet                        // arc from (21.6, 10) → (1.6, 30)
+        // closes back to (-slop, ext_h + slop) automatically.
     );
-
-// Extrude the 2D X-Z polygon into 3D along the Y axis to form the cutter.
-//
-// linear_extrude extrudes along local +Z. Polygon vertices are in (X, Z)
-// of world frame, fed as (X, Y) of local frame. Extrusion direction is
-// local +Z. After rotate([90, 0, 0]):
-//   local +X → world +X       (polygon X stays as X)
-//   local +Y → world +Z       (polygon Y becomes Z) ✓
-//   local +Z → world -Y       (extrude direction now points -Y)
-// To make the cutter cover y in [ext_d - wall_t - slop, ext_d + slop], we
-// place the slab origin at y = ext_d + slop and extrude into -Y over a
-// length of (wall_t + 2*slop).
 
 module front_wall_top_cutter() {
     pts = _front_wall_top_cutter_pts();
@@ -280,40 +269,6 @@ module front_wall_top_cutter() {
                 polygon(points = pts);
 }
 
-// ===== Side-wall to front-wall corner fillet =====
-//
-// The front_wall_top_cutter already encodes the side-wall fillet sweep
-// (r=12) into its 2D profile, applied across the FRONT WALL SLAB region
-// (y = ext_d - wall_t .. ext_d). However, the side-wall material itself
-// extends from y = 0 to y = ext_d, and the side wall's top edge stays at
-// z = ext_h = 30 across that whole Y span. The fillet from z=30 to z=18
-// is a sweep that exists only within the front-wall slab — outside that
-// slab (at y < ext_d - wall_t), the side wall remains full-height.
-//
-// To avoid creating a hard cliff at y = ext_d - wall_t (where the side
-// wall's top suddenly drops from z = 30 to z = 18 over zero Y distance),
-// we ALSO sweep the fillet in the Y-direction. Specifically: at each X
-// in the fillet zone (x in [wall_t, wall_t + r12] left, or
-// [ext_w - wall_t - r12, ext_w - wall_t] right), the fillet sweeps from
-// (z = ext_h, y = ext_d - wall_t) at the inside-wall position, blending
-// into z = profile(x) at y = ext_d (the exterior face).
-//
-// However, this is a DOUBLE-CURVATURE feature (Z-blend in X AND in Y).
-// For round 6 simplicity, we accept a Y-direction step at y =
-// ext_d - wall_t: the side wall material at y in [0, ext_d - wall_t]
-// stays at full height z = ext_h, and the fillet sweep happens only
-// within the front-wall slab. The side wall's top edge (in Y) is itself
-// already filleted by the existing top-edge r=2 stack (back/sides
-// fillet, applied across the full footprint). The "fang" came from a
-// 90° Z-step in X (side wall meets front wall corner). The r=12 sweep
-// in X eliminates that. The Y-direction step at y = ext_d - wall_t is
-// mostly hidden because the side wall top is also rolled inward by the
-// r=2 top fillet — so visually, there's a continuous soft top edge.
-//
-// This is a documented simplification. If round-7 critique flags the
-// Y-step at the upper outer corners, the fix is to sculpt the upper
-// outer corner with a spherical fillet (r=12 in X plus r=2 in Y).
-
 module outer_body_raw() {
     difference() {
         outer_box_full();
@@ -321,13 +276,18 @@ module outer_body_raw() {
     }
 }
 
-// ===== Top edge fillet (back/sides only) =====
+// ===== Top edge fillets =====
 //
-// Rolled-inward quarter-arc fillet on the TOP edges of the back wall
-// (-Y side) and ±X side walls at z = ext_h. Same construction as round 5.
-// The front wall top profile gets its smoothness from the variable-height
-// cutter (concave arcs everywhere), so no separate top-edge roll on the
-// front wall.
+// Two fillet stacks:
+//   (a) r = 2 on back + side wall tops at z = ext_h, restricted to the
+//       back-and-sides region (y < ext_d - wall_t plus side-wall corner
+//       buffers). Same construction as round 6.
+//   (b) r = 0.8 on the front wall top at z = front_wall_h, restricted to
+//       the front wall slab (y >= ext_d - wall_t) in the X range that
+//       lies on the flat front wall top (x in [wall_t + r_side, ext_w -
+//       wall_t - r_side]). The fillet sweep from the side wall (Fix 2)
+//       provides its own curvature; the r=0.8 roll lives only on the
+//       flat segment between the two side-fillet sweep endpoints.
 
 module footprint_fillet_stack(top, r, n) {
     for (i = [0 : n - 1]) {
@@ -343,14 +303,10 @@ module footprint_fillet_stack(top, r, n) {
     }
 }
 
-// Mask for the back-and-sides region (everything except the front wall slab
-// and front-wall outer-corner fillet zones, plus side-wall corner buffers
-// so the side walls' vertical r=3 edge fillet has a full-height home).
-//
-// Specifically EXCLUDE the front-wall slab (y >= ext_d - wall_t) in the
-// X range [fillet_vert_r, ext_w - fillet_vert_r] above z = front_wall_corner_h.
-// This keeps the back+sides fillet stack from operating on the front-wall
-// region (which has its own variable-height top profile already).
+// Mask for the back-and-sides region. Excludes the front-wall slab
+// (y >= ext_d - wall_t) above z = front_wall_h, plus side-wall corner
+// buffers so the side walls' vertical r=3 edge fillet has a full-height
+// home and the side fillet sweep (Fix 2) is undisturbed.
 module back_sides_mask() {
     union() {
         // Full footprint up to y = ext_d - wall_t.
@@ -367,6 +323,42 @@ module back_sides_mask() {
     }
 }
 
+// Mask for the front-wall flat-top region. Restrict to the X range on
+// the FLAT segment between the two side-fillet sweeps, and restrict to
+// the front-wall slab in Y. The side-fillet zones are excluded so the
+// r=0.8 roll doesn't fight the r=20 sweep curvature.
+module front_top_mask() {
+    r_side  = front_wall_side_fillet_r;
+    x_left  = wall_t + r_side;
+    x_right = ext_w - wall_t - r_side;
+    translate([x_left, ext_d - wall_t - 0.001, -1])
+        cube([x_right - x_left,
+              wall_t + 1.001 + 0.5,
+              front_wall_h + front_top_edge_fillet_r + 2]);
+}
+
+// Front-wall flat-top fillet stack. Same slab-stack construction as
+// the back/sides stack, but at top = front_wall_h with smaller radius
+// front_top_edge_fillet_r. Uses a smaller rounded-rect footprint that
+// covers only the front wall slab so the inset offset doesn't eat
+// into back/side wall material.
+module front_wall_top_fillet_stack() {
+    r = front_top_edge_fillet_r;
+    n = top_fillet_steps;
+    top = front_wall_h;
+    for (i = [0 : n - 1]) {
+        a0 = 90 * i / n;
+        a1 = 90 * (i + 1) / n;
+        inset1 = r * (1 - cos(a1));
+        z0 = (top - r) + r * sin(a0);
+        z1 = (top - r) + r * sin(a1);
+        translate([0, 0, z0])
+            linear_extrude(height = z1 - z0 + 0.001)
+                offset(r = -inset1)
+                    rounded_rect(ext_w, ext_d, fillet_vert_r);
+    }
+}
+
 module outer_body_with_fillets() {
     union() {
         difference() {
@@ -378,11 +370,23 @@ module outer_body_with_fillets() {
                     cube([ext_w + 2, ext_d + 2, top_edge_fillet_r + slop]);
                 back_sides_mask();
             }
+            // Carve away the top-r block of the front-wall flat-top for
+            // its rolled cap (smaller r=0.8).
+            intersection() {
+                translate([-1, -1, front_wall_h - front_top_edge_fillet_r])
+                    cube([ext_w + 2, ext_d + 2, front_top_edge_fillet_r + slop]);
+                front_top_mask();
+            }
         }
         // Add the back/sides rolled cap (intersect with back/sides mask).
         intersection() {
             footprint_fillet_stack(ext_h, top_edge_fillet_r, top_fillet_steps);
             back_sides_mask();
+        }
+        // Add the front-wall flat-top rolled cap (intersect with front mask).
+        intersection() {
+            front_wall_top_fillet_stack();
+            front_top_mask();
         }
     }
 }
@@ -390,22 +394,7 @@ module outer_body_with_fillets() {
 // ===== Interior cavity =====
 //
 // Y-Z polygon walked CCW, extruded across the interior X span
-// (x = wall_t .. ext_w - wall_t).
-//
-// The cavity polygon:
-//   1. (wall_t,     floor_t)        bottom-back interior corner
-//   2. (ramp_back_y, floor_t)       end of flat back floor
-//   3. ramp parabolic curve up to (ramp_front_y, ramp_front_z)
-//   4. (ramp_front_y, ext_h + 1)    up the interior face of front wall
-//                                    (cavity is open above z = ramp_front_z)
-//   5. (wall_t,       ext_h + 1)    back across to the back wall interior
-//   6. close to (1)
-//
-// Extrusion across X = [wall_t, ext_w - wall_t]. The cavity goes up to
-// the interior face y = ramp_front_y = ext_d - wall_t, never crossing
-// into the front wall material (which lives at y in [ext_d - wall_t,
-// ext_d]). The variable-height front-wall cutter handles the top profile
-// of the wall material independently.
+// (x = wall_t .. ext_w - wall_t). Unchanged from round 6.
 
 function _ramp_curve_z(y) =
     let(t = (y - ramp_back_y) / ramp_y_extent)
