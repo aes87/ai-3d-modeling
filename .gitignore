@@ -7,3 +7,6 @@ test/fixtures/tmp/
 .venv/
 assemblies/*/output/
 *.cli-project.json
+
+# Local-only PR drafts for upstream contributions
+pr-draft/
