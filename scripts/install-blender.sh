@@ -30,19 +30,24 @@ echo "[install-blender] Extracting (this takes ~30s)"
 tar -xf blender.tar.xz --strip-components=1
 rm blender.tar.xz
 
-# Verify OIDN is built in
-if "${INSTALL_DIR}/blender" --background --python-expr "
+# Verify OIDN is built in. Capture output first — Blender may exit nonzero on
+# locale warnings, which would trip set -o pipefail and produce a false negative
+# even when the OIDN_OK marker is present.
+VERIFY_OUT=$("${INSTALL_DIR}/blender" --background --python-expr "
 import bpy
 scene = bpy.context.scene
 scene.render.engine = 'CYCLES'
 try:
     scene.cycles.denoiser = 'OPENIMAGEDENOISE'
     print('OIDN_OK')
-except Exception:
-    print('OIDN_MISSING')
-" 2>&1 | grep -q "OIDN_OK"; then
+except Exception as e:
+    print('OIDN_MISSING:', e)
+" 2>&1 || true)
+
+if echo "$VERIFY_OUT" | grep -q "OIDN_OK"; then
     echo "[install-blender] Blender ${VERSION} installed with OIDN denoiser"
 else
     echo "[install-blender] WARNING: OIDN denoiser not detected in this build"
+    echo "$VERIFY_OUT" | tail -10
     exit 1
 fi
