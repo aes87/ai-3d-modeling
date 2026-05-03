@@ -1,119 +1,201 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 700" width="960" height="700">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1060" width="1280" height="1060">
   <defs>
     <marker id="arrowA" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#7c3aed"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#c9c5b6"/>
     </marker>
     <marker id="arrowB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
-    </marker>
-    <marker id="arrowC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
-    </marker>
-    <marker id="arrowE" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#f97316"/>
-    </marker>
-    <marker id="arrowF" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#7c3aed"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6fd1b4"/>
     </marker>
     <marker id="arrowG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#e6a562"/>
     </marker>
-    <marker id="arrowH" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280"/>
+    <marker id="arrowR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#b48be0"/>
     </marker>
-    <filter id="shadowSoft" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.12"/>
+    <filter id="editorialGrain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.08 0"/>
     </filter>
-    <filter id="shadowGlass" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#020617" flood-opacity="0.28"/>
-    </filter>
+    <radialGradient id="editorialTopGlow" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#e6a562" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#e6a562" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="renderGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#b48be0" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#b48be0" stop-opacity="0"/>
+    </radialGradient>
     <style>
-    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif; }
-    .title { font-size: 30px; font-weight: 700; fill: #111827; }
-    .subtitle { font-size: 14px; font-weight: 500; fill: #6b7280; }
-    .section { font-size: 13px; font-weight: 700; fill: #2563eb; letter-spacing: 1.4px; }
-    .section-sub { font-size: 12px; font-weight: 500; fill: #94a3b8; }
-    .node-title { font-size: 18px; font-weight: 700; fill: #111827; }
-    .node-sub { font-size: 12px; font-weight: 500; fill: #6b7280; }
-    .node-type { font-size: 12px; font-weight: 700; fill: #9ca3af; letter-spacing: 0.08em; }
-    .arrow-label { font-size: 12px; font-weight: 600; fill: #6b7280; }
-    .legend { font-size: 12px; font-weight: 500; fill: #6b7280; }
-    .footnote { font-size: 12px; font-weight: 500; fill: #94a3b8; }
+    text { font-family: 'Inter', 'Noto Sans', 'Helvetica Neue', 'DejaVu Sans', sans-serif; }
+    .title { font-size: 46px; font-weight: 700; fill: #f5efe0; font-family: 'Playfair Display', 'Noto Serif Display', 'DejaVu Serif', Georgia, serif; }
+    .subtitle { font-size: 12px; font-weight: 500; fill: #e6a562; letter-spacing: 0.3em; text-transform: uppercase; }
+    .section { font-size: 13px; font-weight: 700; fill: #f5efe0; letter-spacing: 1.4px; }
+    .section-sub { font-size: 12px; font-weight: 500; fill: #b5b3a8; }
+    .node-title { font-size: 18px; font-weight: 700; fill: #f5efe0; }
+    .node-sub { font-size: 12px; font-weight: 500; fill: #d4cfbf; }
+    .node-type { font-size: 10px; font-weight: 700; fill: #b5b3a8; letter-spacing: 0.08em; }
+    .node-type-render { font-size: 10px; font-weight: 700; fill: #b48be0; letter-spacing: 0.08em; }
+    .arrow-label { font-size: 12px; font-weight: 600; fill: #c9c5b6; }
+    .legend { font-size: 12px; font-weight: 500; fill: #d4cfbf; }
+    .footnote { font-size: 12px; font-weight: 500; fill: #b5b3a8; }
     </style>
   </defs>
-  <rect width="960.0" height="700.0" fill="#ffffff"/>
-  <text x="480.0" y="56" text-anchor="middle" class="title">AI 3D Modeling Pipeline</text>
-  <text x="480.0" y="82" text-anchor="middle" class="subtitle">Seven specialized agents with Blender hero renders</text>
-  <rect x="40.0" y="100.0" width="1200.0" height="110.0" rx="16.0" fill="none" stroke="#dbe5f1" stroke-width="1.4" stroke-dasharray="6 5"/>
-  <text x="58.0" y="124.0" class="section">01 // SPEC</text>
-  <rect x="40.0" y="240.0" width="1200.0" height="110.0" rx="16.0" fill="none" stroke="#dbe5f1" stroke-width="1.4" stroke-dasharray="6 5"/>
-  <text x="58.0" y="264.0" class="section">02 // DESIGN (OPTIONAL ID LOOP)</text>
-  <rect x="40.0" y="380.0" width="1200.0" height="110.0" rx="16.0" fill="none" stroke="#dbe5f1" stroke-width="1.4" stroke-dasharray="6 5"/>
-  <text x="58.0" y="404.0" class="section">03 // BUILD &amp; ANALYZE</text>
-  <rect x="40.0" y="520.0" width="1200.0" height="110.0" rx="16.0" fill="none" stroke="#dbe5f1" stroke-width="1.4" stroke-dasharray="6 5"/>
-  <text x="58.0" y="544.0" class="section">04 // REVIEW &amp; GATE</text>
-  <rect x="40.0" y="660.0" width="1200.0" height="110.0" rx="16.0" fill="none" stroke="#dbe5f1" stroke-width="1.4" stroke-dasharray="6 5"/>
-  <text x="58.0" y="684.0" class="section">05 // TEST (OPTIONAL)</text>
-  <rect x="40.0" y="800.0" width="1200.0" height="180.0" rx="16.0" fill="none" stroke="#dbe5f1" stroke-width="1.4" stroke-dasharray="6 5"/>
-  <text x="58.0" y="824.0" class="section">06 // SHIP WITH RENDERS</text>
-  <path d="M 600.0,195.0 L 290.0,255.0" fill="none" stroke="#7c3aed" stroke-width="2.4" marker-end="url(#arrowA)" stroke-dasharray="6,4"/>
-  <path d="M 600.0,195.0 L 600.0,395.0" fill="none" stroke="#f97316" stroke-width="2.4" marker-end="url(#arrowE)"/>
-  <path d="M 290.0,335.0 L 600.0,395.0" fill="none" stroke="#f97316" stroke-width="2.4" marker-end="url(#arrowE)" stroke-dasharray="6,4"/>
-  <path d="M 600.0,475.0 L 310.0,535.0" fill="none" stroke="#f97316" stroke-width="2.4" marker-end="url(#arrowE)"/>
-  <path d="M 600.0,475.0 L 840.0,535.0" fill="none" stroke="#f97316" stroke-width="2.4" marker-end="url(#arrowE)" stroke-dasharray="6,4"/>
-  <path d="M 310.0,615.0 L 600.0,675.0" fill="none" stroke="#f97316" stroke-width="2.4" marker-end="url(#arrowE)"/>
-  <path d="M 840.0,615.0 L 600.0,675.0" fill="none" stroke="#f97316" stroke-width="2.4" marker-end="url(#arrowE)" stroke-dasharray="6,4"/>
-  <path d="M 600.0,755.0 L 310.0,815.0" fill="none" stroke="#7c3aed" stroke-width="2.4" marker-end="url(#arrowA)" stroke-dasharray="6,4"/>
-  <path d="M 600.0,755.0 L 820.0,855.0" fill="none" stroke="#f97316" stroke-width="2.4" marker-end="url(#arrowE)"/>
-  <path d="M 400.0,855.0 L 520.0,855.0" fill="none" stroke="#7c3aed" stroke-width="2.4" marker-end="url(#arrowA)"/>
-  <path d="M 700.0,855.0 L 820.0,855.0" fill="none" stroke="#f97316" stroke-width="2.4" marker-end="url(#arrowE)" stroke-dasharray="6,4"/>
-  <path d="M 980.0,855.0 L 1020.0,855.0" fill="none" stroke="#7c3aed" stroke-width="2.4" marker-end="url(#arrowA)"/>
-  <rect x="500.0" y="115.0" width="200.0" height="80.0" rx="10.0" fill="#ffffff" stroke="#d1d5db" stroke-width="2.0" filter="url(#shadowSoft)"/>
-  <text x="600.0" y="155.0" text-anchor="middle" class="node-title">spec-writer
-(Agent)</text>
-  <path d="M 222.0 255.0 L 358.0 255.0 L 380.0 295.0 L 358.0 335.0 L 222.0 335.0 L 200.0 295.0 Z" fill="#ffffff" stroke="#d1d5db" stroke-width="2.0" filter="url(#shadowSoft)"/>
-  <text x="290.0" y="295.0" text-anchor="middle" class="node-title">id-designer
-(Optional)</text>
-  <rect x="500.0" y="395.0" width="200.0" height="80.0" rx="10.0" fill="#ffffff" stroke="#d1d5db" stroke-width="2.0" filter="url(#shadowSoft)"/>
-  <text x="600.0" y="435.0" text-anchor="middle" class="node-title">modeler
-(Orchestrator)</text>
-  <rect x="220.0" y="535.0" width="180.0" height="80.0" rx="10.0" fill="#ffffff" stroke="#d1d5db" stroke-width="2.0" filter="url(#shadowSoft)"/>
-  <text x="310.0" y="575.0" text-anchor="middle" class="node-title">geometry-analyzer</text>
-  <rect x="750.0" y="535.0" width="180.0" height="80.0" rx="10.0" fill="#ffffff" stroke="#d1d5db" stroke-width="2.0" filter="url(#shadowSoft)"/>
-  <text x="840.0" y="575.0" text-anchor="middle" class="node-title">fit-reviewer
-(Optional)</text>
-  <rect x="500.0" y="675.0" width="200.0" height="80.0" rx="10.0" fill="#ffffff" stroke="#d1d5db" stroke-width="2.0" filter="url(#shadowSoft)"/>
-  <rect x="506.0" y="681.0" width="188.0" height="68.0" rx="7.0" fill="none" stroke="#d1d5db" stroke-width="1.2" opacity="0.65"/>
-  <text x="600.0" y="715.0" text-anchor="middle" class="node-title">print-reviewer
-(Gate)</text>
-  <rect x="220.0" y="815.0" width="180.0" height="80.0" rx="10.0" fill="#ffffff" stroke="#d1d5db" stroke-width="2.0" filter="url(#shadowSoft)"/>
-  <text x="310.0" y="855.0" text-anchor="middle" class="node-title">test-print-planner
-(Optional)</text>
-  <rect x="520.0" y="815.0" width="180.0" height="80.0" rx="10.0" fill="#ffffff" stroke="#d1d5db" stroke-width="2.0" filter="url(#shadowSoft)"/>
-  <text x="610.0" y="855.0" text-anchor="middle" class="node-title">modeler
-(Test)</text>
-  <rect x="820.0" y="815.0" width="160.0" height="80.0" rx="10.0" fill="#ffffff" stroke="#d1d5db" stroke-width="2.0" filter="url(#shadowSoft)"/>
-  <text x="900.0" y="855.0" text-anchor="middle" class="node-title">shipper
-(Agent)</text>
-  <rect x="1020.0" y="815.0" width="180.0" height="80.0" rx="10.0" fill="#ffffff" stroke="#d1d5db" stroke-width="2.0" filter="url(#shadowSoft)"/>
-  <rect x="1020.0" y="815.0" width="180.0" height="18" rx="10.0" fill="#1f2937" opacity="0.95"/>
-  <circle cx="1036.0" cy="824.0" r="4" fill="#ef4444"/>
-  <circle cx="1050.0" cy="824.0" r="4" fill="#f59e0b"/>
-  <circle cx="1064.0" cy="824.0" r="4" fill="#10b981"/>
-  <text x="1038.0" y="859.0" font-size="28" font-weight="700" fill="#10b981">$</text>
-  <text x="1058.0" y="859.0" font-size="22" font-weight="500" fill="#6b7280">_</text>
-  <text x="1110.0" y="881.0" text-anchor="middle" class="node-title">Blender Render
-(Cycles + OIDN)</text>
-  <rect x="371.5" y="195.0" width="147" height="20" rx="6" fill="#ffffff" opacity="0.94"/>
-  <text x="445.0" y="209.0" text-anchor="middle" class="arrow-label">for aesthetic parts</text>
-  <rect x="543.5" y="281.0" width="77" height="20" rx="6" fill="#ffffff" opacity="0.94"/>
-  <text x="582.0" y="295.0" text-anchor="middle" class="arrow-label">spec.json</text>
-  <rect x="410.0" y="335.0" width="70" height="20" rx="6" fill="#ffffff" opacity="0.94"/>
-  <text x="445.0" y="349.0" text-anchor="middle" class="arrow-label">brief.md</text>
-  <rect x="437.0" y="475.0" width="36" height="20" rx="6" fill="#ffffff" opacity="0.94"/>
-  <text x="455.0" y="489.0" text-anchor="middle" class="arrow-label">STL</text>
-  <rect x="695.5" y="475.0" width="49" height="20" rx="6" fill="#ffffff" opacity="0.94"/>
-  <text x="720.0" y="489.0" text-anchor="middle" class="arrow-label">parts</text>
-  <rect x="951.0" y="841.0" width="98" height="20" rx="6" fill="#ffffff" opacity="0.94"/>
-  <text x="1000.0" y="855.0" text-anchor="middle" class="arrow-label">hero renders</text>
+
+  <!-- Background -->
+  <rect width="1280" height="1060" fill="#15151e"/>
+  <rect width="1280" height="400" fill="url(#editorialTopGlow)"/>
+  <rect x="40" y="820" width="1200" height="110" rx="16" fill="url(#renderGlow)" opacity="0.65"/>
+  <rect width="1280" height="1060" filter="url(#editorialGrain)" opacity="0.6"/>
+
+  <!-- Title -->
+  <text x="640" y="56" text-anchor="middle" class="title">AI 3D Modeling Pipeline</text>
+  <text x="640" y="82" text-anchor="middle" class="subtitle">Seven specialized agents · file handoff · Cycles hero renders</text>
+
+  <!-- Section frames -->
+  <rect x="40" y="160" width="1200" height="110" rx="16" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
+  <text x="58" y="184" class="section">01 // SPEC</text>
+
+  <rect x="40" y="292" width="1200" height="110" rx="16" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
+  <text x="58" y="316" class="section">02 // BUILD</text>
+
+  <rect x="40" y="424" width="1200" height="110" rx="16" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
+  <text x="58" y="448" class="section">03 // ANALYZE</text>
+
+  <rect x="40" y="556" width="1200" height="110" rx="16" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
+  <text x="58" y="580" class="section">04 // REVIEW</text>
+
+  <rect x="40" y="688" width="1200" height="110" rx="16" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
+  <text x="58" y="712" class="section">05 // TEST</text>
+
+  <rect x="40" y="820" width="1200" height="110" rx="16" fill="none" stroke="rgba(180,139,224,0.30)" stroke-width="1.4"/>
+  <text x="58" y="844" class="section">06 // SHIP</text>
+  <text x="58" y="860" class="section-sub">renders · GLB · README · git</text>
+
+  <!-- Flow arrows -->
+  <!-- spec-writer → modeler -->
+  <path d="M 640,244 L 640,320" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
+
+  <!-- modeler → analyzer + fit-reviewer (split) -->
+  <path d="M 640,376 L 640,396.4 L 420,396.4 L 420,452" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
+  <path d="M 640,376 L 640,396.4 L 860,396.4 L 860,452" fill="none" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
+
+  <!-- analyzer + fit-reviewer → print-reviewer -->
+  <path d="M 420,508 L 420,528.4 L 640,528.4 L 640,584" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
+  <path d="M 860,508 L 860,528.4 L 640,528.4 L 640,584" fill="none" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
+
+  <!-- print-reviewer → test-print-planner -->
+  <path d="M 640,640 L 640,660.4 L 420,660.4 L 420,716" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
+
+  <!-- test-print-planner → modeler(test) -->
+  <path d="M 520,744 L 760,744" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
+
+  <!-- print-reviewer → shipper (skip-test direct path) -->
+  <path d="M 730,612 L 1100,612 L 1100,848" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)" stroke-dasharray="2,5"/>
+
+  <!-- modeler(test) → shipper (after test prints) -->
+  <path d="M 860,772 L 860,792 L 420,792 L 420,848" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
+
+  <!-- shipper → blender renderer -->
+  <path d="M 520,876 L 580,876" fill="none" stroke="#b48be0" stroke-width="1.6" marker-end="url(#arrowR)"/>
+
+  <!-- blender renderer → outputs -->
+  <path d="M 820,876 L 880,876" fill="none" stroke="#b48be0" stroke-width="1.6" marker-end="url(#arrowR)"/>
+
+  <!-- print-reviewer FAIL retry loop -->
+  <path d="M 550,612 L 100,612 L 100,348 L 550,348" fill="none" stroke="#e6a562" stroke-width="1.6" marker-end="url(#arrowG)" stroke-dasharray="6,4"/>
+
+  <!-- Nodes -->
+  <!-- spec-writer -->
+  <rect x="550" y="188" width="180" height="56" rx="8" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
+  <text x="640" y="206" text-anchor="middle" class="node-type">AGENT</text>
+  <text x="640" y="222" text-anchor="middle" class="node-title">spec-writer</text>
+
+  <!-- modeler (orchestrator) -->
+  <rect x="550" y="320" width="180" height="56" rx="8" fill="#24222f" stroke="#e6a562" stroke-width="2"/>
+  <rect x="556" y="326" width="168" height="44" rx="5" fill="none" stroke="#e6a562" stroke-width="1.2" opacity="0.65"/>
+  <text x="640" y="338" text-anchor="middle" class="node-type">ORCHESTRATOR</text>
+  <text x="640" y="354" text-anchor="middle" class="node-title">modeler</text>
+
+  <!-- geometry-analyzer -->
+  <rect x="320" y="452" width="200" height="56" rx="8" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
+  <text x="420" y="470" text-anchor="middle" class="node-type">AGENT</text>
+  <text x="420" y="486" text-anchor="middle" class="node-title">geometry-analyzer</text>
+
+  <!-- fit-reviewer -->
+  <rect x="760" y="452" width="200" height="56" rx="8" fill="#24222f" stroke="#6fd1b4" stroke-width="1.8"/>
+  <text x="860" y="470" text-anchor="middle" class="node-type">IF MULTI-PART</text>
+  <text x="860" y="486" text-anchor="middle" class="node-title">fit-reviewer</text>
+
+  <!-- print-reviewer gate -->
+  <rect x="550" y="584" width="180" height="56" rx="8" fill="#24222f" stroke="#e6a562" stroke-width="2"/>
+  <rect x="556" y="590" width="168" height="44" rx="5" fill="none" stroke="#e6a562" stroke-width="1.2" opacity="0.65"/>
+  <text x="640" y="602" text-anchor="middle" class="node-type">GATE</text>
+  <text x="640" y="618" text-anchor="middle" class="node-title">print-reviewer</text>
+
+  <!-- test-print-planner -->
+  <rect x="320" y="716" width="200" height="56" rx="8" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
+  <text x="420" y="734" text-anchor="middle" class="node-type">AGENT</text>
+  <text x="420" y="750" text-anchor="middle" class="node-title">test-print-planner</text>
+
+  <!-- modeler (test) -->
+  <rect x="760" y="716" width="200" height="56" rx="8" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
+  <text x="860" y="734" text-anchor="middle" class="node-type">AGENT</text>
+  <text x="860" y="750" text-anchor="middle" class="node-title">modeler (test)</text>
+
+  <!-- shipper -->
+  <rect x="320" y="848" width="200" height="56" rx="8" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
+  <text x="420" y="866" text-anchor="middle" class="node-type">AGENT</text>
+  <text x="420" y="882" text-anchor="middle" class="node-title">shipper</text>
+
+  <!-- blender hero renderer -->
+  <rect x="580" y="848" width="240" height="56" rx="8" fill="#24222f" stroke="#b48be0" stroke-width="1.8"/>
+  <text x="700" y="866" text-anchor="middle" class="node-type-render">RENDERER · BLENDER</text>
+  <text x="700" y="882" text-anchor="middle" class="node-title">Cycles + OIDN</text>
+
+  <!-- outputs -->
+  <rect x="880" y="848" width="280" height="56" rx="8" fill="#1c1b25" stroke="rgba(245,239,224,0.18)" stroke-width="1.4" stroke-dasharray="3,3"/>
+  <text x="1020" y="866" text-anchor="middle" class="node-type">OUTPUTS</text>
+  <text x="1020" y="882" text-anchor="middle" class="node-sub">hero PNG · GLB · interactive viewer</text>
+
+  <!-- Arrow labels -->
+  <rect x="520.5" y="268" width="203" height="20" rx="6" fill="#15151e"/>
+  <text x="622" y="282" text-anchor="middle" class="arrow-label">requirements.md · spec.json</text>
+
+  <rect x="484.5" y="398.4" width="91" height="20" rx="6" fill="#15151e"/>
+  <text x="530" y="412.4" text-anchor="middle" class="arrow-label">.scad · STL</text>
+
+  <rect x="453" y="530.4" width="154" height="20" rx="6" fill="#15151e"/>
+  <text x="530" y="544.4" text-anchor="middle" class="arrow-label">geometry-report.json</text>
+
+  <rect x="701" y="530.4" width="98" height="20" rx="6" fill="#15151e"/>
+  <text x="750" y="544.4" text-anchor="middle" class="arrow-label">fitment.json</text>
+
+  <rect x="477.5" y="662.4" width="105" height="20" rx="6" fill="#15151e"/>
+  <text x="530" y="676.4" text-anchor="middle" class="arrow-label">review + recs</text>
+
+  <rect x="304" y="614" width="42" height="20" rx="6" fill="#15151e"/>
+  <text x="325" y="628" text-anchor="middle" class="arrow-label">FAIL</text>
+
+  <rect x="894" y="602" width="100" height="20" rx="6" fill="#15151e"/>
+  <text x="944" y="616" text-anchor="middle" class="arrow-label">skip · no test</text>
+
+  <rect x="475" y="782" width="90" height="20" rx="6" fill="#15151e"/>
+  <text x="520" y="796" text-anchor="middle" class="arrow-label">test STLs OK</text>
+
+  <!-- Legend -->
+  <line x1="60" y1="975" x2="90" y2="975" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
+  <text x="100" y="979" class="legend">File handoff</text>
+
+  <line x1="280" y1="975" x2="310" y2="975" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
+  <text x="320" y="979" class="legend">Conditional · multi-part</text>
+
+  <line x1="540" y1="975" x2="570" y2="975" stroke="#e6a562" stroke-width="1.6" marker-end="url(#arrowG)" stroke-dasharray="6,4"/>
+  <text x="580" y="979" class="legend">Retry on FAIL</text>
+
+  <line x1="760" y1="975" x2="790" y2="975" stroke="#b48be0" stroke-width="1.6" marker-end="url(#arrowR)"/>
+  <text x="800" y="979" class="legend">Render dispatch</text>
+
+  <line x1="980" y1="975" x2="1010" y2="975" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)" stroke-dasharray="2,5"/>
+  <text x="1020" y="979" class="legend">Optional skip</text>
+
+  <text x="640" y="1015" text-anchor="middle" class="footnote">id-designer (optional, pre-spec) runs when spec.requiresId · brief.md feeds into 02 // BUILD</text>
 </svg>
