@@ -66,6 +66,12 @@ Validation spec for the pipeline:
   "params": { "<key>": "<value>" },
   "requiresId": true,
   "modelingBackend": "openscad",
+  "heroRender": {
+    "enabled": true,
+    "quality": "hero",
+    "angles": ["front-threequarter"],
+    "exportGlb": true
+  },
   "testPrintCandidates": [
     {
       "feature": "<feature name>",
@@ -76,6 +82,31 @@ Validation spec for the pipeline:
   ]
 }
 ```
+
+### heroRender field
+
+Optional. When set, the shipper produces gallery-quality renders (and optionally a GLB for the in-browser 3D viewer) after the standard renders. Driven by Blender + Cycles via `bin/render-hero.js`. Off by default — leave unset for utility parts where the OpenSCAD render is sufficient.
+
+Schema:
+```json
+"heroRender": {
+  "enabled": true,
+  "quality": "draft" | "standard" | "hero",
+  "angles": ["front-threequarter", "iso", ...],
+  "exportGlb": true
+}
+```
+
+- `quality`: tier mapping engine + samples + resolution. `draft` is Eevee/64s/1280×960 (~30s); `standard` is Cycles/128s/1920×1440 with denoiser (~1–2 min); `hero` is Cycles/512s/2560×1920 with denoiser (~3–5 min).
+- `angles`: list of camera presets — `iso`, `front`, `back`, `right`, `left`, `top`, `front-threequarter`, `rear-threequarter`, `top-threequarter`. Pick the angles that show the design's signature features. One is fine; up to three reads well in design pages.
+- `exportGlb`: when true, also exports a `.glb` next to each PNG. Used by `docs/viewer.html` for the in-browser interactive 3D viewer.
+
+When to enable:
+- `requiresId: true` designs that go to the README hero or design page header — set `enabled: true`, `quality: "hero"`.
+- Aesthetic parts where the OpenSCAD render's flat-shaded preview undersells the form.
+- Skip for utility parts: brackets, adapters, internal components, anything where the technical-illustration render already communicates the geometry.
+
+Per-design override: if the ID brief calls for a specific look (warm vs cool, dark vs light backdrop, specific framing), the `id-designer` writes `id/render-preset.py` exposing `setup(scene, subject, args)`. The harness auto-detects this when invoked with `--design`.
 
 ### modelingBackend field
 

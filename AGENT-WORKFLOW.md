@@ -44,6 +44,8 @@ When dispatching via the Agent tool, pass `model: 'opus'` for `id-designer`, `mo
 7. **Test print stage (optional):** Dispatch `test-print-planner` once all reviews pass. It reads the finalized reports, consumes upstream flags (`spec.json` → `testPrintCandidates`, `review-printability.md` → Test Print Recommendations), and produces `test-prints.json` + stub design directories. Then dispatch `modeler` for each test print (parallel). Test prints go through lightweight validation only (render + dimension check), not the full review pipeline. The orchestrator may skip this stage for simple parts or if the user opts out.
 8. **Ship stage:** Dispatch `shipper` once all reviews and test prints are complete. For designs that went through the ID stage, the orchestrator should also prompt the user for library-promotion approvals (new family / references / lessons) before shipping — `id-designer` proposes, user decides.
 
+   **Hero render sub-stage:** When `spec.json` has `heroRender.enabled: true`, the shipper produces gallery-quality renders via Blender + Cycles (`bin/render-hero.js`) after the OpenSCAD ship-quality renders. Optional GLB export feeds the in-browser interactive 3D viewer at `docs/viewer.html`. The hero render is for the README + design page header; OpenSCAD renders remain authoritative for technical illustration. Per-design lighting/material overrides go in `designs/<name>/id/render-preset.py` (written by `id-designer` when the brief calls for a specific look). See `.claude/agents/shipper.md` step 1.5.
+
 ## Orchestrator responsibilities
 
 The top-level conversation (you, reading this) is the **orchestrator**. You:

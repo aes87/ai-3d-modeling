@@ -63,6 +63,40 @@ xvfb-run openscad -o output/<name>-<view>.png \
 
 Verify the ship STL is watertight and dimensionally identical to the draft STL (only smoothness changed). If a thin-wall feature breaks at higher $fn (e.g. an offset goes negative due to finer polygon approximation), flag for the modeler — don't silently fall back to draft.
 
+### 1.5 Hero render (conditional — `spec.json.heroRender.enabled === true`)
+
+If `spec.json` has a `heroRender` block with `enabled: true`, produce gallery-quality renders via Blender after the OpenSCAD renders. The hero render is for the README + design page header — the OpenSCAD renders remain authoritative for the rest of the design page.
+
+```bash
+# Per-angle hero render. The harness picks up id/render-preset.py if present
+# (per-design lighting/material overrides written by id-designer).
+for angle in $(jq -r '.heroRender.angles[]' designs/<name>/spec.json); do
+  for stl in designs/<name>/output/*.stl; do
+    part=$(basename "$stl" .stl)
+    out="designs/<name>/output/${part}-hero-${angle}.png"
+    glb_flag=""
+    if [ "$(jq -r '.heroRender.exportGlb // false' designs/<name>/spec.json)" = "true" ]; then
+      glb_flag="--glb"
+    fi
+    quality=$(jq -r '.heroRender.quality // "standard"' designs/<name>/spec.json)
+    node bin/render-hero.js \
+      --stl "$stl" \
+      --out "$out" \
+      --quality "$quality" \
+      --angle "$angle" \
+      $glb_flag
+  done
+done
+```
+
+The harness writes:
+- `designs/<name>/output/<part>-hero-<angle>.png` for each angle
+- `designs/<name>/output/<part>.glb` (one per part) when `exportGlb: true`
+
+When `id/render-preset.py` exists in the design directory, the harness uses it instead of the default studio preset. This is how aesthetic-specific lighting/materials/framing land in the hero render.
+
+If a hero render fails (Blender not installed, GLB export error), report to orchestrator and continue without it — the design page can still ship with OpenSCAD renders. Don't block the pipeline on hero renders.
+
 ### 2. Copy outputs to docs
 
 ```bash
@@ -91,7 +125,16 @@ Follow this template structure:
 
 ## Renders
 
-<Gallery of all rendered views. Each image gets a descriptive caption that tells the viewer what they're looking at — not just "Front view" but "Front elevation showing spigot seal zones and ridge geometry.">
+<If a hero render exists (heroRender.enabled), put it FIRST. Use the most flattering angle as the page header. Below it, gallery the OpenSCAD technical-illustration views — those communicate dimensions and feature placement clearly.>
+
+![<caption>](images/<name>/<name>-hero-front-threequarter.png)
+*<caption>*
+
+<If a GLB exists (heroRender.exportGlb), add an interactive viewer link below the hero image:>
+
+[**🔄 View interactive 3D model →**](viewer.html?model=../designs/<name>/output/<name>.glb)
+
+<Then OpenSCAD views:>
 
 ![<caption>](images/<name>/<name>-iso.png)
 *<caption>*
