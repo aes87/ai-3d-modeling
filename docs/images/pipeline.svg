@@ -1,116 +1,115 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 920" width="1280" height="920">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 700" width="960" height="700">
   <defs>
     <marker id="arrowA" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#c9c5b6"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#67e8f9"/>
     </marker>
     <marker id="arrowB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#6fd1b4"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
     </marker>
     <marker id="arrowC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#c9c5b6"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#38bdf8"/>
     </marker>
     <marker id="arrowE" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#c9c5b6"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fde047"/>
     </marker>
     <marker id="arrowF" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#8b8899"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#c084fc"/>
     </marker>
     <marker id="arrowG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#e6a562"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fb7185"/>
     </marker>
     <marker id="arrowH" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#8b8899"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#bae6fd"/>
     </marker>
-    <filter id="editorialGrain" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
-      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.08 0"/>
-    </filter>
-    <radialGradient id="editorialTopGlow" cx="50%" cy="0%" r="80%">
-      <stop offset="0%" stop-color="#e6a562" stop-opacity="0.12"/>
-      <stop offset="100%" stop-color="#e6a562" stop-opacity="0"/>
-    </radialGradient>
+    <pattern id="blueprintGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#0ea5e9" stroke-opacity="0.12" stroke-width="1"/>
+    </pattern>
     <style>
-    text { font-family: 'Inter', 'Noto Sans', 'Helvetica Neue', 'DejaVu Sans', sans-serif; }
-    .title { font-size: 46px; font-weight: 700; fill: #f5efe0; font-family: 'Playfair Display', 'Noto Serif Display', 'DejaVu Serif', Georgia, serif; }
-    .subtitle { font-size: 12px; font-weight: 500; fill: #e6a562; letter-spacing: 0.3em; text-transform: uppercase; }
-    .section { font-size: 13px; font-weight: 700; fill: #f5efe0; letter-spacing: 1.4px; }
-    .section-sub { font-size: 12px; font-weight: 500; fill: #b5b3a8; }
-    .node-title { font-size: 18px; font-weight: 700; fill: #f5efe0; }
-    .node-sub { font-size: 12px; font-weight: 500; fill: #d4cfbf; }
-    .node-type { font-size: 10px; font-weight: 700; fill: #b5b3a8; letter-spacing: 0.08em; }
-    .arrow-label { font-size: 12px; font-weight: 600; fill: #c9c5b6; }
-    .legend { font-size: 12px; font-weight: 500; fill: #d4cfbf; }
-    .footnote { font-size: 12px; font-weight: 500; fill: #b5b3a8; }
+    text { font-family: 'SF Mono', 'Fira Code', Menlo, 'Microsoft YaHei', 'SimHei', monospace; }
+    .title { font-size: 30px; font-weight: 700; fill: #e0f2fe; }
+    .subtitle { font-size: 14px; font-weight: 500; fill: #7dd3fc; }
+    .section { font-size: 13px; font-weight: 700; fill: #67e8f9; letter-spacing: 1.4px; }
+    .section-sub { font-size: 12px; font-weight: 500; fill: #7dd3fc; }
+    .node-title { font-size: 18px; font-weight: 700; fill: #e0f2fe; }
+    .node-sub { font-size: 12px; font-weight: 500; fill: #bae6fd; }
+    .node-type { font-size: 11px; font-weight: 700; fill: #7dd3fc; letter-spacing: 0.08em; }
+    .arrow-label { font-size: 12px; font-weight: 600; fill: #e0f2fe; }
+    .legend { font-size: 12px; font-weight: 500; fill: #bae6fd; }
+    .footnote { font-size: 12px; font-weight: 500; fill: #7dd3fc; }
     </style>
   </defs>
-  <rect width="1280.0" height="920.0" fill="#15151e"/>
-  <rect width="1280.0" height="400" fill="url(#editorialTopGlow)"/>
-  <rect width="1280.0" height="920.0" filter="url(#editorialGrain)" opacity="0.6"/>
-  <text x="640.0" y="56" text-anchor="middle" class="title">AI 3D Modeling Pipeline</text>
-  <text x="640.0" y="82" text-anchor="middle" class="subtitle">Seven specialized agents · file handoff · mesh-ground-truth review</text>
-  <rect x="40.0" y="160.0" width="1200.0" height="110.0" rx="16.0" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
-  <text x="58.0" y="184.0" class="section">01 // SPEC</text>
-  <rect x="40.0" y="292.0" width="1200.0" height="110.0" rx="16.0" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
-  <text x="58.0" y="316.0" class="section">02 // BUILD</text>
-  <rect x="40.0" y="424.0" width="1200.0" height="110.0" rx="16.0" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
-  <text x="58.0" y="448.0" class="section">03 // ANALYZE</text>
-  <rect x="40.0" y="556.0" width="1200.0" height="110.0" rx="16.0" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
-  <text x="58.0" y="580.0" class="section">04 // REVIEW</text>
-  <rect x="40.0" y="688.0" width="1200.0" height="110.0" rx="16.0" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
-  <text x="58.0" y="712.0" class="section">05 // TEST</text>
-  <path d="M 640.0,244.0 L 640.0,320.0" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
-  <path d="M 640.0,376.0 L 640.0,396.4 L 420.0,396.4 L 420.0,452.0" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
-  <path d="M 640.0,376.0 L 640.0,396.4 L 860.0,396.4 L 860.0,452.0" fill="none" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
-  <path d="M 420.0,508.0 L 420.0,528.4 L 640.0,528.4 L 640.0,584.0" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
-  <path d="M 860.0,508.0 L 860.0,528.4 L 640.0,528.4 L 640.0,584.0" fill="none" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
-  <path d="M 640.0,640.0 L 640.0,660.4 L 420.0,660.4 L 420.0,716.0" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
-  <path d="M 520.0,744.0 L 760.0,744.0" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
-  <path d="M 960.0,744.0 L 1030.0,744.0" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
-  <path d="M 550.0,612.0 L 100.0,612.0 L 100.0,348.0 L 550.0,348.0" fill="none" stroke="#e6a562" stroke-width="1.6" marker-end="url(#arrowG)" stroke-dasharray="6,4"/>
-  <rect x="550.0" y="188.0" width="180.0" height="56.0" rx="8.0" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
-  <text x="640.0" y="206.0" text-anchor="middle" class="node-type">AGENT</text>
-  <text x="640.0" y="222.0" text-anchor="middle" class="node-title">spec-writer</text>
-  <rect x="550.0" y="320.0" width="180.0" height="56.0" rx="8.0" fill="#24222f" stroke="#e6a562" stroke-width="2.0"/>
-  <rect x="556.0" y="326.0" width="168.0" height="44.0" rx="5.0" fill="none" stroke="#e6a562" stroke-width="1.2" opacity="0.65"/>
-  <text x="640.0" y="338.0" text-anchor="middle" class="node-type">ORCHESTRATOR</text>
-  <text x="640.0" y="354.0" text-anchor="middle" class="node-title">modeler</text>
-  <rect x="320.0" y="452.0" width="200.0" height="56.0" rx="8.0" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
-  <text x="420.0" y="470.0" text-anchor="middle" class="node-type">AGENT</text>
-  <text x="420.0" y="486.0" text-anchor="middle" class="node-title">geometry-analyzer</text>
-  <rect x="760.0" y="452.0" width="200.0" height="56.0" rx="8.0" fill="#24222f" stroke="#6fd1b4" stroke-width="1.8"/>
-  <text x="860.0" y="470.0" text-anchor="middle" class="node-type">IF MULTI-PART</text>
-  <text x="860.0" y="486.0" text-anchor="middle" class="node-title">fit-reviewer</text>
-  <rect x="550.0" y="584.0" width="180.0" height="56.0" rx="8.0" fill="#24222f" stroke="#e6a562" stroke-width="2.0"/>
-  <rect x="556.0" y="590.0" width="168.0" height="44.0" rx="5.0" fill="none" stroke="#e6a562" stroke-width="1.2" opacity="0.65"/>
-  <text x="640.0" y="602.0" text-anchor="middle" class="node-type">GATE</text>
-  <text x="640.0" y="618.0" text-anchor="middle" class="node-title">print-reviewer</text>
-  <rect x="320.0" y="716.0" width="200.0" height="56.0" rx="8.0" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
-  <text x="420.0" y="734.0" text-anchor="middle" class="node-type">AGENT</text>
-  <text x="420.0" y="750.0" text-anchor="middle" class="node-title">test-print-planner</text>
-  <rect x="760.0" y="716.0" width="200.0" height="56.0" rx="8.0" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
-  <text x="860.0" y="734.0" text-anchor="middle" class="node-type">AGENT</text>
-  <text x="860.0" y="750.0" text-anchor="middle" class="node-title">modeler (test)</text>
-  <rect x="1030.0" y="716.0" width="160.0" height="56.0" rx="8.0" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
-  <text x="1110.0" y="734.0" text-anchor="middle" class="node-type">AGENT</text>
-  <text x="1110.0" y="750.0" text-anchor="middle" class="node-title">shipper</text>
-  <rect x="520.5" y="268.0" width="203" height="20" rx="6" fill="#15151e" opacity="1"/>
-  <text x="622.0" y="282.0" text-anchor="middle" class="arrow-label">requirements.md · spec.json</text>
-  <rect x="484.5" y="398.4" width="91" height="20" rx="6" fill="#15151e" opacity="1"/>
-  <text x="530.0" y="412.4" text-anchor="middle" class="arrow-label">.scad · STL</text>
-  <rect x="453.0" y="530.4" width="154" height="20" rx="6" fill="#15151e" opacity="1"/>
-  <text x="530.0" y="544.4" text-anchor="middle" class="arrow-label">geometry-report.json</text>
-  <rect x="701.0" y="530.4" width="98" height="20" rx="6" fill="#15151e" opacity="1"/>
-  <text x="750.0" y="544.4" text-anchor="middle" class="arrow-label">fitment.json</text>
-  <rect x="477.5" y="662.4" width="105" height="20" rx="6" fill="#15151e" opacity="1"/>
-  <text x="530.0" y="676.4" text-anchor="middle" class="arrow-label">review + recs</text>
-  <rect x="304.0" y="614.0" width="42" height="20" rx="6" fill="#15151e" opacity="1"/>
-  <text x="325.0" y="628.0" text-anchor="middle" class="arrow-label">FAIL</text>
-  <line x1="60.0" y1="820.0" x2="90.0" y2="820.0" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
-  <text x="100.0" y="824.0" class="legend">File handoff</text>
-  <line x1="60.0" y1="842.0" x2="90.0" y2="842.0" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)"/>
-  <text x="100.0" y="846.0" class="legend">Conditional · multi-part</text>
-  <line x1="60.0" y1="864.0" x2="90.0" y2="864.0" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
-  <text x="100.0" y="868.0" class="legend">Dispatch</text>
-  <line x1="60.0" y1="886.0" x2="90.0" y2="886.0" stroke="#e6a562" stroke-width="1.6" marker-end="url(#arrowG)"/>
-  <text x="100.0" y="890.0" class="legend">Retry on fail</text>
+  <rect width="960.0" height="700.0" fill="#082f49"/>
+  <text x="480.0" y="56" text-anchor="middle" class="title">AI 3D Modeling Pipeline</text>
+  <text x="480.0" y="82" text-anchor="middle" class="subtitle">Seven specialized agents · file handoff · Blender hero renders</text>
+  <rect x="40.0" y="120.0" width="1200.0" height="100.0" rx="16.0" fill="none" stroke="#0ea5e9" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="58.0" y="144.0" class="section">01 // 01 // SPEC</text>
+  <rect x="40.0" y="250.0" width="1200.0" height="100.0" rx="16.0" fill="none" stroke="#0ea5e9" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="58.0" y="274.0" class="section">02 // 02 // DESIGN</text>
+  <rect x="40.0" y="380.0" width="1200.0" height="100.0" rx="16.0" fill="none" stroke="#0ea5e9" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="58.0" y="404.0" class="section">03 // 03 // BUILD</text>
+  <rect x="40.0" y="510.0" width="1200.0" height="100.0" rx="16.0" fill="none" stroke="#0ea5e9" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="58.0" y="534.0" class="section">04 // 04 // ANALYZE</text>
+  <rect x="40.0" y="640.0" width="1200.0" height="100.0" rx="16.0" fill="none" stroke="#0ea5e9" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="58.0" y="664.0" class="section">05 // 05 // REVIEW</text>
+  <rect x="40.0" y="770.0" width="1200.0" height="100.0" rx="16.0" fill="none" stroke="#0ea5e9" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="58.0" y="794.0" class="section">06 // 06 // TEST</text>
+  <rect x="40.0" y="900.0" width="1200.0" height="120.0" rx="16.0" fill="none" stroke="#0ea5e9" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="58.0" y="924.0" class="section">07 // 07 // SHIP</text>
+  <path d="M 600.0,205.0 L 320.0,265.0" fill="none" stroke="#67e8f9" stroke-width="2.1" marker-end="url(#arrowA)" stroke-dasharray="6,4"/>
+  <path d="M 600.0,205.0 L 600.0,395.0" fill="none" stroke="#fde047" stroke-width="2.1" marker-end="url(#arrowE)"/>
+  <path d="M 320.0,335.0 L 600.0,395.0" fill="none" stroke="#fde047" stroke-width="2.1" marker-end="url(#arrowE)" stroke-dasharray="6,4"/>
+  <path d="M 600.0,465.0 L 320.0,525.0" fill="none" stroke="#fde047" stroke-width="2.1" marker-end="url(#arrowE)"/>
+  <path d="M 600.0,465.0 L 840.0,525.0" fill="none" stroke="#fde047" stroke-width="2.1" marker-end="url(#arrowE)" stroke-dasharray="6,4"/>
+  <path d="M 320.0,595.0 L 600.0,655.0" fill="none" stroke="#fde047" stroke-width="2.1" marker-end="url(#arrowE)"/>
+  <path d="M 840.0,595.0 L 600.0,655.0" fill="none" stroke="#fde047" stroke-width="2.1" marker-end="url(#arrowE)" stroke-dasharray="6,4"/>
+  <path d="M 600.0,725.0 L 320.0,785.0" fill="none" stroke="#67e8f9" stroke-width="2.1" marker-end="url(#arrowA)" stroke-dasharray="6,4"/>
+  <path d="M 600.0,725.0 L 600.0,920.0" fill="none" stroke="#fde047" stroke-width="2.1" marker-end="url(#arrowE)"/>
+  <path d="M 420.0,820.0 L 540.0,820.0" fill="none" stroke="#67e8f9" stroke-width="2.1" marker-end="url(#arrowA)" stroke-dasharray="6,4"/>
+  <path d="M 640.0,855.0 L 600.0,920.0" fill="none" stroke="#fde047" stroke-width="2.1" marker-end="url(#arrowE)" stroke-dasharray="6,4"/>
+  <path d="M 720.0,955.0 L 760.0,955.0" fill="none" stroke="#67e8f9" stroke-width="2.1" marker-end="url(#arrowA)"/>
+  <rect x="480.0" y="135.0" width="240.0" height="70.0" rx="8.0" fill="#0b3b5e" stroke="#67e8f9" stroke-width="2.0"/>
+  <text x="600.0" y="170.0" text-anchor="middle" class="node-title">spec-writer
+Agent</text>
+  <path d="M 242.0 265.0 L 398.0 265.0 L 420.0 300.0 L 398.0 335.0 L 242.0 335.0 L 220.0 300.0 Z" fill="#0b3b5e" stroke="#67e8f9" stroke-width="2.0"/>
+  <text x="320.0" y="300.0" text-anchor="middle" class="node-title">id-designer
+Agent</text>
+  <rect x="480.0" y="395.0" width="240.0" height="70.0" rx="8.0" fill="#0b3b5e" stroke="#67e8f9" stroke-width="2.0"/>
+  <text x="600.0" y="430.0" text-anchor="middle" class="node-title">modeler
+Orchestrator</text>
+  <rect x="220.0" y="525.0" width="200.0" height="70.0" rx="8.0" fill="#0b3b5e" stroke="#67e8f9" stroke-width="2.0"/>
+  <text x="320.0" y="560.0" text-anchor="middle" class="node-title">geometry-analyzer
+Agent</text>
+  <rect x="740.0" y="525.0" width="200.0" height="70.0" rx="8.0" fill="#0b3b5e" stroke="#67e8f9" stroke-width="2.0"/>
+  <text x="840.0" y="560.0" text-anchor="middle" class="node-title">fit-reviewer
+Agent</text>
+  <rect x="480.0" y="655.0" width="240.0" height="70.0" rx="8.0" fill="#0b3b5e" stroke="#67e8f9" stroke-width="2.0"/>
+  <rect x="486.0" y="661.0" width="228.0" height="58.0" rx="5.0" fill="none" stroke="#67e8f9" stroke-width="1.2" opacity="0.65"/>
+  <text x="600.0" y="690.0" text-anchor="middle" class="node-title">print-reviewer
+Gate</text>
+  <rect x="220.0" y="785.0" width="200.0" height="70.0" rx="8.0" fill="#0b3b5e" stroke="#67e8f9" stroke-width="2.0"/>
+  <text x="320.0" y="820.0" text-anchor="middle" class="node-title">test-print-planner
+Agent</text>
+  <rect x="540.0" y="785.0" width="200.0" height="70.0" rx="8.0" fill="#0b3b5e" stroke="#67e8f9" stroke-width="2.0"/>
+  <text x="640.0" y="820.0" text-anchor="middle" class="node-title">modeler
+Test</text>
+  <rect x="480.0" y="920.0" width="240.0" height="70.0" rx="8.0" fill="#0b3b5e" stroke="#67e8f9" stroke-width="2.0"/>
+  <text x="600.0" y="955.0" text-anchor="middle" class="node-title">shipper
+Agent</text>
+  <rect x="760.0" y="920.0" width="200.0" height="70.0" rx="8.0" fill="#0b3b5e" stroke="#67e8f9" stroke-width="2.0"/>
+  <rect x="760.0" y="920.0" width="200.0" height="18" rx="8.0" fill="#1f2937" opacity="0.95"/>
+  <circle cx="776.0" cy="929.0" r="4" fill="#ef4444"/>
+  <circle cx="790.0" cy="929.0" r="4" fill="#f59e0b"/>
+  <circle cx="804.0" cy="929.0" r="4" fill="#10b981"/>
+  <text x="778.0" y="964.0" font-size="28" font-weight="700" fill="#10b981">$</text>
+  <text x="798.0" y="964.0" font-size="22" font-weight="500" fill="#bae6fd">_</text>
+  <text x="860.0" y="976.0" text-anchor="middle" class="node-title">Blender Render
+Cycles + OIDN</text>
+  <rect x="676.0" y="590.0" width="256.0" height="92.0" fill="#0b3552" stroke="#0ea5e9" stroke-width="1.2"/>
+  <line x1="676.0" y1="608.0" x2="932.0" y2="608.0" stroke="#0ea5e9" stroke-width="1"/>
+  <line x1="676.0" y1="644.0" x2="932.0" y2="644.0" stroke="#0ea5e9" stroke-width="1"/>
+  <text x="804.0" y="603.0" text-anchor="middle" font-size="10" font-weight="600" fill="#7dd3fc">SYSTEM ARCHITECTURE</text>
+  <text x="804.0" y="632.0" text-anchor="middle" font-size="18" font-weight="700" fill="#e0f2fe">AI 3D Modeling Pipeline</text>
+  <text x="688.0" y="665.0" font-size="9.5" font-weight="600" fill="#7dd3fc">REV: 1.0</text>
+  <text x="804.0" y="665.0" text-anchor="middle" font-size="9.5" font-weight="600" fill="#67e8f9">AUTO-GENERATED</text>
+  <text x="920.0" y="665.0" text-anchor="end" font-size="9.5" font-weight="600" fill="#7dd3fc">DWG: ARCH-001</text>
 </svg>
