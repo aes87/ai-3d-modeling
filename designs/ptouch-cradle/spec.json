@@ -2,6 +2,12 @@
   "name": "ptouch-cradle",
   "description": "Two-part desktop cradle + label-catch tray for Brother PT-P750W label printer. Round 7 simplifies the tray's front wall: the round-6 variable-height profile (corners at z=18, lowered center at z=10, transition arcs) is collapsed to a single uniform height z=10 across the full width. ONE concave fillet sweep (r=20) per side handles the entire side-wall (z=30) to front-wall (z=10) transition — no intermediate flat sections, no sharp points. The grab feature is now the entire low front lip — user reaches over the 10 mm front wall anywhere along its width. Top-edge fillet (r=2 on back/sides; r=0.8 on front wall — front wall is 1.6 mm thick, r=2 collapses) wraps continuously. Cradle is unchanged from round 5.",
   "requiresId": true,
+  "heroRender": {
+    "enabled": true,
+    "quality": "standard",
+    "angles": ["front-threequarter"],
+    "exportGlb": false
+  },
   "dimensions": {
     "x": 110,
     "y": 254.9,
