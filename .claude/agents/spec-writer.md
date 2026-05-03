@@ -65,6 +65,7 @@ Validation spec for the pipeline:
   "views": ["front", "top", "right", "iso", "<custom-angles>"],
   "params": { "<key>": "<value>" },
   "requiresId": true,
+  "modelingBackend": "openscad",
   "testPrintCandidates": [
     {
       "feature": "<feature name>",
@@ -75,6 +76,15 @@ Validation spec for the pipeline:
   ]
 }
 ```
+
+### modelingBackend field
+
+Set `modelingBackend` to control which modeling tool is used:
+
+- `"openscad"` (default) — parametric CSG, headless, git-native. Use for: functional/utility parts, rectilinear geometry, gridfinity bins, anything needing CI automation.
+- `"fusion"` — Autodesk Fusion 360 via MCP. Use for: organic/compound-curve geometry (lofts, sweeps, T-splines), designs where `requiresId: true` AND the surface language requires freeform shapes. Requires Fusion running on the Windows host; see `docs/fusion-mcp-setup.md`. **Ask the user before setting this** — it requires a different execution environment.
+
+Default to `"openscad"` unless the geometry clearly warrants Fusion.
 
 ### requiresId flag
 

@@ -51,6 +51,10 @@ node bin/geometry-analyze.js designs/<name>      # Mesh + slicer analysis
 node bin/check-assembly.js assemblies/<name>.json    # Assembly check
 ```
 
+## Gemini MCP
+
+- **`gemini_analyze`** — use for render validation during iteration loops. Pass the rendered PNG path rather than loading the image into Claude's context: `gemini_analyze(prompt="Does this 3D render show a clean, manifold shape with no obvious geometry defects, clipping, or visual artifacts?", files=["/workspace/projects/3d-printing/designs/<name>/render.png"])`. Especially useful in multi-round validation loops where accumulating images would bloat context.
+
 ## Conventions
 
 - Each design lives in `designs/<name>/` with `requirements.md`, `spec.json`, `<name>.scad`

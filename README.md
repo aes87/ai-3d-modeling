@@ -2,16 +2,17 @@
 
 Describe a part. Get a printable STL — spec'd, validated, reviewed for printability, and shipped with test prints for critical fitment. No CAD skills required.
 
-This is an AI-native parametric modeling pipeline built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [OpenSCAD](https://openscad.org/) via a [CLI-Anything](https://github.com/HKUDS/CLI-Anything) agent harness. The human owns the design intent — dimensions, constraints, how things mate. The AI handles the CAD work, iterates against a validation pipeline, and doesn't ship until the geometry passes quantitative review.
+This is an AI-native parametric modeling pipeline built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with two modeling backends: [OpenSCAD](https://openscad.org/) (headless, git-native, default) and [Autodesk Fusion 360](https://www.autodesk.com/products/fusion-360/) via MCP (organic geometry, freeform surfaces). The human owns the design intent — dimensions, constraints, how things mate. The AI handles the CAD work, iterates against a validation pipeline, and doesn't ship until the geometry passes quantitative review.
 
 **Printer:** Bambu Lab X1 Carbon — 256 × 256 × 256 mm, 0.4 mm nozzle, PLA.
 
 ## What It Does
 
-- **Parametric modeling** — Claude writes OpenSCAD from structured requirements, renders via [`cli-anything-openscad`](https://github.com/HKUDS/CLI-Anything) (parallel views, JSON output, automatic dimension parsing), iterates against dimensional validation up to 6 rounds
+- **Dual modeling backends** — OpenSCAD (headless, git-native, default) for functional and rectilinear geometry; Autodesk Fusion 360 via MCP for organic shapes, compound curves, and freeform surfaces. Both backends produce the same STL + report outputs; everything downstream is backend-agnostic. See [`docs/fusion-mcp-setup.md`](docs/fusion-mcp-setup.md).
+- **Industrial design loop** — conversational `id-designer` agent runs a mockup-first aesthetic pass before modeling on visible parts (`requiresId: true`). After renders land, critique mode produces a concrete fix list for the modeler. Shared aesthetic library at `designs/_id-library/`.
 - **Ground-truth printability** — trimesh slices the mesh at every layer height; PrusaSlicer confirms support and bridge behavior from actual G-code
 - **Automated review** — every overhang, bridge, wall thickness, and mating clearance is checked against FDM/PLA limits before the part ships
-- **Test print planning** — critical fitment interfaces get broken out into minimal-material test pieces so you verify fit before committing to a full print
+- **Test print planning** — critical fitment interfaces get broken out into minimal-material hollow test pieces so you verify fit before committing to a full print
 - **Multi-part assemblies** — interference and fit checks across parts using trimesh + PyVista
 
 ## Designs
@@ -39,12 +40,14 @@ Seven specialized agents split the work — each owns a stage, communicates thro
 
 | Agent | What it does | Key outputs |
 |-------|-------------|-------------|
-| **spec-writer** | Turns user intent into structured requirements. Flags tight tolerances and printability risks. Pre-flags test print candidates. | `requirements.md`, `spec.json` |
-| **modeler** | Writes OpenSCAD, iterates against validation until PASS. Produces a feature inventory in print-Z order for the reviewer. | `<name>.scad`, `modeling-report.json` |
-| **geometry-analyzer** | Slices the rendered STL at every layer height (trimesh). Optionally runs PrusaSlicer for G-code-level bridge/support analysis. | `geometry-report.json`, `slicer-report.json` |
+| **spec-writer** | Turns user intent into structured requirements. Flags tight tolerances, printability risks, test print candidates. Sets `modelingBackend` and `requiresId`. | `requirements.md`, `spec.json` |
+| **id-designer** | Conversational industrial-design agent. Two modes: *design* (mockup-first aesthetic loop before modeling) and *critique* (post-render fix list after each iteration). Only runs when `requiresId: true`. | `id/brief.md`, `id/modeler-notes-v*.md` |
+| **modeler** | Writes OpenSCAD, iterates against validation until PASS. Reads `id/brief.md` as the aesthetic contract. Produces a feature inventory in print-Z order for the reviewer. | `<name>.scad`, `modeling-report.json` |
+| **modeler-fusion** | Builds geometry in Autodesk Fusion 360 via MCP. Same input/output contract as **modeler**; used when `modelingBackend: "fusion"` for organic shapes (lofts, sweeps, T-splines). Exports STL + F3D. | `output/<name>.stl`, `modeling-report.json` |
+| **geometry-analyzer** | Slices the rendered STL at every layer height (trimesh). Optionally runs PrusaSlicer for G-code-level bridge/support analysis. Works on STL regardless of modeling backend. | `geometry-report.json`, `slicer-report.json` |
 | **print-reviewer** | Checks every feature transition, overhang, bridge, wall thickness, and mating clearance against FDM limits. Classifies bridges as functional or avoidable. Read-only. | `review-printability.md` |
 | **fit-reviewer** | Mesh-based interference and clearance checks for multi-part assemblies. | `review-fitment.json` |
-| **test-print-planner** | Identifies critical geometries — tight fitment, near-limit overhangs, novel features — and specs out minimal-material test pieces. | `test-prints.json`, stub design dirs |
+| **test-print-planner** | Identifies critical geometries — tight fitment, near-limit overhangs, novel features — and specs minimal-material test pieces. Hollow volumes by default. | `test-prints.json`, stub design dirs |
 | **shipper** | Renders views, writes the GitHub design page, updates README, commits, pushes. | `docs/<name>.md`, committed artifacts |
 
 </details>

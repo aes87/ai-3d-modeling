@@ -12,11 +12,31 @@ This project uses specialized agents to manage context across complex design tas
 
 *`id-designer` runs when `spec.json` has `requiresId: true` — i.e. designs with a face, motif, or visible placement. Skipped for utility parts (brackets, adapters, internal components). See rule 2 below.
 
+## Model per agent
+
+| Agent | Model | Reason |
+|---|---|---|
+| `spec-writer` | sonnet | Structured writing from a clear user brief |
+| `id-designer` | opus | Aesthetic judgment, conversational design loop with user, open-ended creative decisions |
+| `modeler` | sonnet | OpenSCAD generation from a well-defined spec — throughput over judgment |
+| `modeler-fusion` | sonnet | Same as modeler |
+| `geometry-analyzer` | sonnet | Reading quantitative data, running analysis, interpreting results |
+| `print-reviewer` | sonnet | Evaluating reports against known printability rules |
+| `fit-reviewer` | sonnet | Dimensional tolerance checking against spec |
+| `test-print-planner` | sonnet | Structured output from existing report data |
+| `shipper` | haiku | Commit, tag, push — no reasoning required |
+
+When dispatching via the Agent tool, pass `model: 'opus'` for `id-designer`, `model: 'sonnet'` for all others, `model: 'haiku'` for shipper.
+
 ## Agent dispatch rules
 
 1. **Spec stage:** Dispatch `spec-writer`. Wait for `requirements.md` + `spec.json` before proceeding.
 2. **ID stage (conditional):** If `spec.json` has `requiresId: true`, dispatch `id-designer`. **This is the pipeline's only conversational agent** — it runs a multi-turn mockup-dial-in loop with the user and returns when the user locks the brief. Output is `designs/<name>/id/brief.md` + pinned reference images. For multi-part assemblies, one brief covers the family. Skip if `requiresId: false`. See `.claude/agents/id-designer.md` and `designs/_id-library/README.md`.
-3. **Model stage:** Dispatch `modeler` with the design directory path. The modeler reads `spec.json` AND `id/brief.md` (if present). The brief is authoritative for aesthetics; the spec is authoritative for function. For multi-part assemblies, dispatch one modeler per part in parallel. Wait for all to report PASS.
+3. **Model stage:** Check `spec.json` → `modelingBackend`:
+   - `"openscad"` (default, or field absent): dispatch `modeler`. Works headlessly from the devcontainer.
+   - `"fusion"`: dispatch `modeler-fusion`. **Requires Fusion 360 running on the Windows host with the MCP add-in active and the `fusion` MCP server connected.** See `docs/fusion-mcp-setup.md`.
+   
+   Both agents read `spec.json` AND `id/brief.md` (if present) and produce the same outputs: `output/<name>.stl` + `output/modeling-report.json`. Everything downstream is backend-agnostic. For multi-part assemblies, dispatch one modeler per part in parallel. Wait for all to report PASS.
 4. **Geometry stage:** Dispatch `geometry-analyzer` per part (parallel for multi-part). Produces `geometry-report.json` (mesh analysis) and `slicer-report.json` (PrusaSlicer G-code analysis, if slicer is installed). These are ground-truth geometry data for the reviewer.
 5. **Review stage:** Dispatch `print-reviewer` and (if multi-part) `fit-reviewer` in parallel. The print-reviewer now reads quantitative geometry data from the analyzer, not SCAD source. Both are read-only. If either reports FAIL, dispatch `modeler` with the specific fix instructions, re-run geometry analysis, then re-review.
 6. **ID critique stage (user-initiated, can repeat):** After render + review — or any time the user looks at renders and wants to iterate aesthetics — dispatch `id-designer` in **critique mode** with the render paths. The agent reads `id/brief.md` + `output/*.png` + `review-printability.md`, runs a critique dialogue, and emits `id/modeler-notes-v<n>.md` plus amendments to the brief's Revisions section. Orchestrator then re-dispatches `modeler` with the fix notes, re-runs geometry + review, and loops. This stage is optional, user-gated, and can run as many rounds as needed. It is also valid **out of flow** — the user can ping `id-designer` directly with render paths to run critique mode without going through the orchestrator.
