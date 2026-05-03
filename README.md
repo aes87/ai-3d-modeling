@@ -33,7 +33,7 @@ This is an AI-native parametric modeling pipeline built on [Claude Code](https:/
 
 Seven specialized agents split the work — each owns a stage, communicates through structured files, and never sees the full conversation history. The orchestrator (top-level Claude session) manages user dialogue and dispatches agents.
 
-![AI 3D Modeling Pipeline — spec-writer hands off requirements to the modeler (orchestrator), which runs geometry-analyzer and an optional fit-reviewer for multi-part assemblies. The print-reviewer gates the workflow and loops back to the modeler on failure; on pass, test-print-planner and a test modeler produce fitment pieces, then shipper publishes. Amber edges mark emphasis and feedback; teal marks the conditional multi-part path.](./docs/images/pipeline.png)
+![AI 3D Modeling Pipeline — spec-writer creates requirements; modeler-orchestrator generates geometry with optional id-designer for aesthetic passes. geometry-analyzer slices the mesh; fit-reviewer checks multi-part assemblies. print-reviewer gates on FDM limits—pass continues to test-print-planner, fail loops back to modeler. test modeler produces test pieces; shipper publishes.](./docs/images/pipeline.svg)
 
 <details>
 <summary><b>Agent details</b></summary>
