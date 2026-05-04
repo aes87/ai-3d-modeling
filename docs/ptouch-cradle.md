@@ -2,6 +2,8 @@
 
 Quiet desk dock and label catch tray for the Brother PT-P750W label printer. Clean rectangular bathtub form with generous fillets — the printer is the visual subject; the cradle is the frame that holds it and catches the labels.
 
+![Two-part assembly hero — warm mocha cradle with light cream tray pulled forward into the label-catch position. Three-quarter view reads the tray's S-curve side fillet sweeps, low front wall, and r=1.6mm rolled top-edge fillet. Blender Cycles render with a complementary-beige PLA palette.](images/ptouch-cradle/assembly-hero.png)
+
 ## Renders
 
 ### In use
@@ -25,11 +27,14 @@ Quiet desk dock and label catch tray for the Brother PT-P750W label printer. Cle
 
 ### Tray — bare part
 
+![Blender Cycles render of the bare tray — clean PLA filament BSDF on a soft three-point lit dark studio backdrop. The S-curve front-wall sweeps and r=1.6mm continuous top-edge fillet read crisply.](images/ptouch-cradle/tray-blender-hero.png)
+*Tray hero — Cycles + OIDN render of the ship STL, three-quarter view. 1920×1440 in 87s on CPU.*
+
 ![Front elevation of the catch tray showing the uniform 10mm low front wall, S-curve side fillet sweeps from the 30mm side walls down to the 10mm front wall, and the clean horizontal grab lip across the full width.](images/ptouch-cradle/tray-user-front.png)
-*Tray front elevation — uniform 10mm front wall with S-curve sweeps on each corner. Two tangent-continuous quarter-arcs (r=9.2 each) join at an inflection point — horizontal tangent at both ends so the curve blends without a kink against either the cap outer-edge top or the front-wall flat top. The S-curve top tangent lands at z = ext_h − top_edge_fillet_r = 28.4, flush with the cap's outer-edge — corner reads as one continuous surface.*
+*Tray front elevation (technical illustration) — uniform 10mm front wall with S-curve sweeps on each corner. Two tangent-continuous quarter-arcs (r=9.2 each) join at an inflection point — horizontal tangent at both ends so the curve blends without a kink against either the cap outer-edge top or the front-wall flat top. The S-curve top tangent lands at z = ext_h − top_edge_fillet_r = 28.4, flush with the cap's outer-edge — corner reads as one continuous surface.*
 
 ![Three-quarter view of the catch tray showing the back/side walls at full 30mm height, the S-curve corner sweeps, and the rolled top-edge fillet matching the cradle's design proportion.](images/ptouch-cradle/tray-user-front-threequarter.png)
-*Tray three-quarter — 30mm back/side walls, S-curve corner sweeps with 3D corner blend (outer face follows the curve up to z=28.4 = cap outer-edge, inner face stays uniform at z=10 across full width — clean kanban lip from inside the bin). The S-curve and the rolled cap form one continuous surface at the corner. Top-edge fillet r=1.6 = wall_t (matches cradle's r=3 = its wall_t — same design proportion).*
+*Tray three-quarter (technical illustration) — 30mm back/side walls, S-curve corner sweeps with 3D corner blend (outer face follows the curve up to z=28.4 = cap outer-edge, inner face stays uniform at z=10 across full width — clean kanban lip from inside the bin). The S-curve and the rolled cap form one continuous surface at the corner. Top-edge fillet r=1.6 = wall_t (matches cradle's r=3 = its wall_t — same design proportion).*
 
 ## Design Overview
 
@@ -292,6 +297,6 @@ Two small fitment test pieces verify the load-bearing dimensions before committi
 | Print review | print-reviewer | 7/7 PASS cradle, 4/4 PASS tray. 1 marginal (tray fillet corner 1.026mm). No blockers. |
 | Fit review | fit-reviewer | PASS — 0.0mm³ interference, all clearances confirmed analytically |
 | Test prints | test-print-planner | 2 pieces — tray-slot-fit-pair + printer-corner-fit (both fitment verification) |
-| Ship | shipper | this commit |
+| Ship | shipper | OpenSCAD ship renders + Blender Cycles hero render of the assembled cradle+tray (`assembly-hero.png`) |
 
-Built with pipeline v4
+Built with pipeline v4 (`heroRender.enabled = true` in spec.json — added 2026-05-03 with the Blender integration; first design to use it)

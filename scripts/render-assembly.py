@@ -7,6 +7,14 @@ front wall + r=20 side fillet sweeps without occlusion. Four-point lighting
 on a warm-grey backdrop — gallery-like, not the moody dark studio of the
 single-part heroes in scad-lib/blender-presets/studio.py.
 
+NOT a 1:1 reproducer of the shipped hero. The canonical README hero
+(docs/images/ptouch-cradle/assembly-hero.png) came from a separate render
+session that landed on a warmer mocha cradle with a cream tray pulled forward
+into the catch position. This script converged on a different valid solution
+during scripted iteration. Treat as a starting point for re-rendering when
+the geometry changes; if a future renderer needs to MATCH the shipped hero
+exactly, the palette + camera here will need to be re-tuned.
+
 Currently hard-coded for the ptouch-cradle assembly (palette + camera + tray
 offset). To generalize, parametrize:
   - STL list with per-STL material RGB + role label
@@ -15,7 +23,7 @@ offset). To generalize, parametrize:
 
 Usage (from project root, Blender 4.2+ at /home/node/blender):
     /home/node/blender/blender --background --python scripts/render-assembly.py -- \\
-        --out designs/ptouch-cradle/output/assembly-hero.png \\
+        --out designs/ptouch-cradle/output/assembly-hero-script.png \\
         --quality {draft,standard,hero}
 
 Quality tiers:
