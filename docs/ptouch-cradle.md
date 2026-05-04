@@ -31,10 +31,10 @@ Quiet desk dock and label catch tray for the Brother PT-P750W label printer. Cle
 *Tray hero — Cycles + OIDN render of the ship STL, three-quarter view. 1920×1440 in 87s on CPU.*
 
 ![Front elevation of the catch tray showing the uniform 10mm low front wall, S-curve side fillet sweeps from the 30mm side walls down to the 10mm front wall, and the clean horizontal grab lip across the full width.](images/ptouch-cradle/tray-user-front.png)
-*Tray front elevation (technical illustration) — uniform 10mm front wall with S-curve sweeps on each corner. Two tangent-continuous quarter-arcs (r=9.2 each) join at an inflection point — horizontal tangent at both ends so the curve blends without a kink against either the cap outer-edge top or the front-wall flat top. The S-curve top tangent lands at z = ext_h − top_edge_fillet_r = 28.4, flush with the cap's outer-edge — corner reads as one continuous surface.*
+*Tray front elevation — uniform 10mm front wall with S-curve sweeps on each corner. Two tangent-continuous quarter-arcs (r=9.2 each) join at an inflection point — horizontal tangent at both ends so the curve blends without a kink against either the cap outer-edge top or the front-wall flat top. The S-curve top tangent lands at z = ext_h − top_edge_fillet_r = 28.4, flush with the cap's outer-edge — corner reads as one continuous surface.*
 
 ![Three-quarter view of the catch tray showing the back/side walls at full 30mm height, the S-curve corner sweeps, and the rolled top-edge fillet matching the cradle's design proportion.](images/ptouch-cradle/tray-user-front-threequarter.png)
-*Tray three-quarter (technical illustration) — 30mm back/side walls, S-curve corner sweeps with 3D corner blend (outer face follows the curve up to z=28.4 = cap outer-edge, inner face stays uniform at z=10 across full width — clean kanban lip from inside the bin). The S-curve and the rolled cap form one continuous surface at the corner. Top-edge fillet r=1.6 = wall_t (matches cradle's r=3 = its wall_t — same design proportion).*
+*Tray three-quarter — 30mm back/side walls, S-curve corner sweeps with 3D corner blend (outer face follows the curve up to z=28.4 = cap outer-edge, inner face stays uniform at z=10 across full width — clean kanban lip from inside the bin). The S-curve and the rolled cap form one continuous surface at the corner. Top-edge fillet r=1.6 = wall_t (matches cradle's r=3 = its wall_t — same design proportion).*
 
 ## Design Overview
 

@@ -146,3 +146,37 @@ No leak: peak Blender RAM 87 MiB, container free RAM before/after delta = 0.3 Gi
 
 - Hero quality (2560×1920, 768 samples) re-renders if/when the user wants those — would take ~12 min each.
 - Tray-only renders (`tray-user-front.png`, `tray-user-front-threequarter.png`) were already reframed as "technical illustration" in the README and were not part of this batch.
+
+## Round 2 — tray angles (added later same session)
+
+User asked to recook the tray-bare angles too. Same recipe as the cradle (gallery scene, two-tone backdrop, soft 4-point lighting, AgX), with a lighter palette so the tray reads as the cream/oat sibling to the cradle's mocha — keeps both parts in the same warm-grey family while staying visually distinct.
+
+Tray PLA: linear `(0.30, 0.27, 0.19)` ≈ sRGB `#988772` — light oat, deliberately lighter than the cradle's `#6f5b46` mocha.
+
+### #6 — tray-user-front-threequarter (GREENLIT, published)
+
+| Field | Value |
+|---|---|
+| Script | `scripts/render-part.py --rgb 0.30,0.27,0.19` |
+| STL | `designs/ptouch-cradle/output/tray.stl` |
+| Angle | `front-threequarter` |
+| Quality | standard |
+| Wall time | 215 s |
+| Container free RAM before/after | 8.0 / 8.0 GiB |
+| Output | promoted → `docs/images/ptouch-cradle/tray-user-front-threequarter.png` |
+| Verdict | GREENLIT — S-curve sweeps on both sides, parabolic interior ramp, top-edge fillet all read clearly. |
+
+### #7 — tray-user-front (GREENLIT, published)
+
+| Field | Value |
+|---|---|
+| Script | `scripts/render-part.py --rgb 0.30,0.27,0.19` |
+| Angle | `front` |
+| Quality | standard |
+| Wall time | 213 s |
+| Output | promoted → `docs/images/ptouch-cradle/tray-user-front.png` |
+| Verdict | GREENLIT — front wall + S-curve sweeps + back wall all in frame. Tighter framing than the cradle equivalents because tray bbox is squarer (103×94×30 vs 110×255×25); accepted for emphasizing the front-wall design feature. |
+
+### Caption update
+
+Removed `(technical illustration)` framing from both tray captions in `docs/ptouch-cradle.md` since the renders are now full Cycles renders (not flat OpenSCAD shots). Geometry descriptions kept verbatim — the math is still useful for readers parsing the S-curve construction.
