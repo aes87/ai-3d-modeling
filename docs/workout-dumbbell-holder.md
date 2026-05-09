@@ -2,6 +2,8 @@
 
 Clip-on dumbbell holder for a vertical treadmill rail extrusion. Dual-engagement (plug inside the rail, sleeve around the outside) with a horizontal slot through which the dumbbell shaft hangs vertically along the rail. No fasteners. Gravity retention only. CF-reinforced filament.
 
+![Top-threequarter view of the workout dumbbell holder — large rectangular sleeve cube on the left wraps the treadmill rail (with the −X short wall removed for console clearance, visible on the front-left edge); horizontal cantilever fork plate extending up-right with the R23 saddle slot opening at the top edge; r=22 quarter-cylinder buttresses smoothing the fork-sleeve junction on top and bottom; two arc-shaped reinforcing ribs along the underside of the fork](images/workout-dumbbell-holder/workout-dumbbell-holder-iso.png)
+
 ## Use Case
 
 The treadmill rail is a hollow rectangular aluminum extrusion (76.5 × 51.0 mm OD, 70.5 × 44.5 mm ID, ~3.7 mm wall, open at the top). One holder per dumbbell. Each holder slides down over the rail from above: the plug enters the rail's interior cavity, the sleeve simultaneously wraps the rail's exterior, and the flange seats on the rail-top face. The fork plate cantilevers out in front of the rail, 20 mm below the rail-top, and the dumbbell shaft slides sideways into the slot from the open +Y plate edge — the upper bell rests on the fork plate, the rest of the dumbbell hangs vertically below, parallel to the rail.
@@ -138,13 +140,31 @@ CF-specific structural margin: ~0.6 MPa peak inter-layer stress vs ~15 MPa CF-PL
 
 ## Test Prints
 
-Three minimal-material test prints planned before committing the full part. Each lives under [`designs/workout-dumbbell-holder/test-prints/`](../designs/workout-dumbbell-holder/test-prints/) with its own `requirements.md` + `spec.json`. None of them are modeled yet — only specced.
+Three minimal-material test prints modeled before committing the full part. Each lives under [`designs/workout-dumbbell-holder/test-prints/`](../designs/workout-dumbbell-holder/test-prints/) with its own `requirements.md` + `spec.json` + STL/F3D in `output/`.
 
-| # | Name | Material | Time | Gates |
+### plug-sleeve-stub (HIGH — must pass before printing the full part)
+
+![Iso render of the plug-sleeve test stub — outer sleeve box (88.5 × 62.5 mm) wrapping the inner hollow plug shell (rectangular cup with 3 mm walls), 25 mm tall sleeve, plug 30 mm tall protruding above; −X short wall of the sleeve cut away (visible C-shape opening on the left edge); rests on the flange base](images/workout-dumbbell-holder/plug-sleeve-stub-iso.png)
+
+[`plug-sleeve-stub.stl`](../designs/workout-dumbbell-holder/test-prints/plug-sleeve-stub/output/plug-sleeve-stub.stl) — full plug (hollowed to 3 mm walls) + flange + 25 mm sleeve. **91 cm³** / ~115 g PLA solid. Validates plug-to-rail-ID clearance (1 mm/side), sleeve-to-rail-OD clearance (1 mm/side), and sleeve interior surface quality after support removal. **PASS gates the full part.**
+
+### fork-plate-sample (MEDIUM — bell-rest surface and slot accuracy)
+
+![Iso render of the fork-plate sample — Y-truncated cantilever showing both r=22 quarter-cylinder buttress arcs stacked vertically (top buttress and bottom buttress mirroring), 12 mm fork plate sandwiched between them, vertical sleeve-face stub on the left, partial slot cut visible at the +Y truncation edge on the right; supported by 3 mm base plate at the bottom for printing inverted](images/workout-dumbbell-holder/fork-plate-sample-iso.png)
+
+[`fork-plate-sample.stl`](../designs/workout-dumbbell-holder/test-prints/fork-plate-sample/output/fork-plate-sample.stl) — Y-truncated fork plate (Y=+31.25 to +70) with both buttresses, slot cut at the saddle arc, 3 mm base plate. **61 cm³** / ~76 g. Validates bell-rest surface quality (the bell sits on this face — must come out smooth after support removal) and saddle arc dimensional accuracy.
+
+### buttress-arc-sample (LOW — redundant with fork-plate-sample)
+
+![Iso render of the buttress arc sample — small wedge showing a 20 mm-wide X-slice of the top r=22 quarter-cylinder buttress on a 3 mm flat base plate; the curved overhang underside is the test feature](images/workout-dumbbell-holder/buttress-arc-sample-iso.png)
+
+[`buttress-arc-sample.stl`](../designs/workout-dumbbell-holder/test-prints/buttress-arc-sample/output/buttress-arc-sample.stl) — 20 mm X-slice of the top buttress with base plate. **3.7 cm³** / ~5 g. Curved-overhang surface-quality check only. **Drop this if `fork-plate-sample` is printed** — it captures both buttress arc undersides at full span.
+
+| # | STL | Volume | Print time est. | Gates |
 |---|---|---|---|---|
-| 1 (HIGH) | [`plug-sleeve-stub`](../designs/workout-dumbbell-holder/test-prints/plug-sleeve-stub/) | ~35 cm³ / 44 g | ~40 min | Plug fits rail ID with 1 mm/side clearance; sleeve fits rail OD with 1 mm/side; sleeve interior cleans up to a smooth slide on the rail OD |
-| 2 (MEDIUM) | [`fork-plate-sample`](../designs/workout-dumbbell-holder/test-prints/fork-plate-sample/) | ~25 cm³ / 31 g | ~30 min | Bell-rest face surface quality after support removal; slot dimensional accuracy at the saddle arc |
-| 3 (LOW) | [`buttress-arc-sample`](../designs/workout-dumbbell-holder/test-prints/buttress-arc-sample/) | ~5 cm³ / 6 g | ~10 min | Curved-overhang surface quality; drop if test #2 is run (it covers both buttress arc faces already) |
+| 1 (HIGH) | `plug-sleeve-stub.stl` | 91 cm³ | ~70 min | Plug + sleeve fit; **must pass** |
+| 2 (MED) | `fork-plate-sample.stl` | 61 cm³ | ~50 min | Bell-rest surface + slot accuracy |
+| 3 (LOW) | `buttress-arc-sample.stl` | 3.7 cm³ | ~10 min | Buttress overhang surface quality (redundant if #2 is printed) |
 
 ## Iteration History
 
