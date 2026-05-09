@@ -25,6 +25,7 @@ ANGLE_PRESETS = {
     "front-threequarter": ((1.6, -2.0, 1.0),     0.5),
     "rear-threequarter":  ((1.6,  2.0, 1.0),     0.5),
     "top-threequarter":   ((1.4, -1.8, 1.7),     0.5),
+    "back-top-threequarter": ((-1.4, 1.8, 1.7),  0.5),  # 180° flip about Z of top-threequarter
     "threequarter":       ((1.6, -2.0, 1.0),     0.5),  # alias for front-threequarter
 }
 
