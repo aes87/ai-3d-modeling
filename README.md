@@ -1,5 +1,7 @@
 # AI 3D Modeling
 
+[![by harteWired](https://img.shields.io/badge/by-harteWired-e6a562?style=flat&labelColor=15151e)](https://github.com/harteWired)
+
 Describe a part. Get a printable STL — spec'd, validated, reviewed for printability, and shipped with test prints for critical fitment. No CAD skills required.
 
 This is an AI-native parametric modeling pipeline built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with two modeling backends: [OpenSCAD](https://openscad.org/) (headless, git-native, default) and [Autodesk Fusion 360](https://www.autodesk.com/products/fusion-360/) via MCP (organic geometry, freeform surfaces). The human owns the design intent — dimensions, constraints, how things mate. The AI handles the CAD work, iterates against a validation pipeline, and doesn't ship until the geometry passes quantitative review.
