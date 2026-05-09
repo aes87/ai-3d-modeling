@@ -1,0 +1,88 @@
+{
+  "name": "workout-dumbbell-holder-test-plug-sleeve-stub",
+  "description": "Test print: plug + flange + shortened sleeve (25 mm) with hollow plug body and C-shape sleeve opening. Verifies plug-to-bore fit, sleeve-to-rail-OD fit, and sleeve inner surface quality in CF-reinforced filament before committing to the full v3.4 part.",
+  "version": "v1.0",
+  "modelingBackend": "fusion",
+  "parentDesign": "workout-dumbbell-holder",
+  "parentSpecParams": "designs/workout-dumbbell-holder/spec.json",
+  "dimensions": {
+    "x": 88.5,
+    "y": 62.5,
+    "z": 33,
+    "note": "x = sleeve_od_wide (88.5). y = sleeve_od_narrow (62.5). z = flange_thickness (8) + sleeve_length_test (25) = 33 mm total print height."
+  },
+  "defaultTolerance": 1.0,
+  "tolerances": {
+    "plug_wide": 1.0,
+    "plug_narrow": 1.0,
+    "sleeve_id_wide": 1.0,
+    "sleeve_id_narrow": 1.0
+  },
+  "watertight": true,
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "volume": {
+    "min": 25,
+    "max": 50,
+    "units": "cm3",
+    "note": "Hollow plug (3 mm walls) + flange + 25 mm sleeve. Full-solid equivalent would be ~90 cm3; hollowing saves ~40 cm3."
+  },
+  "echoedDimensions": {
+    "plug_cross_section": { "x": 68.5, "y": 42.5, "z": 30 },
+    "sleeve_id": { "x": 78.5, "y": 53.0, "z": 0 },
+    "sleeve_od": { "x": 88.5, "y": 62.5, "z": 0 },
+    "sleeve_length_test": { "x": 0, "y": 0, "z": 25 },
+    "flange_outer": { "x": 88.5, "y": 62.5, "z": 8 }
+  },
+  "views": ["front", "iso"],
+  "params": {
+    "parent_design": "workout-dumbbell-holder",
+    "params_file": "designs/workout-dumbbell-holder/spec.json",
+    "plug_wide": 68.5,
+    "plug_narrow": 42.5,
+    "plug_depth": 30,
+    "plug_corner_radius": 2.5,
+    "plug_wall_min": 3.0,
+    "plug_hollow": true,
+    "clearance_per_side": 1.0,
+    "flange_thickness": 8,
+    "flange_overhang": 10,
+    "flange_od_wide": 88.5,
+    "flange_od_narrow": 62.5,
+    "flange_corner_r": 7.0,
+    "plug_flange_fillet_r": 5.0,
+    "sleeve_id_wide": 78.5,
+    "sleeve_id_narrow": 53.0,
+    "sleeve_od_wide": 88.5,
+    "sleeve_od_narrow": 62.5,
+    "sleeve_inner_corner_r": 7.0,
+    "sleeve_outer_corner_r": 7.0,
+    "sleeve_wall_wide_axis": 5.0,
+    "sleeve_wall_narrow_axis": 4.75,
+    "sleeve_length": 25,
+    "sleeve_minus_x_wall_removed": true,
+    "sleeve_minus_x_cut_x_range": [-44.25, -39.25],
+    "sleeve_minus_x_cut_y_range": [-31.25, 31.25],
+    "include_fork_plate": false,
+    "include_buttresses": false,
+    "include_ribs": false
+  },
+  "printSettings": {
+    "orientation": "flange_face_down",
+    "layerHeight_mm": 0.2,
+    "infillPct": 15,
+    "material": "CF-reinforced filament (CF-PLA, CF-PA, or CF-PETG)",
+    "supportsRequired": true,
+    "supportZones": [
+      "Sleeve inner ceiling (Z=−8 face inside 78.5×53 mm cavity) — required, intentional test of support removal quality"
+    ],
+    "estimatedPrintTime_min": 40,
+    "estimatedMaterial_g": 44
+  },
+  "verification": {
+    "primary": "trial_fit",
+    "passCriteria": "Plug slides into rail bore freely, withdraws with one-finger pull. Sleeve slides over rail OD with similar effort. Flange seats flush on rail-top face. No binding on any axis.",
+    "failCriteria": "Any binding during plug insertion or sleeve lowering. Sleeve inner wall residue that cannot be cleaned off.",
+    "caliperDimensions": ["plug_wide", "plug_narrow", "sleeve_id_wide", "sleeve_id_narrow"],
+    "gatingDecision": "PASS required before full v3.4 part is printed. If FAIL: adjust clearance_per_side in parent spec.json and re-model."
+  }
+}

@@ -1,7 +1,6 @@
 ---
 name: modeler-fusion
 description: Build parametric Fusion 360 geometry from requirements via MCP, export STL + modeling report. Use when spec.json has modelingBackend = "fusion".
-tools: Read, Write, Edit, Bash, Glob, Grep
 model: opus
 ---
 

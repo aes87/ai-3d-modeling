@@ -1,0 +1,68 @@
+{
+  "name": "workout-dumbbell-holder-test-buttress-arc-sample",
+  "description": "Test print: 20 mm wide X-slice of the top r=22 buttress arc with sleeve-face stub and fork-plate-top stub. Purely a printability surface-quality check on the curved overhang underside. Redundant with fork-plate-sample if that test is printed.",
+  "version": "v1.0",
+  "modelingBackend": "fusion",
+  "parentDesign": "workout-dumbbell-holder",
+  "parentSpecParams": "designs/workout-dumbbell-holder/spec.json",
+  "priority": "low",
+  "skipCondition": "Drop this test print if fork-plate-sample has been printed. The fork-plate-sample captures both buttress arc undersides at full span.",
+  "dimensions": {
+    "x": 20,
+    "y": 22,
+    "z": 25,
+    "note": "x = 20 mm X-slice. y = arc Y span from +31.25 to +53.25 = 22 mm. z = arc Z height (22 mm) + 3 mm base plate = 25 mm total print height."
+  },
+  "defaultTolerance": 1.0,
+  "tolerances": {
+    "buttress_radius": 1.0
+  },
+  "watertight": true,
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "volume": {
+    "min": 3,
+    "max": 8,
+    "units": "cm3",
+    "note": "Small wedge, ~5 cm3 estimated."
+  },
+  "echoedDimensions": {
+    "arc_radius": { "x": 22, "y": 22, "z": 0 },
+    "x_slice_width": { "x": 20, "y": 0, "z": 0 }
+  },
+  "views": ["front", "iso"],
+  "params": {
+    "parent_design": "workout-dumbbell-holder",
+    "params_file": "designs/workout-dumbbell-holder/spec.json",
+    "fork_top_buttress_radius": 22,
+    "buttress_center_y": 53.25,
+    "buttress_center_z": 0,
+    "buttress_tangent_a": [31.25, 0],
+    "buttress_tangent_b": [53.25, -22],
+    "x_slice_range": [-10, 10],
+    "sleeve_stub_y_range": [26.5, 31.25],
+    "sleeve_stub_z_range": [-8, 0],
+    "fork_stub_y_range": [31.25, 53.25],
+    "fork_stub_z": -22,
+    "base_plate_thickness": 3,
+    "base_plate_z_bottom": -25,
+    "print_orientation": "plug_vertical_z0_on_bed"
+  },
+  "printSettings": {
+    "orientation": "plug_vertical_flange_face_down",
+    "layerHeight_mm": 0.2,
+    "infillPct": 15,
+    "material": "CF-reinforced filament (match full part material)",
+    "supportsRequired": true,
+    "supportZones": [
+      "Top buttress arc underside (curved concave face from Z=0 at Y=+31.25 to Z=−22 at Y=+53.25) — angles 47°–90°, full support required"
+    ],
+    "estimatedPrintTime_min": 10,
+    "estimatedMaterial_g": 6
+  },
+  "verification": {
+    "primary": "visual",
+    "passCriteria": "Arc underside continuous, no delamination, support removal scars < 0.5 mm.",
+    "failCriteria": "Any delamination, or support scarring > 0.5 mm indicating slicer settings adjustment needed.",
+    "gatingDecision": "Informs slicer support settings only — does not gate printing the full part on its own. Superseded by fork-plate-sample result if that test was printed."
+  }
+}

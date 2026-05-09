@@ -1,0 +1,81 @@
+{
+  "name": "workout-dumbbell-holder-test-fork-plate-sample",
+  "description": "Test print: Y-truncated fork plate (Y=+31.25 to +70) + both buttress arcs + slot profile, with 3 mm base plate. Printed inverted (fork plate bottom toward bed) to test worst-case bell-rest surface quality and slot dimensional accuracy.",
+  "version": "v1.0",
+  "modelingBackend": "fusion",
+  "parentDesign": "workout-dumbbell-holder",
+  "parentSpecParams": "designs/workout-dumbbell-holder/spec.json",
+  "dimensions": {
+    "x": 78.5,
+    "y": 38.75,
+    "z": 37,
+    "note": "x = fork plate width after symmetric trim (78.5 mm). y = Y extent from +31.25 to +70 = 38.75 mm. z = fork plate (12 mm) + top buttress arc (22 mm) + bottom buttress arc (22 mm) + 3 mm base plate − overlaps = ~37 mm total from base plate bottom to top buttress top. Exact z depends on buttress overlap with fork plate geometry."
+  },
+  "defaultTolerance": 1.0,
+  "tolerances": {
+    "slot_opening": 1.5,
+    "fork_plate_thickness_z": 0.5,
+    "tine_wall_thickness": 0.5
+  },
+  "watertight": true,
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "volume": {
+    "min": 15,
+    "max": 35,
+    "units": "cm3",
+    "note": "Truncated fork plate slice + buttresses. Ribs optional. Estimated 20–28 cm3 depending on rib inclusion and exact geometry."
+  },
+  "echoedDimensions": {
+    "fork_plate_x_span": { "x": 78.5, "y": 0, "z": 0 },
+    "fork_plate_y_depth": { "x": 0, "y": 38.75, "z": 0 },
+    "fork_plate_thickness": { "x": 0, "y": 0, "z": 12 },
+    "slot_opening_at_y70": { "x": 69.1, "y": 0, "z": 0 }
+  },
+  "views": ["front", "iso"],
+  "params": {
+    "parent_design": "workout-dumbbell-holder",
+    "params_file": "designs/workout-dumbbell-holder/spec.json",
+    "fork_plate_x": 78.5,
+    "fork_plate_x_range": [-39.25, 39.25],
+    "fork_plate_y_start": 31.25,
+    "fork_plate_y_cutoff": 70,
+    "fork_plate_z_bottom": -34,
+    "fork_plate_z_top": -22,
+    "fork_thickness_z": 12,
+    "saddle_radius": 23,
+    "saddle_center_x": 0,
+    "saddle_center_y": 90,
+    "fork_spread_angle_per_arm": 30,
+    "tine_tip_x": 34.55,
+    "slot_opening_nominal": 69.1,
+    "fork_top_buttress_radius": 22,
+    "fork_top_buttress_center": [53.25, 0],
+    "fork_bottom_buttress_radius": 22,
+    "fork_bottom_buttress_center": [53.25, -56],
+    "buttress_x_range": [-39.25, 39.25],
+    "include_ribs": "optional",
+    "base_plate_thickness": 3,
+    "base_plate_z": -59,
+    "print_orientation": "inverted — fork plate bottom (Z=−34 parent) toward bed"
+  },
+  "printSettings": {
+    "orientation": "inverted_fork_plate_bottom_down",
+    "layerHeight_mm": 0.2,
+    "infillPct": 15,
+    "material": "CF-reinforced filament (match full part material)",
+    "supportsRequired": true,
+    "supportZones": [
+      "Fork plate top face (Z=−22 parent) — now facing away from bed in inverted orientation; this is the bell-rest surface being tested",
+      "Top buttress arc underside — curved concave face, full support required",
+      "Bottom buttress arc underside — curved concave face, full support required"
+    ],
+    "estimatedPrintTime_min": 30,
+    "estimatedMaterial_g": 31
+  },
+  "verification": {
+    "primary": "visual_and_caliper",
+    "passCriteria": "Fork plate top face smooth to < 0.3 mm deviation (fingertip test). Slot opening 68.0–70.5 mm. Dumbbell shaft (D=46 mm) slides into slot and seats in arc without binding.",
+    "failCriteria": "Bell-rest surface has ridges > 0.3 mm that cannot be cleaned off. Slot opening out of tolerance. Shaft binds in slot.",
+    "gatingDecision": "FAIL on surface quality → adjust slicer support interface layer count, offset, or switch to dissolvable interface material before full print. FAIL on slot dimension → adjust saddle_radius in parent spec.json."
+  }
+}

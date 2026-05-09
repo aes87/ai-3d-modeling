@@ -1,0 +1,108 @@
+{
+  "parentDesign": "workout-dumbbell-holder",
+  "parentParams": null,
+  "note": "Parent design uses Fusion 360 direct-protocol backend (no OpenSCAD params file). All test prints share the same Fusion parameter set embedded in spec.json. Test print modeler must read parent spec.json params block as source of truth and NOT hardcode dimensions.",
+  "testPrints": [
+    {
+      "id": "plug-sleeve-stub",
+      "name": "Plug + Sleeve Fit Stub",
+      "category": "fitment",
+      "priority": "high",
+      "reason": "Verifies (a) plug OD 68.5×42.5 mm slides into rail ID 70.5×44.5 mm with 1 mm/side clearance in CF-reinforced filament — project PLA tolerance table does not apply to CF; (b) sleeve ID 78.5×53 mm slides over rail OD 76.5×51 mm with 1 mm/side clearance; (c) sleeve inner surface quality after support removal is adequate — residue could consume the 1 mm gap and prevent installation; (d) C-shape sleeve orientation is correct (opening on −X side for console clearance). Gates all subsequent printing: if clearance is wrong the full part cannot be printed without a spec change.",
+      "features": [
+        "plug",
+        "seating_flange",
+        "sleeve_c_shape"
+      ],
+      "zRange": [-38, 0],
+      "criticalDimensions": {
+        "plug_wide": { "nominal": 68.5, "tolerance": 1.0 },
+        "plug_narrow": { "nominal": 42.5, "tolerance": 1.0 },
+        "sleeve_id_wide": { "nominal": 78.5, "tolerance": 1.0 },
+        "sleeve_id_narrow": { "nominal": 53.0, "tolerance": 1.0 },
+        "sleeve_length_z": { "nominal": 25.0, "tolerance": 1.0 },
+        "flange_thickness": { "nominal": 8.0, "tolerance": 0.5 },
+        "plug_depth": { "nominal": 30.0, "tolerance": 0.5 }
+      },
+      "matePart": "Treadmill rectangular aluminum extrusion — ID 70.5×44.5 mm, OD 76.5×51 mm, outer corner r=6 mm, wall ~3.7 mm",
+      "simplification": "Keep full plug + full flange + sleeve. Drop everything at Y > +31.25 (the entire cantilever: fork plate, buttresses, ribs, tines). Shorten sleeve from 48 mm to ~25 mm in Z (from Z=−8 down to Z=−33) to save material — the functional test is whether it slides over the rail OD, not how deep it goes. Preserve the −X C-shape opening (wall removed at X=[−44.25, −39.25]). The sleeve inner ceiling bridge at Z=−8 is preserved and MUST be supported in print — this is intentional, as post-support surface quality on that ceiling is one of the things being tested. Hollow the plug body interior: the plug is currently solid; shell it to 3 mm walls (CF minimum) open at the Z=−38 bottom, saving ~40 cm³ of material while fully preserving the external OD and corner geometry that mate with the rail bore.",
+      "estimatedVolume_cm3": 35,
+      "estimatedPrintTime_min": 40,
+      "estimatedMaterial_g": 44,
+      "verificationMethod": "Trial fit on the actual treadmill rail. (1) Insert plug into rail bore from above — should slide in with audible play (rattle under finger-tap) but not excessive wobble. Withdraw with one-finger upward pull. If it binds: clearance is too tight, increase clearance_per_side. If it rattles more than ~1 mm lateral displacement: clearance is acceptable per spec (1 mm/side is intentionally generous). (2) Lower the sleeve over the rail OD simultaneously — should slide on with similar one-finger effort, C-opening facing the console. (3) After removal, inspect sleeve inner walls with a flashlight for support residue — any ridge > ~0.3 mm that cannot be scraped off with a fingernail is a concern. (4) Measure plug OD on both axes with calipers at mid-depth — compare to nominal 68.5 and 42.5 mm. Record actual dimension for CF shrinkage calibration.",
+      "fitCriterion": "PASS: plug slides into bore with audible play, withdraws with one-finger pull, no binding. Sleeve slides over rail OD with similar feel. FAIL: any axis binds (plug or sleeve stuck at any point), or any axis has > 2 mm lateral slop (would indicate CF is undersizing significantly beyond the 1 mm/side nominal).",
+      "designDir": "designs/workout-dumbbell-holder/test-prints/plug-sleeve-stub",
+      "modelingBackend": "fusion"
+    },
+    {
+      "id": "fork-plate-sample",
+      "name": "Fork Plate + Slot Bridge Sample",
+      "category": "printability",
+      "priority": "medium",
+      "reason": "Validates (a) bell-rest surface quality on the fork plate top face (Z=−22) after support removal from the fork plate bottom face — this is the functional surface the upper bell contacts; (b) slot dimensional accuracy at the saddle arc (R=23 mm, conforming fit) and tine tip gap (69.1 mm nominal at plate edge); (c) bridge print quality on the fork plate bottom face, which spans ~79 mm in Y (well over the 10 mm limit) and requires support — surface marks or dimensional error here could mean the upper bell cants at an unacceptable angle. Does NOT test fitment — gates only the decision of whether to adjust support interface settings before the full print.",
+      "features": [
+        "fork_plate",
+        "slot_profile",
+        "top_buttress_arc",
+        "bottom_buttress_arc"
+      ],
+      "zRange": [-56, -22],
+      "criticalDimensions": {
+        "saddle_arc_radius": { "nominal": 23.0, "tolerance": 0.5 },
+        "slot_opening_at_plate_edge": { "nominal": 69.1, "tolerance": 1.0 },
+        "tine_wall_thickness": { "nominal": 4.7, "tolerance": 0.5 },
+        "fork_plate_thickness_z": { "nominal": 12.0, "tolerance": 0.5 },
+        "fork_plate_top_face_flatness": { "nominal": 0.0, "tolerance": 0.3 }
+      },
+      "matePart": "Dumbbell shaft D=46 mm (gravity cradle — conforming arc contact, not a mechanical fit)",
+      "simplification": "Truncate the fork plate to a Y slice from Y=+31.25 (sleeve face) to Y=+65 (approximately 35 mm of fork depth). This retains: the full slot arc and tangent arm profile (arc center at Y=+90 is outside this slice, but the arc perimeter at this Y range captures the R23 geometry at the right depth), both buttress arc undersides (top and bottom), and the fork plate's full X span (83.5 mm after symmetric trim). Cut at Y=+65 with a flat face — do not include tine tips (Y=+110) or the outer flat plate region. The slot profile at Y=+65 cross-section will show the 30° tangent arm geometry. Skip ribs (they start at Y=+31.25 and are within this slice but add material without changing what's being tested — include them if the modeler finds it simpler to keep them). No plug, no sleeve, no flange. Add a 3 mm base plate below the bottom buttress (at Z=−59) so the piece sits flat — the bottom of the bottom buttress arc (at Z=−56) is curved, not flat. The fork plate bottom face at Z=−34 is the upward-facing bed surface in this orientation (print flipped: fork plate bottom toward bed, fork plate top away from bed — this is the worst-case surface quality orientation for the bell-rest face, which is what we want to test).",
+      "estimatedVolume_cm3": 25,
+      "estimatedPrintTime_min": 30,
+      "estimatedMaterial_g": 31,
+      "verificationMethod": "Visual and caliper inspection. (1) Inspect fork plate top face (the bell-rest surface, which printed facing away from bed and was supported) — check for support marks, ridges, or lumps > 0.3 mm. Run a finger across — should feel nearly flat. (2) Caliper across slot opening at the plate +Y edge: nominal 69.1 mm. (3) Slide a 46 mm diameter cylinder (or the actual dumbbell shaft) into the slot from the +Y open end — should seat at the arc bottom without jamming. (4) Caliper tine wall thickness at the tip cross-section: nominal 4.7 mm each side. (5) Inspect buttress arc undersides for support removal quality and delamination.",
+      "designDir": "designs/workout-dumbbell-holder/test-prints/fork-plate-sample",
+      "modelingBackend": "fusion"
+    },
+    {
+      "id": "buttress-arc-sample",
+      "name": "Buttress Arc Overhang Sample",
+      "category": "printability",
+      "priority": "low",
+      "reason": "Validates surface quality of the r=22 mm quarter-cylinder buttress arc underside in plug-vertical print orientation. The buttress arc faces range from 47° to 90° from horizontal (all above the 45° unsupported limit) and total ~750 mm² for each buttress. These are not mating surfaces, so cosmetic quality is the only concern — but if supports leave severe scarring or the arc delaminates, it signals a slicer-settings problem that should be corrected before the full print. Drop this test if material budget is tight; the fork-plate-sample already exposes both buttress arc undersides.",
+      "features": [
+        "top_buttress_arc",
+        "bottom_buttress_arc"
+      ],
+      "zRange": [-56, 0],
+      "criticalDimensions": {
+        "buttress_radius": { "nominal": 22.0, "tolerance": 1.0 },
+        "buttress_arc_underside_quality": { "nominal": 0.0, "tolerance": 0.5 }
+      },
+      "matePart": "None — cosmetic/structural surface only",
+      "simplification": "Extract a 20 mm wide X-slice of one buttress (say at X=[−5, +15], capturing the arc center). Keep the sleeve +Y face stub (the vertical backing surface), the fork-top face stub (horizontal at Z=−22), and the buttress arc itself. Add a 3 mm flat base at Z=+3 (above flange top) or clip to a 3 mm base at Z=−58 depending on orientation. This is a small wedge: approximately 20 mm (X) × 22 mm (Y, sleeve face to arc tip) × 30 mm (Z, arc height). Total volume < 5 cm³. NOTE: since fork-plate-sample already includes both buttress arc undersides at full X span, this test print is redundant if fork-plate-sample is printed. Consider dropping this test print and assessing buttress quality from the fork-plate-sample result instead.",
+      "estimatedVolume_cm3": 5,
+      "estimatedPrintTime_min": 10,
+      "estimatedMaterial_g": 6,
+      "verificationMethod": "Visual only. Inspect the arc underside for: (1) surface continuity — no delamination or sag more than ~0.5 mm, (2) support-mark texture — light scarring is acceptable, heavy ridging (> 0.5 mm step) is a signal to change support interface layer count or offset. No calipers needed.",
+      "designDir": "designs/workout-dumbbell-holder/test-prints/buttress-arc-sample",
+      "modelingBackend": "fusion"
+    }
+  ],
+  "sources": {
+    "fromSpecWriter": [
+      "plug-sleeve-stub (from testPrintCandidates[0]: 'Plug-to-extrusion fit')",
+      "plug-sleeve-stub (from testPrintCandidates[1]: 'Plug wall minimum cross-section at cantilever root' — merged into the fit stub; structural hand-test is the verification method)"
+    ],
+    "fromPrintReviewer": [
+      "plug-sleeve-stub (from 'Plug + sleeve fit pocket, high priority')",
+      "fork-plate-sample (from 'Fork plate bridge quality, medium priority')",
+      "buttress-arc-sample (from 'Buttress arc overhang quality, low priority')"
+    ],
+    "fromPlanner": [
+      "plug-sleeve-stub: hollowed plug body (spec writer and reviewer both flagged fit; planner adds hollow-plug simplification to reduce material 40+ cm³)",
+      "fork-plate-sample: Y-truncation to Y=+65 instead of full Y=+110 (planner applies minimum-material principle; tine tips add no test value)",
+      "fork-plate-sample: print orientation inverted (fork plate bottom toward bed) to test worst-case bell-rest surface quality",
+      "buttress-arc-sample: flagged as likely redundant with fork-plate-sample — planner recommends dropping if fork-plate-sample is printed"
+    ]
+  }
+}
